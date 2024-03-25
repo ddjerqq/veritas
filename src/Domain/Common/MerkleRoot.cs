@@ -23,7 +23,7 @@ public static class MerkleRoot
 
             merkelLeaves = Enumerable
                 .Range(0, merkelLeaves.Count - 1).Where(i => i % 2 == 0)
-                .Select(i => HashPair(merkelLeaves[i], merkelLeaves[i + 1]).ToArray())
+                .Select(i => HashPair(merkelLeaves[i], merkelLeaves[i + 1]))
                 .ToList();
         }
     }

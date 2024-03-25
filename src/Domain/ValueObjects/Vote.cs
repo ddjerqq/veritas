@@ -11,40 +11,27 @@ public record Vote(Voter Voter, int PartyId, long Timestamp)
 
     public byte[] Hash => SHA256.HashData(HashPayload);
 
-    public byte[] Signature => Voter.Sign(SignaturePayload);
+    public byte[] Signature = Voter.Sign(GetSignaturePayload(PartyId, Timestamp));
 
-    public bool VerifySignature(byte[] sig) => Voter.Verify(SignaturePayload, sig);
+    public bool VerifySignature(byte[] sig) => Voter.Verify(GetSignaturePayload(PartyId, Timestamp), sig);
 
-    private byte[] SignaturePayload
+    private static byte[] GetSignaturePayload(int partyId, long timestamp)
     {
-        get
-        {
-            var buffer = new List<byte>
-            {
-                Capacity = sizeof(int) + sizeof(long),
-            };
-
-            buffer.AddRange(BitConverter.GetBytes(PartyId));
-            buffer.AddRange(BitConverter.GetBytes(Timestamp));
-
-            return buffer.ToArray();
-        }
+        var buffer = new List<byte>();
+        buffer.AddRange(BitConverter.GetBytes(partyId));
+        buffer.AddRange(BitConverter.GetBytes(timestamp));
+        return buffer.ToArray();
     }
 
     private byte[] HashPayload
     {
         get
         {
-            var buffer = new List<byte>
-            {
-                Capacity = 21 + sizeof(long) + sizeof(long) + 32,
-            };
-
+            var buffer = new List<byte>();
             buffer.AddRange(Voter.Address.ToBytesFromHex());
             buffer.AddRange(BitConverter.GetBytes(PartyId));
             buffer.AddRange(BitConverter.GetBytes(Timestamp));
             buffer.AddRange(Signature);
-
             return buffer.ToArray();
         }
     }

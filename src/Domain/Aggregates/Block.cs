@@ -14,23 +14,34 @@ public record Block
 
     public long Nonce { get; private init; }
 
-    public byte[] Hash => SHA256.HashData(HashPayload);
-
-    public byte[] MerkleRoot => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash));
-
     public byte[] PreviousHash { get; private init; } = default!;
 
-    public List<Vote> Votes { get; } = [];
+    public List<Vote> Votes { get; private init; } = [];
+
+    public byte[] Hash => SHA256.HashData(HashPayload);
+
+    public byte[] MerkleRoot => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash).ToList());
 
     public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
+
+    public bool TryAddVote(Vote vote)
+    {
+        if (Votes.Count >= VoteLimit) return false;
+        Votes.Add(vote);
+        return true;
+    }
 
     [Pure]
     public Block Mine()
     {
         if (IsHashValid) return this;
 
-        // var coreCount = Environment.ProcessorCount;
+#if DEBUG
         var coreCount = 1;
+#else
+        var coreCount = Environment.ProcessorCount;
+#endif
+
         long foundNonce = 0;
         byte[] pred = new string('0', Difficulty).ToBytesFromHex();
 
@@ -40,19 +51,18 @@ public record Block
             byte[] payload = HashPayload;
             int destOffset = payload.Length - sizeof(long);
 
-            byte[] nonceBuffer;
-
             while (!state.IsStopped)
             {
-                nonceBuffer = BitConverter.GetBytes(nonce);
-                Buffer.BlockCopy(nonceBuffer, 0, payload, destOffset, sizeof(long));
+                // TODO optimize, use spans.
+                Buffer.BlockCopy(BitConverter.GetBytes(nonce), 0, payload, destOffset, sizeof(long));
 
-                // TODO optimize use spans.
                 byte[] hash = SHA256.HashData(payload);
 
                 // hash converted to hex, must equal Difficulty
                 if (pred.ArrayEquals(hash[..(Difficulty / 2)]))
                 {
+                    Console.WriteLine("merkle root inside: {0}", MerkleRoot.ToHexString());
+
                     foundNonce = nonce;
                     state.Stop();
                 }
