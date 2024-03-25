@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api", "src\Api\Api.csproj", "{7EC714F8-1D76-4CDF-8600-0E420EEC945C}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{CDA54601-0118-490B-A23A-658CE6F412E5}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
@@ -11,18 +9,50 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{DD36E152-ABCA-4F1F-863D-216C29D3304F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Domain", "src\Domain\Domain.csproj", "{43606BBB-E20C-4A91-9A5C-940CB55213C8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{CF0A1114-96BA-4A63-ABED-A4EC44F01067}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test.Domain", "test\Test.Domain\Test.Domain.csproj", "{A58C1C96-1A8E-4960-964B-D73D6441F77B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Application", "src\Application\Application.csproj", "{348AA6DC-7EB0-449C-BBCA-F346079D98C1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "src\Infrastructure\Infrastructure.csproj", "{CFF8CFED-F07E-4187-9CBD-A12A74B29F48}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Presentation", "src\Presentation\Presentation.csproj", "{8B5696AF-1998-4E4D-8702-571C835E8822}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{7EC714F8-1D76-4CDF-8600-0E420EEC945C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7EC714F8-1D76-4CDF-8600-0E420EEC945C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7EC714F8-1D76-4CDF-8600-0E420EEC945C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7EC714F8-1D76-4CDF-8600-0E420EEC945C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{43606BBB-E20C-4A91-9A5C-940CB55213C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{43606BBB-E20C-4A91-9A5C-940CB55213C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{43606BBB-E20C-4A91-9A5C-940CB55213C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{43606BBB-E20C-4A91-9A5C-940CB55213C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A58C1C96-1A8E-4960-964B-D73D6441F77B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A58C1C96-1A8E-4960-964B-D73D6441F77B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A58C1C96-1A8E-4960-964B-D73D6441F77B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A58C1C96-1A8E-4960-964B-D73D6441F77B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{348AA6DC-7EB0-449C-BBCA-F346079D98C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{348AA6DC-7EB0-449C-BBCA-F346079D98C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{348AA6DC-7EB0-449C-BBCA-F346079D98C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{348AA6DC-7EB0-449C-BBCA-F346079D98C1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFF8CFED-F07E-4187-9CBD-A12A74B29F48}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFF8CFED-F07E-4187-9CBD-A12A74B29F48}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFF8CFED-F07E-4187-9CBD-A12A74B29F48}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFF8CFED-F07E-4187-9CBD-A12A74B29F48}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B5696AF-1998-4E4D-8702-571C835E8822}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B5696AF-1998-4E4D-8702-571C835E8822}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B5696AF-1998-4E4D-8702-571C835E8822}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B5696AF-1998-4E4D-8702-571C835E8822}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{7EC714F8-1D76-4CDF-8600-0E420EEC945C} = {DD36E152-ABCA-4F1F-863D-216C29D3304F}
+		{43606BBB-E20C-4A91-9A5C-940CB55213C8} = {DD36E152-ABCA-4F1F-863D-216C29D3304F}
+		{A58C1C96-1A8E-4960-964B-D73D6441F77B} = {CF0A1114-96BA-4A63-ABED-A4EC44F01067}
+		{348AA6DC-7EB0-449C-BBCA-F346079D98C1} = {DD36E152-ABCA-4F1F-863D-216C29D3304F}
+		{CFF8CFED-F07E-4187-9CBD-A12A74B29F48} = {DD36E152-ABCA-4F1F-863D-216C29D3304F}
+		{8B5696AF-1998-4E4D-8702-571C835E8822} = {DD36E152-ABCA-4F1F-863D-216C29D3304F}
 	EndGlobalSection
 EndGlobal
