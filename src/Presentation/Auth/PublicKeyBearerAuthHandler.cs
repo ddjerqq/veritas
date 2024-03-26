@@ -36,7 +36,7 @@ public class PublicKeyBearerAuthHandler(
         List<Claim> claims =
         [
             new Claim("addr", voter.Address),
-            new Claim("pub_key", pKey),
+            new Claim("pkey", pKey),
         ];
         var claimsIdentity = new ClaimsIdentity(claims, SchemaName);
         var ticket = new AuthenticationTicket(new ClaimsPrincipal(claimsIdentity), SchemaName);
