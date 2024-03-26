@@ -1,20 +1,13 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Domain.Common;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
-using Microsoft.Net.Http.Headers;
 
 namespace Presentation.Auth;
 
 public class PublicKeyBearerSchemeOptions : AuthenticationSchemeOptions;
-
-// TODO everyone can imitate another user, because they can take their public key.
-// however only the holder of the private key can sign the data, everyone can verify
-// the data using the public key. so what we need to do is, alongside sending the public key,
-// sign client's address, and send it to the server.
 
 public class PublicKeyBearerAuthHandler(
     IOptionsMonitor<PublicKeyBearerSchemeOptions> options,
@@ -24,24 +17,26 @@ public class PublicKeyBearerAuthHandler(
 {
     public const string SchemaName = "public_key";
 
+    public const string PubKeyHeaderName = "X-Public-Key";
+    public const string SignatureHeaderName = "X-Signature";
+
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var pKey = Request.Headers.Authorization.ToString();
+        // TODO test if it is possible to impersonate.
 
-        if (string.IsNullOrWhiteSpace(pKey))
-            pKey = Request.Cookies
-                .FirstOrDefault(c => string.Equals(c.Key, HeaderNames.Authorization, StringComparison.InvariantCultureIgnoreCase))
-                .Value;
+        var pKey = ExtractPublicKey(Request);
+        var sig = ExtractSignature(Request);
 
-        if (string.IsNullOrWhiteSpace(pKey))
-            return Task.FromResult(AuthenticateResult.Fail("no public key"));
-
-        if (!pKey.All(char.IsAsciiHexDigit) || pKey.Length > 512)
-            return Task.FromResult(AuthenticateResult.Fail("bad public key"));
+        if (pKey is null || sig is null)
+            return Task.FromResult(AuthenticateResult.Fail("no public key or signature provided"));
 
         var voter = Voter.FromPubKey(pKey.ToBytesFromHex());
+        var signatureValid = voter.Verify(voter.Address.ToBytesFromHex(), sig.ToBytesFromHex());
+        if (!signatureValid)
+            return Task.FromResult(AuthenticateResult.Fail("invalid signature"));
 
-        List<Claim> claims = [
+        List<Claim> claims =
+        [
             new Claim("addr", voter.Address),
             new Claim("pub_key", pKey),
         ];
@@ -53,4 +48,25 @@ public class PublicKeyBearerAuthHandler(
 
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
+
+    private string? ExtractPublicKey(HttpRequest request)
+    {
+        Request.Headers.TryGetValue(PubKeyHeaderName, out var pKeyHeader);
+        Request.Cookies.TryGetValue(PubKeyHeaderName, out var pKeyCookie);
+        var pKey = (string?)pKeyHeader ?? pKeyCookie;
+        return ValidateHexString(pKey) ? pKey : null;
+    }
+
+    private string? ExtractSignature(HttpRequest request)
+    {
+        Request.Headers.TryGetValue(SignatureHeaderName, out var sigHeader);
+        Request.Cookies.TryGetValue(SignatureHeaderName, out var sigCookie);
+        var sig = (string?)sigHeader ?? sigCookie;
+        return ValidateHexString(sig) ? sig : null;
+    }
+
+    private bool ValidateHexString(string? hexString) =>
+        !string.IsNullOrWhiteSpace(hexString)
+        && hexString.Length < 512
+        && hexString.All(char.IsAsciiHexDigit);
 }
