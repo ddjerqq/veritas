@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using System.Reflection;
+﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
 using Presentation.Config;
 using Presentation.Filters;
@@ -8,7 +7,6 @@ using Presentation.Filters;
 
 namespace Presentation.Config;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureSwagger : IHostingStartup
 {
     private static bool _configured;
@@ -39,14 +37,7 @@ public class ConfigureSwagger : IHostingStartup
                 {
                     Title = "mieci.ge",
                     Version = "v1",
-                    Description = "online mock elections",
-                    // TODO do we even need this shit?
-                    // Contact = new OpenApiContact
-                    // {
-                    //     Name = "ddjerqq",
-                    //     Email = "ddjerqq@gmail.com",
-                    //     Url = new Uri("https://mieci.ge"),
-                    // },
+                    Description = "online elections",
                 });
 
                 options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

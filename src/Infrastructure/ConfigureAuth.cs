@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Security.Claims;
 using Infrastructure;
 using Infrastructure.Auth;
@@ -10,7 +9,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Infrastructure;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureAuth : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)

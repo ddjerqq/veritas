@@ -11,7 +11,7 @@ using Quartz;
 namespace Infrastructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]
-public sealed class ProcessOutboxMessagesBackgroundJob(
+public class ProcessOutboxMessagesBackgroundJob(
     IPublisher publisher,
     IAppDbContext dbContext,
     IDateTimeProvider dateTimeProvider,

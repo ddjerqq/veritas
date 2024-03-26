@@ -3,19 +3,32 @@ using Domain.Common;
 
 namespace Domain.ValueObjects;
 
-public record Vote(Voter Voter, int PartyId, long Timestamp)
+public record Vote()
 {
-    public Voter Voter { get; } = Voter.HasPrivateKey
-        ? Voter
-        : throw new InvalidOperationException("Cannot vote without private key");
+    public Voter Voter { get; init; } = default!;
+
+    public int PartyId { get; init; }
+
+    public long Timestamp { get; init; }
+
+    public byte[] Signature { get; init; } = default!;
 
     public byte[] Hash => SHA256.HashData(HashPayload);
 
-    public byte[] Signature = Voter.Sign(GetSignaturePayload(PartyId, Timestamp));
+    public Vote(Voter voter, int partyId, long timestamp) : this()
+    {
+        Voter = voter;
+        PartyId = partyId;
+        Timestamp = timestamp;
+
+        Signature = voter.HasPrivateKey
+            ? voter.Sign(GetSignaturePayload(PartyId, Timestamp))
+            : Signature;
+    }
 
     public bool VerifySignature(byte[] sig) => Voter.Verify(GetSignaturePayload(PartyId, Timestamp), sig);
 
-    private static byte[] GetSignaturePayload(int partyId, long timestamp)
+    public static byte[] GetSignaturePayload(int partyId, long timestamp)
     {
         var buffer = new List<byte>();
         buffer.AddRange(BitConverter.GetBytes(partyId));
@@ -36,35 +49,3 @@ public record Vote(Voter Voter, int PartyId, long Timestamp)
         }
     }
 }
-
-// public static explicit operator Vote(VoteDto dto)
-// {
-//     var voter = Voter.FromPubKey(dto.VoterPubKey.ToBytesFromHex());
-//     var timestamp = new DateTimeOffset(dto.Timestamp).ToUnixTimeMilliseconds();
-//
-//     var vote = new Vote
-//     {
-//         Voter = voter,
-//         PartyId = dto.PartyId,
-//         Timestamp = timestamp,
-//         Signature = dto.Signature.ToBytesFromHex(),
-//     };
-//
-//     if (vote.Hash.ToHexString() != dto.Hash)
-//         throw new InvalidOperationException("Invalid hash");
-//
-//     if (!vote.VerifySignature(dto.Signature.ToBytesFromHex()))
-//         throw new InvalidOperationException("Invalid signature");
-//
-//     return vote;
-// }
-
-// public static explicit operator VoteDto(Vote vote) => new()
-// {
-//     Hash = vote.Hash.ToHexString(),
-//     VoterAddress = vote.Voter.Address,
-//     VoterPubKey = vote.Voter.PublicKey.ToHexString(),
-//     PartyId = vote.PartyId,
-//     Signature = vote.Signature.ToHexString(),
-//     Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(vote.Timestamp).UtcDateTime,
-// };

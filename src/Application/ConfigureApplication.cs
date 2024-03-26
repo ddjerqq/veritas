@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Application;
 using Application.Abstractions;
 using Application.Behaviours;
@@ -11,8 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
-public sealed class ConfigureApplication : IHostingStartup
+public class ConfigureApplication : IHostingStartup
 {
     private static bool _configured;
 

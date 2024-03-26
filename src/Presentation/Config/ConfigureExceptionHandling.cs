@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using Presentation.Config;
+﻿using Presentation.Config;
 using Presentation.ExceptionHandling;
 
 [assembly: HostingStartup(typeof(ConfigureExceptionHandling))]
 
 namespace Presentation.Config;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureExceptionHandling : IHostingStartup
 {
     private static bool _configured;

@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-using Domain.Common;
+﻿using Domain.Common;
 
 namespace Test.Domain.Common;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 internal class ByteArrayExtensionsTest
 {
     [Test]

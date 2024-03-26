@@ -1,41 +1,10 @@
-﻿using System.ComponentModel;
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.ValueObjects;
 
 namespace Test.Domain.Entities;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 internal class VoteTest
 {
-    // [Test]
-    // public void TestConversion()
-    // {
-    //     var voter = Voter.NewVoter();
-    //     var vote = new Vote(voter, 5, 0);
-    //
-    //     var voteDto = (VoteDto)vote;
-    //     Console.WriteLine(voteDto);
-    //
-    //     var convertedBack = (Vote)voteDto;
-    //     Assert.That(vote.Hash.ArrayEquals(convertedBack.Hash));
-    //     Assert.That(vote.Voter, Is.EqualTo(convertedBack.Voter));
-    //     Assert.That(vote.PartyId, Is.EqualTo(convertedBack.PartyId));
-    //     Assert.That(vote.Timestamp, Is.EqualTo(convertedBack.Timestamp));
-    //     Assert.That(vote.Signature.ArrayEquals(convertedBack.Signature));
-    // }
-
-    // [Test]
-    // public void TestSignatureOnSerializationAndDeserialization()
-    // {
-    //     var voter = Voter.NewVoter();
-    //     var vote = new Vote(voter, 0, 0);
-    //
-    //     var voteDto = (VoteDto)vote;
-    //     var deserializedVote = (Vote)voteDto;
-    //
-    //     Assert.That(deserializedVote.VerifySignature(vote.Signature), Is.True);
-    // }
-
     [Test]
     [Parallelizable]
     public void TestVoteHash()

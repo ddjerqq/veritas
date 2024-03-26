@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using Microsoft.AspNetCore.HttpLogging;
+﻿using Microsoft.AspNetCore.HttpLogging;
 using Presentation.Config;
 
 [assembly: HostingStartup(typeof(ConfigureLogging))]
 
 namespace Presentation.Config;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureLogging : IHostingStartup
 {
     private static bool _configured;

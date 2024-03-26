@@ -1,12 +1,10 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using Domain.Aggregates;
 using Domain.Common;
 using Domain.ValueObjects;
 
 namespace Test.Domain.Aggregates;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 internal class BlockTest
 {
     [Test]

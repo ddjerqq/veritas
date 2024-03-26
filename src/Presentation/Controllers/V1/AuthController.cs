@@ -9,7 +9,7 @@ namespace Presentation.Controllers.V1;
 /// </summary>
 [Authorize]
 [Route("/api/v1/[controller]")]
-public sealed class AuthController : ApiController
+public class AuthController : ApiController
 {
     // [Authorize]
     // [HttpGet("user_claims")]

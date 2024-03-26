@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using Infrastructure;
 using Infrastructure.BackgroundJobs;
 using Microsoft.AspNetCore.Hosting;
@@ -8,7 +7,6 @@ using Quartz;
 
 namespace Infrastructure;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureBackgroundJobs : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)

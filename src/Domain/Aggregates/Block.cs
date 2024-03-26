@@ -10,13 +10,13 @@ public record Block
     public const int Difficulty = 6;
     public const int VoteLimit = 256;
 
-    public long Index { get; private init; }
+    public long Index { get; init; }
 
-    public long Nonce { get; private init; }
+    public long Nonce { get; init; }
 
-    public byte[] PreviousHash { get; private init; } = default!;
+    public byte[] PreviousHash { get; init; } = default!;
 
-    public List<Vote> Votes { get; private init; } = [];
+    public List<Vote> Votes { get; init; } = [];
 
     public byte[] Hash => SHA256.HashData(HashPayload);
 
@@ -110,35 +110,3 @@ public record Block
         }
     }
 }
-
-// public static explicit operator Block(BlockDto dto)
-// {
-//     var block = new Block
-//     {
-//         Index = dto.Index,
-//         Nonce = dto.Nonce,
-//         PreviousHash = dto.PreviousHash.ToBytesFromHex(),
-//     };
-//     block._votes.AddRange(dto.Votes.Select(x => (Vote)x));
-//
-//     if (!block.IsHashValid || block.Hash.ToHexString() != dto.Hash)
-//         throw new InvalidOperationException("Invalid block hash");
-//
-//     if (block.MerkleRoot.ToHexString() != dto.MerkleRoot)
-//         throw new InvalidOperationException("Invalid merkle root");
-//
-//     return block;
-// }
-//
-// public static explicit operator BlockDto(Block block)
-// {
-//     return new BlockDto
-//     {
-//         Index = block.Index,
-//         Nonce = block.Nonce,
-//         Hash = block.Hash.ToHexString(),
-//         MerkleRoot = block.MerkleRoot.ToHexString(),
-//         PreviousHash = block.PreviousHash.ToHexString(),
-//         Votes = block.Votes.Select(x => (VoteDto)x).ToList(),
-//     };
-// }

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using Application;
+﻿using Application;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -11,7 +10,6 @@ using ZymLabs.NSwag.FluentValidation;
 
 namespace Presentation.Config;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureValidation : IHostingStartup
 {
     private static bool _configured;

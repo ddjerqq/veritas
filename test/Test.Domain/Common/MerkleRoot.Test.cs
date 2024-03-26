@@ -1,10 +1,8 @@
-﻿using System.ComponentModel;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Domain.Common;
 
 namespace Test.Domain.Common;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 internal class TestMerkleRoot
 {
     [Test]

@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Infrastructure.Persistence;
@@ -10,8 +9,7 @@ using Presentation.Filters;
 
 namespace Presentation.Config;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
-public sealed class ConfigurePresentation : IHostingStartup
+public class ConfigurePresentation : IHostingStartup
 {
     private static bool _configured;
 

@@ -1,9 +1,7 @@
-﻿using System.ComponentModel;
-using Domain.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Test.Domain.Entities;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 internal class TestVoter
 {
     private static readonly Voter Voter = Voter.NewVoter();

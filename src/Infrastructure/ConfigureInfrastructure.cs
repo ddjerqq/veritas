@@ -1,4 +1,3 @@
-using System.ComponentModel;
 using System.Threading.RateLimiting;
 using Infrastructure;
 using Infrastructure.Idempotency;
@@ -13,7 +12,6 @@ using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Infrastructure;
 
-[EditorBrowsable(EditorBrowsableState.Never)]
 public class ConfigureInfrastructure : IHostingStartup
 {
     public void Configure(IWebHostBuilder builder)

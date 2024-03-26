@@ -6,7 +6,7 @@ using Quartz;
 namespace Infrastructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]
-public sealed class ProcessVotesBackgroundJob(
+public class ProcessVotesBackgroundJob(
     AppDbContext dbContext,
     IDateTimeProvider dateTimeProvider,
     ILogger<ProcessVotesBackgroundJob> logger) : IJob
