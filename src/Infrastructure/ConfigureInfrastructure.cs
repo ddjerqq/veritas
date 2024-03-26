@@ -1,6 +1,8 @@
 using System.Threading.RateLimiting;
+using Application.Abstractions;
 using Infrastructure;
 using Infrastructure.Idempotency;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,6 +23,8 @@ public class ConfigureInfrastructure : IHostingStartup
             services.AddHttpContextAccessor();
             services.AddIdempotency();
             services.AddMemoryCache();
+
+            services.AddScoped<ICurrentVoterAccessor, CurrentVoterAccessor>();
 
             services.AddRateLimiter(options =>
             {
