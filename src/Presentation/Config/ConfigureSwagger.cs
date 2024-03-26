@@ -1,6 +1,5 @@
 ﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
-using Presentation.Auth;
 using Presentation.Config;
 using Presentation.Filters;
 

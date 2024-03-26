@@ -21,16 +21,10 @@ internal class BlockTest
         var minedBlock = block.Mine();
         stopwatch.Stop();
 
-        Console.WriteLine("block merkle root outside: {0}", block.MerkleRoot.ToHexString());
-        Console.WriteLine("block merkle root outside: {0}", block.MerkleRoot.ToHexString());
-        Console.WriteLine("block merkle root outside: {0}", block.MerkleRoot.ToHexString());
-        Console.WriteLine("block merkle root outside: {0}", block.MerkleRoot.ToHexString());
-        Console.WriteLine("mined block merkle root outside: {0}", minedBlock.MerkleRoot.ToHexString());
-
         // 0100000000000000 000000983e2e5dae2c718cbd3d495695f5dc8c489375bcc3ce65806d9536ea59 aabd8c6ab20a32de942c432f515c032da56d906ab4f625d42513678376a1c7e8 eca1bb0000000000
         // 0100000000000000 000000983e2e5dae2c718cbd3d495695f5dc8c489375bcc3ce65806d9536ea59 c9461a6c59264ddeb18dbc7dc62fb6192c471bc3ed5922795dd8651c11968d57 eca1bb0000000000
 
-        Console.WriteLine(minedBlock.Nonce);
+        Console.WriteLine(minedBlock.Nonce.ToString("N0"));
         Console.WriteLine(minedBlock.Hash.ToHexString());
         Console.WriteLine(stopwatch.Elapsed.ToString("c"));
         Assert.That(minedBlock.IsHashValid, Is.True);
@@ -59,11 +53,6 @@ internal class BlockTest
         block.TryAddVote(new Vote(Voter.NewVoter(), 0, timestamp));
 
         Console.WriteLine(block.MerkleRoot.ToHexString());
-        Console.WriteLine(block.MerkleRoot.ToHexString());
-        Console.WriteLine(block.MerkleRoot.ToHexString());
-        Console.WriteLine(block.MerkleRoot.ToHexString());
-        Console.WriteLine(block.MerkleRoot.ToHexString());
-        Console.WriteLine(block.MerkleRoot.ToHexString());
     }
 
     [Test]
@@ -84,7 +73,7 @@ internal class BlockTest
         // mine operation
         var minedBlock = block.Mine();
 
-        Console.WriteLine(minedBlock.Nonce);
+        Console.WriteLine(minedBlock.Nonce.ToString("N0"));
         Console.WriteLine(minedBlock.Hash.ToHexString());
 
         Assert.That(minedBlock.IsHashValid, Is.True);
@@ -108,7 +97,7 @@ internal class BlockTest
         // mine operation
         var minedBlock = block.Mine();
 
-        Console.WriteLine(minedBlock.Nonce);
+        Console.WriteLine(minedBlock.Nonce.ToString("N0"));
         Console.WriteLine(minedBlock.Hash.ToHexString());
 
         Assert.That(minedBlock.IsHashValid, Is.True);

@@ -61,8 +61,6 @@ public record Block
                 // hash converted to hex, must equal Difficulty
                 if (pred.ArrayEquals(hash[..(Difficulty / 2)]))
                 {
-                    Console.WriteLine("merkle root inside: {0}", MerkleRoot.ToHexString());
-
                     foundNonce = nonce;
                     state.Stop();
                 }
