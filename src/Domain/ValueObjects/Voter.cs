@@ -9,7 +9,7 @@ public record Voter : IDisposable
 
     public bool HasPrivateKey { get; private init; }
 
-    public string Address => SHA256.HashData(PublicKey).ToHexString()[22..64];
+    public string Address => "0x" + SHA256.HashData(PublicKey).ToHexString()[22..64];
 
     public byte[] PublicKey { get; private init; } = default!;
 

@@ -1,8 +1,6 @@
 using Application.Abstractions;
-using Domain.Common;
 using Domain.ValueObjects;
 using Microsoft.AspNetCore.Http;
-using Microsoft.IdentityModel.JsonWebTokens;
 
 namespace Infrastructure.Services;
 
@@ -10,15 +8,12 @@ public sealed class CurrentVoterAccessor(IHttpContextAccessor httpContextAccesso
 {
     public Voter? GetCurrentVoter(CancellationToken ct = default)
     {
-        var pubKey = httpContextAccessor
-            .HttpContext?
-            .User
-            .Claims
-            .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sid)?
-            .Value;
+        var ctx = httpContextAccessor.HttpContext;
+        if (ctx is null) return null;
 
-        return pubKey is null
-            ? null
-            : Voter.FromPubKey(pubKey.ToBytesFromHex());
+        if (ctx.Items.TryGetValue(nameof(Voter), out var value) && value is Voter voter)
+            return voter;
+
+        return null;
     }
 }
