@@ -18,31 +18,41 @@ public record Voter : IDisposable
 
     public static Voter NewVoter()
     {
-        var algo = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
         return new Voter
         {
-            Dsa = algo,
-            PublicKey = algo.ExportSubjectPublicKeyInfo(),
-            PrivateKey = algo.ExportPkcs8PrivateKey(),
+            Dsa = dsa,
+            PublicKey = dsa.ExportSubjectPublicKeyInfo(),
+            PrivateKey = dsa.ExportPkcs8PrivateKey(),
             HasPrivateKey = true,
         };
     }
 
     public static Voter FromPubKey(byte[] publicKey)
     {
-        var algo = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-        algo.ImportSubjectPublicKeyInfo(publicKey, out var pKeyBytesRead);
+        var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+
+        try
+        {
+            dsa.ImportSubjectPublicKeyInfo(publicKey, out var pKeyBytesRead);
+
+            if (publicKey.Length != pKeyBytesRead)
+                throw new InvalidOperationException($"Invalid public key length, read {pKeyBytesRead} but the key is {publicKey.Length}");
+        }
+        catch (CryptographicException ex)
+        {
+            // TODO after we implement Serilog, log the exception info here,
+            //  we should stay alert for users trying suspicious public keys
+            throw new InvalidOperationException("Invalid public key", ex);
+        }
 
         var voter = new Voter
         {
-            Dsa = algo,
-            PublicKey = algo.ExportSubjectPublicKeyInfo(),
+            Dsa = dsa,
+            PublicKey = dsa.ExportSubjectPublicKeyInfo(),
             HasPrivateKey = false,
         };
-
-        if (publicKey.Length != pKeyBytesRead)
-            throw new InvalidOperationException($"Invalid public key length, read {pKeyBytesRead} but the key is {publicKey.Length}");
 
         return voter;
     }

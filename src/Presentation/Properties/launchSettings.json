@@ -19,8 +19,7 @@
       "applicationUrl": "http://0.0.0.0:80;https://0.0.0.0:443",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation",
-        "JWT__KEY": "f2cb833ff1e540cbbf244420f11565bb4d160d2fde79f7ec5dfb3197f636b6506013a87fd7f065c0a019a3fec5895b7b42125851911204cef47de2325e1124b8"
+        "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"
       }
     }
   }
