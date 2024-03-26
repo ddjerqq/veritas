@@ -30,6 +30,7 @@ public class ConfigureSwagger : IHostingStartup
                 options.IncludeXmlComments(xmlPath);
 
                 options.OperationFilter<IdempotencyKeyOperationFilter>();
+                options.OperationFilter<PublicKeyAndSignatureOperationFilter>();
                 options.OperationFilter<RequestedWithXmlHttpRequest>();
 
                 options.SupportNonNullableReferenceTypes();
@@ -38,17 +39,7 @@ public class ConfigureSwagger : IHostingStartup
                 {
                     Title = "mieci.ge",
                     Version = "v1",
-                    Description = "online elections",
-                });
-
-                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-                {
-                    Name = "authorization",
-                    Type = SecuritySchemeType.ApiKey,
-                    Scheme = PublicKeyBearerAuthHandler.SchemaName,
-                    BearerFormat = "Hex",
-                    In = ParameterLocation.Header,
-                    Description = "Hex string of the user's public key",
+                    Description = "cryptographically secure exit polls, with blockchain technology",
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement

@@ -22,10 +22,8 @@ public class PublicKeyBearerAuthHandler(
 
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        // TODO test if it is possible to impersonate.
-
-        var pKey = ExtractPublicKey(Request);
-        var sig = ExtractSignature(Request);
+        var pKey = ExtractPublicKey();
+        var sig = ExtractSignature();
 
         if (pKey is null || sig is null)
             return Task.FromResult(AuthenticateResult.Fail("no public key or signature provided"));
@@ -49,7 +47,7 @@ public class PublicKeyBearerAuthHandler(
         return Task.FromResult(AuthenticateResult.Success(ticket));
     }
 
-    private string? ExtractPublicKey(HttpRequest request)
+    private string? ExtractPublicKey()
     {
         Request.Headers.TryGetValue(PubKeyHeaderName, out var pKeyHeader);
         Request.Cookies.TryGetValue(PubKeyHeaderName, out var pKeyCookie);
@@ -57,7 +55,7 @@ public class PublicKeyBearerAuthHandler(
         return ValidateHexString(pKey) ? pKey : null;
     }
 
-    private string? ExtractSignature(HttpRequest request)
+    private string? ExtractSignature()
     {
         Request.Headers.TryGetValue(SignatureHeaderName, out var sigHeader);
         Request.Cookies.TryGetValue(SignatureHeaderName, out var sigCookie);
