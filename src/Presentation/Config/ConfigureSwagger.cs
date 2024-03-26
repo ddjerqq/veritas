@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
+using Presentation.Auth;
 using Presentation.Config;
 using Presentation.Filters;
 
@@ -44,10 +45,10 @@ public class ConfigureSwagger : IHostingStartup
                 {
                     Name = "authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = "Bearer",
-                    BearerFormat = "JWT",
+                    Scheme = PublicKeyBearerAuthHandler.SchemaName,
+                    BearerFormat = "Hex",
                     In = ParameterLocation.Header,
-                    Description = "JWT Authorization header using the Bearer scheme.",
+                    Description = "Hex string of the user's public key",
                 });
 
                 options.AddSecurityRequirement(new OpenApiSecurityRequirement

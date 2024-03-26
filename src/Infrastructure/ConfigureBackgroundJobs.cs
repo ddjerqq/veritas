@@ -9,8 +9,13 @@ namespace Infrastructure;
 
 public class ConfigureBackgroundJobs : IHostingStartup
 {
+    private static bool _configured;
+
     public void Configure(IWebHostBuilder builder)
     {
+        if (_configured) return;
+        _configured = true;
+
         builder.ConfigureServices(services =>
         {
             services.AddQuartz(config =>

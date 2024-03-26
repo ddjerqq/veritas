@@ -20,7 +20,8 @@ public static class WebAppExtensions
             .ToList()
             .ForEach(hostingStartup =>
             {
-                Console.WriteLine($"[{DateTime.UtcNow:s}.000] [info]: Configured {hostingStartup.GetType().Name.Replace("Configure", "")}");
+                var name = hostingStartup.GetType().Name.Replace("Configure", "");
+                Console.WriteLine($@"[{DateTime.UtcNow:s}.000] [info]: Configured {name}");
                 hostingStartup.Configure(builder);
             });
     }

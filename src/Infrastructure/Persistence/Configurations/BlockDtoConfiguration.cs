@@ -20,16 +20,5 @@ internal class BlockDtoConfiguration : IEntityTypeConfiguration<BlockDto>
         builder.HasMany(x => x.Votes)
             .WithOne(vote => vote.Block)
             .HasForeignKey(vote => vote.BlockIndex);
-
-        var genesis = new BlockDto
-        {
-            Index = 0,
-            Nonce = 14261917,
-            Hash = "000000983e2e5dae2c718cbd3d495695f5dc8c489375bcc3ce65806d9536ea59",
-            MerkleRoot = new string('0', 64),
-            PreviousHash = new string('0', 64),
-            Votes = [],
-        };
-        builder.HasData(genesis);
     }
 }

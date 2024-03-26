@@ -13,8 +13,13 @@ namespace Infrastructure;
 
 public class ConfigurePersistence : IHostingStartup
 {
+    private static bool _configured;
+
     public void Configure(IWebHostBuilder builder)
     {
+        if (_configured) return;
+        _configured = true;
+
         builder.ConfigureServices((context, services) =>
         {
             services.AddSingleton<ConvertDomainEventsToOutboxMessagesInterceptor>();

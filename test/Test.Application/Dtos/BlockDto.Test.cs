@@ -4,7 +4,6 @@ using AutoMapper;
 using Domain;
 using Domain.Aggregates;
 using Domain.Common;
-using Domain.ValueObjects;
 
 namespace Test.Application.Dtos;
 

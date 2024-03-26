@@ -1,5 +1,6 @@
 using System.Threading.RateLimiting;
 using Application.Abstractions;
+using Domain.ValueObjects;
 using Infrastructure;
 using Infrastructure.Idempotency;
 using Infrastructure.Services;
@@ -16,8 +17,13 @@ namespace Infrastructure;
 
 public class ConfigureInfrastructure : IHostingStartup
 {
+    private static bool _configured;
+
     public void Configure(IWebHostBuilder builder)
     {
+        if (_configured) return;
+        _configured = true;
+
         builder.ConfigureServices(services =>
         {
             services.AddHttpContextAccessor();
@@ -35,7 +41,7 @@ public class ConfigureInfrastructure : IHostingStartup
         });
     }
 
-    private static readonly TokenBucketRateLimiterOptions GlobalPolicy = new()
+    private static TokenBucketRateLimiterOptions GlobalPolicy => new()
     {
         AutoReplenishment = true,
         QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "10"),
@@ -48,18 +54,15 @@ public class ConfigureInfrastructure : IHostingStartup
     private static readonly PartitionedRateLimiter<HttpContext> GlobalRateLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
         context =>
         {
-            // TODO get the public key if possible.
-            // try get the key from the ip address, or the connection id
-            var key = context.Connection.RemoteIpAddress?.ToString() ?? context.Connection.Id;
+            string key;
 
-            if (context.User is { Identity.IsAuthenticated: true, Claims: var claims })
+            if (context.Items.TryGetValue(nameof(Voter), out var value) && value is Voter voter)
             {
-                var id = claims
-                    .FirstOrDefault(x => x.Type == JwtRegisteredClaimNames.Sid)?
-                    .Value;
-
-                if (!string.IsNullOrWhiteSpace(id))
-                    key = id;
+                key = voter.Address;
+            }
+            else
+            {
+                key = context.Connection.RemoteIpAddress?.ToString() ?? context.Connection.Id;
             }
 
             return RateLimitPartition.GetTokenBucketLimiter(key, _ => GlobalPolicy);
