@@ -18,16 +18,19 @@ public record Block
 
     public List<Vote> Votes { get; init; } = [];
 
-    public byte[] Hash => SHA256.HashData(HashPayload);
-
     public byte[] MerkleRoot => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash).ToList());
+
+    public byte[] Hash => SHA256.HashData(HashPayload);
 
     public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
 
     public bool TryAddVote(Vote vote)
     {
-        if (Votes.Count >= VoteLimit) return false;
+        if (Votes.Count >= VoteLimit || !vote.IsHashValid || !vote.IsSignatureValid)
+            return false;
+
         Votes.Add(vote);
+
         return true;
     }
 
@@ -35,40 +38,7 @@ public record Block
     public Block Mine()
     {
         if (IsHashValid) return this;
-
-#if DEBUG
-        var coreCount = 1;
-#else
-        var coreCount = Environment.ProcessorCount;
-#endif
-
-        long foundNonce = 0;
-        byte[] pred = new string('0', Difficulty).ToBytesFromHex();
-
-        Parallel.For(0, coreCount, (i, state) =>
-        {
-            long nonce = i;
-            byte[] payload = HashPayload;
-            int destOffset = payload.Length - sizeof(long);
-
-            while (!state.IsStopped)
-            {
-                // TODO optimize, use spans.
-                Buffer.BlockCopy(BitConverter.GetBytes(nonce), 0, payload, destOffset, sizeof(long));
-
-                byte[] hash = SHA256.HashData(payload);
-
-                // hash converted to hex, must equal Difficulty
-                if (pred.ArrayEquals(hash[..(Difficulty / 2)]))
-                {
-                    foundNonce = nonce;
-                    state.Stop();
-                }
-
-                nonce += coreCount;
-            }
-        });
-
+        var foundNonce = Miner.Mine(HashPayload, Difficulty);
         return this with { Nonce = foundNonce };
     }
 
@@ -79,6 +49,7 @@ public record Block
         {
             Index = Index + 1,
             Nonce = 0,
+            Votes = [],
             PreviousHash = Hash,
         };
     }

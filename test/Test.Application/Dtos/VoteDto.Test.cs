@@ -51,7 +51,7 @@ internal class VoteDtoTest
 
         var convertedBack = _mapper.Map<VoteDto, Vote>(voteDto);
 
-        Assert.That(convertedBack.Voter.Verify(Vote.GetSignaturePayload(convertedBack.PartyId, convertedBack.Timestamp), vote.Signature), Is.True);
-        Assert.That(vote.Voter.Verify(Vote.GetSignaturePayload(vote.PartyId, vote.Timestamp), convertedBack.Signature), Is.True);
+        Assert.That(convertedBack.Voter.Verify(convertedBack.SignaturePayload, vote.Signature), Is.True);
+        Assert.That(vote.Voter.Verify(vote.SignaturePayload, convertedBack.Signature), Is.True);
     }
 }

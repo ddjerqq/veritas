@@ -98,6 +98,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("INTEGER")
                         .HasColumnName("block_index");
 
+                    b.Property<long>("Nonce")
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("nonce");
+
                     b.Property<int>("PartyId")
                         .HasColumnType("INTEGER")
                         .HasColumnName("party_id");
@@ -126,6 +130,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.HasIndex("BlockIndex")
                         .HasDatabaseName("i_x_vote_block_index");
+
+                    b.HasIndex("PartyId")
+                        .HasDatabaseName("i_x_vote_party_id");
 
                     b.HasIndex("VoterAddress")
                         .IsUnique()

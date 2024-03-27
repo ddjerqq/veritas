@@ -8,7 +8,7 @@ namespace Test.Domain.Aggregates;
 internal class BlockTest
 {
     [Test]
-    [Parallelizable]
+    [NonParallelizable]
     public void TestBlockMine()
     {
         // 1 difficulty means 2 leading zeroes
@@ -20,9 +20,6 @@ internal class BlockTest
         var stopwatch = Stopwatch.StartNew();
         var minedBlock = block.Mine();
         stopwatch.Stop();
-
-        // 0100000000000000 000000983e2e5dae2c718cbd3d495695f5dc8c489375bcc3ce65806d9536ea59 aabd8c6ab20a32de942c432f515c032da56d906ab4f625d42513678376a1c7e8 eca1bb0000000000
-        // 0100000000000000 000000983e2e5dae2c718cbd3d495695f5dc8c489375bcc3ce65806d9536ea59 c9461a6c59264ddeb18dbc7dc62fb6192c471bc3ed5922795dd8651c11968d57 eca1bb0000000000
 
         Console.WriteLine(minedBlock.Nonce.ToString("N0"));
         Console.WriteLine(minedBlock.Hash.ToHexString());

@@ -53,6 +53,7 @@ namespace Infrastructure.Persistence.Migrations
                     signature = table.Column<string>(type: "TEXT", nullable: false),
                     party_id = table.Column<int>(type: "INTEGER", nullable: false),
                     timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    nonce = table.Column<long>(type: "INTEGER", nullable: false),
                     block_index = table.Column<long>(type: "INTEGER", nullable: false)
                 },
                 constraints: table =>
@@ -76,6 +77,11 @@ namespace Infrastructure.Persistence.Migrations
                 name: "i_x_vote_block_index",
                 table: "vote",
                 column: "block_index");
+
+            migrationBuilder.CreateIndex(
+                name: "i_x_vote_party_id",
+                table: "vote",
+                column: "party_id");
 
             migrationBuilder.CreateIndex(
                 name: "i_x_vote_voter_address",
