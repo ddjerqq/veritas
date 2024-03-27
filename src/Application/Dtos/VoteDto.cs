@@ -36,6 +36,7 @@ internal class VoteTypeConverter : ITypeConverter<VoteDto, Vote>, ITypeConverter
             Timestamp = new DateTimeOffset(source.Timestamp).ToUnixTimeMilliseconds(),
             Signature = source.Signature.ToBytesFromHex(),
             Nonce = source.Nonce,
+            BlockIndex = source.BlockIndex,
         };
 
         if (source.Hash != vote.Hash.ToHexString())
@@ -61,10 +62,11 @@ internal class VoteTypeConverter : ITypeConverter<VoteDto, Vote>, ITypeConverter
             Hash = source.Hash.ToHexString(),
             VoterAddress = source.Voter.Address,
             VoterPubKey = source.Voter.PublicKey.ToHexString(),
-            Signature = source.Signature.ToHexString(),
-            Nonce = source.Nonce,
             PartyId = source.PartyId,
             Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(source.Timestamp).UtcDateTime,
+            Signature = source.Signature.ToHexString(),
+            BlockIndex = source.BlockIndex,
+            Nonce = source.Nonce,
         };
     }
 }

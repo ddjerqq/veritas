@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services;
 
+// TODO optimization use the hashes of the votes here instead of the actual objects please.
 public sealed class InMemoryProcessedVotesCache : IProcessedVotesCache
 {
     public List<Vote> Votes { get; init; } = [];
@@ -17,7 +18,7 @@ public sealed class InMemoryProcessedVotesCache : IProcessedVotesCache
     public void Set(Vote vote) => Votes.Add(vote);
 }
 
-public static class ServiceCollectionExtensions
+public static partial class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInMemoryProcessedVoteCache(this IServiceCollection services)
     {

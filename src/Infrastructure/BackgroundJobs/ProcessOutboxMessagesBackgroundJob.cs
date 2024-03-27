@@ -10,7 +10,7 @@ using Quartz;
 namespace Infrastructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]
-public class ProcessOutboxMessagesBackgroundJob(
+public sealed class ProcessOutboxMessagesBackgroundJob(
     IPublisher publisher,
     IAppDbContext dbContext,
     IDateTimeProvider dateTimeProvider,
@@ -18,6 +18,7 @@ public class ProcessOutboxMessagesBackgroundJob(
     : IJob
 {
     public static readonly JobKey Key = new("process_outbox_messages");
+    private const int MessagesPerBatch = 20;
 
     public async Task Execute(IJobExecutionContext context)
     {
@@ -25,7 +26,7 @@ public class ProcessOutboxMessagesBackgroundJob(
             .Set<OutboxMessage>()
             .Where(m => m.ProcessedOnUtc == null)
             .OrderBy(m => m.OccuredOnUtc)
-            .Take(20)
+            .Take(MessagesPerBatch)
             .ToListAsync(context.CancellationToken);
 
         foreach (var message in messages)

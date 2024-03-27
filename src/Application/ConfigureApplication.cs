@@ -2,6 +2,7 @@ using Application;
 using Application.Abstractions;
 using Application.Behaviours;
 using Application.Services;
+using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,9 +23,15 @@ public class ConfigureApplication : IHostingStartup
         builder.ConfigureServices(services =>
         {
             services.AddScoped<IDateTimeProvider, UtcDateTimeProvider>();
+
+            services.AddInMemoryBlockCache();
             services.AddInMemoryProcessedVoteCache();
 
-            services.AddAutoMapper(mapper => mapper.AddMaps(ApplicationAssembly.Assembly));
+            services.AddAutoMapper(mapper =>
+            {
+                mapper.AddMaps(DomainAssembly.Assembly);
+                mapper.AddMaps(ApplicationAssembly.Assembly);
+            });
 
             services.AddMediatR(options =>
             {

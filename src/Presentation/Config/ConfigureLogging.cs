@@ -18,7 +18,7 @@ public class ConfigureLogging : IHostingStartup
         {
             services.AddLogging(loggingBuilder =>
             {
-                // TODO add file logging, for everything that is happening.
+                // TODO optimization add file logging, for everything that is happening.
                 loggingBuilder.AddSimpleConsole(options =>
                 {
                     options.SingleLine = false;

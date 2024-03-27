@@ -8,13 +8,21 @@ namespace Domain.Aggregates;
 public record Block
 {
     public const int Difficulty = 6;
-    public const int VoteLimit = 256;
+
+    /// <summary>
+    /// The number of votes allowed in one block, the less this number, the more fault-tolerant the app will be,
+    /// because we do not store votes that have not been added to the blockchain yet.
+    /// </summary>
+    // TODO reset to 128, fix comment, because the votes will be cached.
+    // they will be saved in the database, in the VotesToBeProcessedTable.
+    // OR just saved in the votes table, but they will have a Processed field, which will indicate if they have been minted on the block yet or not.
+    public const int VoteLimit = 8;
 
     public long Index { get; init; }
 
     public long Nonce { get; init; }
 
-    public byte[] PreviousHash { get; init; } = default!;
+    public byte[] PreviousHash { get; init; } = new byte[32];
 
     public List<Vote> Votes { get; init; } = [];
 

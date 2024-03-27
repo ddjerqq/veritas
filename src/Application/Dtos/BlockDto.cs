@@ -14,12 +14,11 @@ public record BlockDto
     public string Hash { get; init; } = default!;
 
     public string MerkleRoot { get; init; } = default!;
-    
+
     public string PreviousHash { get; init; } = default!;
-    
+
     public ICollection<VoteDto> Votes { get; init; } = [];
 }
-
 
 internal class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConverter<Block, BlockDto>
 {
@@ -30,14 +29,18 @@ internal class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConver
             Index = source.Index,
             Nonce = source.Nonce,
             PreviousHash = source.PreviousHash.ToBytesFromHex(),
-            Votes = source.Votes.Select(v => context.Mapper.Map<Vote>(v)).ToList(),
+            Votes = source.Votes.Select(v => context.Mapper.Map<VoteDto, Vote>(v)).ToList(),
         };
+
+        if (!block.IsHashValid)
+            throw new InvalidOperationException($"failed to convert Block, invalid hash: {block.Hash.ToHexString()}");
 
         if (source.Hash != block.Hash.ToHexString())
             throw new InvalidOperationException($"failed to convert Block, expected: {source.Hash} was: {block.Hash.ToHexString()}");
 
         if (source.MerkleRoot != block.MerkleRoot.ToHexString())
-            throw new InvalidOperationException($"failed to convert Block, expected: {source.MerkleRoot} was: {block.MerkleRoot.ToHexString()}");
+            throw new InvalidOperationException(
+                $"failed to convert Block, expected: {source.MerkleRoot} was: {block.MerkleRoot.ToHexString()}");
 
         return block;
     }
@@ -51,13 +54,12 @@ internal class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConver
             Hash = source.Hash.ToHexString(),
             MerkleRoot = source.MerkleRoot.ToHexString(),
             PreviousHash = source.PreviousHash.ToHexString(),
-            Votes = source.Votes.Select(v => context.Mapper.Map<VoteDto>(v)).ToList(),
+            Votes = source.Votes.Select(v => context.Mapper.Map<Vote, VoteDto>(v)).ToList(),
         };
     }
 }
 
-
-internal class BlockDtoMappingProfile : Profile
+public class BlockDtoMappingProfile : Profile
 {
     public BlockDtoMappingProfile()
     {

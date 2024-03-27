@@ -5,7 +5,6 @@ using Domain.Events;
 using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
 namespace Application.Votes.Commands;
 

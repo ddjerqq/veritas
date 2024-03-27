@@ -6,7 +6,8 @@ namespace Domain.ValueObjects;
 
 public record Vote()
 {
-    public const int Difficulty = 6;
+    // TODO reset to 6
+    public const int Difficulty = 2;
 
     public Voter Voter { get; init; } = default!;
 
@@ -19,6 +20,9 @@ public record Vote()
     public long Nonce { get; init; }
 
     public byte[] Hash => SHA256.HashData(HashPayload);
+
+    // Purely for efcore.
+    public long BlockIndex { get; init; }
 
     public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
 
