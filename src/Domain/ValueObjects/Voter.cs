@@ -3,18 +3,19 @@ using Domain.Common;
 
 namespace Domain.ValueObjects;
 
+// ReSharper disable MemberCanBePrivate.Global for json serialization
 public record Voter : IDisposable
 {
-    private ECDsa Dsa { get; init; } = default!;
+    private ECDsa Dsa { get; set; } = default!;
 
-    public bool HasPrivateKey { get; private init; }
+    public bool HasPrivateKey { get; init; }
 
     public string Address => "0x" + SHA256.HashData(PublicKey).ToHexString()[22..64];
 
-    public byte[] PublicKey { get; private init; } = default!;
+    public byte[] PublicKey { get; init; } = default!;
 
-    // ReSharper disable once UnusedMember.Global, this will come in handy when saving the privatekey to the users local storage.
-    public byte[]? PrivateKey { get; private init; }
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global this will come in handy when saving the privatekey to the users local storage.
+    public byte[]? PrivateKey { get; init; }
 
     public static Voter NewVoter()
     {
@@ -63,7 +64,17 @@ public record Voter : IDisposable
         return Dsa.SignData(data, HashAlgorithmName.SHA512);
     }
 
-    public bool Verify(byte[] data, byte[] signature) => Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
+    public bool Verify(byte[] data, byte[] signature)
+    {
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+        if (Dsa is not null) return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
+
+        // if we serialize from json back to memory, then Dsa will not be set, so we will need to create it.
+        Dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+        Dsa.ImportSubjectPublicKeyInfo(PublicKey, out _);
+
+        return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
+    }
 
     public override int GetHashCode() => Address.GetHashCode();
 

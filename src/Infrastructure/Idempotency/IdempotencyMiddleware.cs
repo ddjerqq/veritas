@@ -52,7 +52,6 @@ public static class IdempotencyMiddlewareExtensions
     {
         services.AddScoped<IdempotencyMiddleware>();
         services.AddSingleton<IIdempotencyService, IdempotencyService>();
-
         return services;
     }
 

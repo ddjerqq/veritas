@@ -8,20 +8,30 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken ct)
     {
-        if (exception is ValidationException validationException)
+        if (exception is not ValidationException validationException) return false;
+
+        var errors = validationException
+            .Errors
+            .ToDictionary(
+                e => e.ErrorCode,
+                e => new[] { e.ErrorMessage });
+
+        var problemDetails = new ProblemDetails
         {
-            var errors = validationException
-                .Errors
-                .ToDictionary(
-                    e => e.ErrorCode,
-                    e => new [] { e.ErrorMessage });
+            Title = "An error occurred",
+            Type = "https://httpstatuses.com/400",
+            Status = StatusCodes.Status500InternalServerError,
+            Detail = validationException.Message,
+            Extensions =
+            {
+                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr"),
+                ["traceId"] = httpContext.TraceIdentifier,
+                ["errors"] = errors,
+            },
+        };
 
-            var problemDetails = new ValidationProblemDetails(errors);
-            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-            await httpContext.Response.WriteAsJsonAsync(problemDetails, ct);
-            return true;
-        }
-
-        return false;
+        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, ct);
+        return true;
     }
 }

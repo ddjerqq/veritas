@@ -13,7 +13,7 @@ public sealed class RequestedWithXmlHttpRequest : IOperationFilter
         {
             Name = "X-Requested-With",
             In = ParameterLocation.Header,
-            Description = "How the request was made",
+            Description = "How the request was made (keep the default)",
             Required = false,
             Example = new OpenApiString("XMLHttpRequest"),
             Schema = new OpenApiSchema

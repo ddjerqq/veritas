@@ -1,11 +1,10 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Application.Abstractions;
 using Application.Common;
 using Domain.Abstractions;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Quartz;
 
 namespace Infrastructure.BackgroundJobs;
@@ -20,13 +19,6 @@ public class ProcessOutboxMessagesBackgroundJob(
 {
     public static readonly JobKey Key = new("process_outbox_messages");
 
-    private static readonly JsonSerializerOptions JsonSerializerSettings = new()
-    {
-        Converters = { new JsonStringEnumConverter() },
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-        AllowTrailingCommas = true,
-    };
-
     public async Task Execute(IJobExecutionContext context)
     {
         var messages = await dbContext
@@ -38,8 +30,8 @@ public class ProcessOutboxMessagesBackgroundJob(
 
         foreach (var message in messages)
         {
-            var domainEvent = JsonSerializer
-                .Deserialize<IDomainEvent>(message.Content, JsonSerializerSettings);
+            var domainEvent = JsonConvert
+                .DeserializeObject<IDomainEvent>(message.Content, OutboxMessage.JsonSerializerSettings);
 
             if (domainEvent is null)
             {

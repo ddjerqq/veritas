@@ -11,10 +11,15 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
 
         var problemDetails = new ProblemDetails
         {
+            Type = "https://httpstatuses.com/500",
             Title = "An error occurred",
             Status = StatusCodes.Status500InternalServerError,
             Detail = exception.Message,
-            Type = "https://httpstatuses.com/500",
+            Extensions =
+            {
+                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr"),
+                ["traceId"] = httpContext.TraceIdentifier,
+            },
         };
 
         httpContext.Response.StatusCode = problemDetails.Status.Value;

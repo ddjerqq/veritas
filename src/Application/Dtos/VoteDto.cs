@@ -29,11 +29,11 @@ internal class VoteTypeConverter : ITypeConverter<VoteDto, Vote>, ITypeConverter
 {
     public Vote Convert(VoteDto source, Vote destination, ResolutionContext context)
     {
-        var vote = new Vote(
-            Voter.FromPubKey(source.VoterPubKey.ToBytesFromHex()),
-            source.PartyId,
-            new DateTimeOffset(source.Timestamp).ToUnixTimeMilliseconds())
+        var vote = new Vote
         {
+            Voter = Voter.FromPubKey(source.VoterPubKey.ToBytesFromHex()),
+            PartyId = source.PartyId,
+            Timestamp = new DateTimeOffset(source.Timestamp).ToUnixTimeMilliseconds(),
             Signature = source.Signature.ToBytesFromHex(),
             Nonce = source.Nonce,
         };

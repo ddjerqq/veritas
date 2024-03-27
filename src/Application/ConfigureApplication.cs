@@ -22,6 +22,8 @@ public class ConfigureApplication : IHostingStartup
         builder.ConfigureServices(services =>
         {
             services.AddScoped<IDateTimeProvider, UtcDateTimeProvider>();
+            services.AddInMemoryProcessedVoteCache();
+
             services.AddAutoMapper(mapper => mapper.AddMaps(ApplicationAssembly.Assembly));
 
             services.AddMediatR(options =>

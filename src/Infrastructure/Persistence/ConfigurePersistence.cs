@@ -1,5 +1,4 @@
 using Application.Abstractions;
-using Infrastructure;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Microsoft.AspNetCore.Hosting;
@@ -9,7 +8,7 @@ using Microsoft.Extensions.Hosting;
 
 [assembly: HostingStartup(typeof(ConfigurePersistence))]
 
-namespace Infrastructure;
+namespace Infrastructure.Persistence;
 
 public class ConfigurePersistence : IHostingStartup
 {

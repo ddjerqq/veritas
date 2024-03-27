@@ -50,7 +50,7 @@ public static class WebAppExtensions
     {
         app.UseHsts();
         app.UseHttpsRedirection();
-        app.UseMiddleware<IdempotencyMiddleware>();
+        app.UseIdempotency();
     }
 
     public static void UseAppMiddleware(this WebApplication app)

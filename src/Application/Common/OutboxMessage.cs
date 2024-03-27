@@ -1,29 +1,41 @@
-using System.Text.Json;
-using System.Text.Json.Serialization;
+using System.ComponentModel.DataAnnotations;
 using Application.Abstractions;
 using Domain.Abstractions;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using Newtonsoft.Json.Serialization;
 
 namespace Application.Common;
 
 public sealed class OutboxMessage
 {
-    private static readonly JsonSerializerOptions JsonSerializerSettings = new()
+    public static readonly JsonSerializerSettings JsonSerializerSettings = new()
     {
-        Converters = { new JsonStringEnumConverter() },
-        PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-        AllowTrailingCommas = true,
+        TypeNameHandling = TypeNameHandling.All,
+        Converters =
+        {
+            new StringEnumConverter(),
+            new ByteArrayJsonConverter(),
+        },
+        ContractResolver = new DefaultContractResolver
+        {
+            NamingStrategy = new SnakeCaseNamingStrategy(),
+        },
     };
 
     public Guid Id { get; init; } = Guid.NewGuid();
 
-    public string Type { get; init; } = default!;
+    [StringLength(128)]
+    public string Type { get; init; } = string.Empty;
 
+    [StringLength(2048)]
     public string Content { get; init; } = string.Empty;
 
     public DateTime OccuredOnUtc { get; init; }
 
     public DateTime? ProcessedOnUtc { get; set; }
 
+    [StringLength(4096)]
     public string? Error { get; set; }
 
     public static OutboxMessage FromDomainEvent(IDomainEvent domainEvent, IDateTimeProvider dateTimeProvider)
@@ -32,7 +44,7 @@ public sealed class OutboxMessage
         {
             Id = Guid.NewGuid(),
             Type = domainEvent.GetType().Name,
-            Content = JsonSerializer.Serialize(domainEvent, JsonSerializerSettings),
+            Content = JsonConvert.SerializeObject(domainEvent, JsonSerializerSettings),
             OccuredOnUtc = dateTimeProvider.UtcNow,
             ProcessedOnUtc = null,
             Error = null,

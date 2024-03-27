@@ -15,7 +15,7 @@ public class PublicKeyAndSignatureOperationFilter : IOperationFilter
 
         var alice = Voter.NewVoter();
         var bob = Voter.NewVoter();
-        var exampleVoters = new Dictionary<string, (string Addr, string Sig)>
+        var exampleVoters = new Dictionary<string, (string PubKey, string Sig)>
         {
             ["alice"] = (alice.PublicKey.ToHexString(), alice.Sign(alice.Address.ToBytesFromHex()).ToHexString()),
             ["bob"] = (bob.PublicKey.ToHexString(), bob.Sign(bob.Address.ToBytesFromHex()).ToHexString()),
@@ -32,7 +32,7 @@ public class PublicKeyAndSignatureOperationFilter : IOperationFilter
                     x => x.Key,
                     x => new OpenApiExample
                     {
-                        Value = new OpenApiString(x.Value.Addr),
+                        Value = new OpenApiString(x.Value.PubKey),
                     }),
             Schema = new OpenApiSchema
             {

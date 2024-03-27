@@ -21,14 +21,6 @@ public class ConfigureBackgroundJobs : IHostingStartup
             services.AddQuartz(config =>
             {
                 config
-                    .AddJob<ProcessVotesBackgroundJob>(ProcessVotesBackgroundJob.Key, job => { job.StoreDurably(); })
-                    .AddTrigger(trigger => trigger
-                        .ForJob(ProcessVotesBackgroundJob.Key)
-                        .WithSimpleSchedule(schedule => schedule
-                            .WithInterval(TimeSpan.FromSeconds(5))
-                            .RepeatForever()));
-
-                config
                     .AddJob<ProcessOutboxMessagesBackgroundJob>(ProcessOutboxMessagesBackgroundJob.Key, job => { job.StoreDurably(); })
                     .AddTrigger(trigger => trigger
                         .ForJob(ProcessOutboxMessagesBackgroundJob.Key)
