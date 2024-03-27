@@ -3,4 +3,4 @@ using Domain.Aggregates;
 
 namespace Domain.Events;
 
-public sealed record BlockMinedEvent(Block Block) : IDomainEvent;
+public sealed record BlockMinedEvent(long BlockIndex) : IDomainEvent;

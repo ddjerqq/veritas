@@ -7,8 +7,6 @@ using Newtonsoft.Json.Serialization;
 
 namespace Application.Common;
 
-
-// TODO optimization add prop Processed, with index. so we dont slow down the loading
 public sealed class OutboxMessage
 {
     public static readonly JsonSerializerSettings JsonSerializerSettings = new()

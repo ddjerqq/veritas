@@ -1,6 +1,7 @@
 using Application;
 using Application.Abstractions;
 using Application.Behaviours;
+using Application.Dtos;
 using Application.Services;
 using Domain;
 using MediatR;
@@ -29,7 +30,6 @@ public class ConfigureApplication : IHostingStartup
 
             services.AddAutoMapper(mapper =>
             {
-                mapper.AddMaps(DomainAssembly.Assembly);
                 mapper.AddMaps(ApplicationAssembly.Assembly);
             });
 

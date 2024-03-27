@@ -90,7 +90,7 @@ public class VoteCommandHandler(
             Nonce = request.Nonce,
         };
 
-        var ev = new VoteAddedEvent(
+        var voteAddedEvent = new VoteAddedEvent(
             vote.Voter.PublicKey.ToHexString(),
             vote.PartyId,
             vote.Timestamp,
@@ -98,7 +98,7 @@ public class VoteCommandHandler(
             vote.Hash.ToHexString(),
             vote.Signature.ToHexString());
 
-        var msg = OutboxMessage.FromDomainEvent(ev, dateTimeProvider);
+        var msg = OutboxMessage.FromDomainEvent(voteAddedEvent, dateTimeProvider);
         dbContext.Set<OutboxMessage>().Add(msg);
         await dbContext.SaveChangesAsync(ct);
 

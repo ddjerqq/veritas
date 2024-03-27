@@ -20,7 +20,7 @@ public record BlockDto
     public ICollection<VoteDto> Votes { get; init; } = [];
 }
 
-internal class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConverter<Block, BlockDto>
+public class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConverter<Block, BlockDto>
 {
     public Block Convert(BlockDto source, Block destination, ResolutionContext context)
     {

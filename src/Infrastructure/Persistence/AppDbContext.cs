@@ -17,7 +17,6 @@ public sealed class AppDbContext(
 
     public DbSet<VoteDto> Votes => Set<VoteDto>();
 
-
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 
     protected override void OnModelCreating(ModelBuilder builder)
