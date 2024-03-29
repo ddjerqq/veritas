@@ -6,8 +6,7 @@ namespace Domain.ValueObjects;
 
 public record Vote()
 {
-    // TODO reset to 6
-    public const int Difficulty = 2;
+    private const int Difficulty = 6;
 
     public Voter Voter { get; init; } = default!;
 

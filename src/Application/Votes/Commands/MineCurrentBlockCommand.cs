@@ -3,10 +3,7 @@ using Application.Abstractions;
 using Application.Dtos;
 using Application.Votes.Events;
 using Domain.Aggregates;
-using Domain.Common;
 using Domain.Events;
-using Domain.ValueObjects;
-using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -14,7 +11,11 @@ namespace Application.Votes.Commands;
 
 public record MineCurrentBlockCommand : IRequest<Block>;
 
-public class MineCurrentBlockCommandHandler(IAppDbContext dbContext, ILogger<VoteAddedEventHandler> logger, IBlockCache blockCache)
+public class MineCurrentBlockCommandHandler(
+    IAppDbContext dbContext,
+    IBlockCache blockCache,
+    IDateTimeProvider dateTimeProvider,
+    ILogger<VoteAddedEventHandler> logger)
     : IRequestHandler<MineCurrentBlockCommand, Block>
 {
     public async Task<Block> Handle(MineCurrentBlockCommand request, CancellationToken ct)
@@ -35,9 +36,8 @@ public class MineCurrentBlockCommandHandler(IAppDbContext dbContext, ILogger<Vot
         blockCache.SetCurrent(next);
         dbContext.Set<BlockDto>().Add(next);
 
-        // TODO enable events
-        // var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
-        // dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);
+        var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
+        dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);
 
         await dbContext.SaveChangesAsync(ct);
 

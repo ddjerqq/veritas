@@ -43,7 +43,7 @@ public record Voter : IDisposable
         }
         catch (CryptographicException ex)
         {
-            // TODO optimization after we implement Serilog, log the exception info here,
+            // TODO logging after we implement Serilog, log the exception info here,
             //  we should stay alert for users trying suspicious public keys
             throw new InvalidOperationException("Invalid public key", ex);
         }

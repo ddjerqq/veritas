@@ -18,7 +18,7 @@ public sealed class ProcessOutboxMessagesBackgroundJob(
     : IJob
 {
     public static readonly JobKey Key = new("process_outbox_messages");
-    private const int MessagesPerBatch = 20;
+    private static readonly int MessagesPerBatch = int.Parse(Environment.GetEnvironmentVariable("OUTBOX__MESSAGES_PER_BATCH") ?? "20");
 
     public async Task Execute(IJobExecutionContext context)
     {

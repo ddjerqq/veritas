@@ -7,6 +7,6 @@ public class VoteAddedEventHandler : INotificationHandler<VoteAddedEvent>
 {
     public Task Handle(VoteAddedEvent notification, CancellationToken ct)
     {
-        throw new NotImplementedException("TODO SignalR - trigger SignalR");
+        throw new NotImplementedException("purely for notifications with SignalR");
     }
 }

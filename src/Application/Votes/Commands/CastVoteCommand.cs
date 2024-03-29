@@ -1,15 +1,11 @@
-﻿using System.Diagnostics;
-using Application.Abstractions;
-using Application.Common;
+﻿using Application.Abstractions;
 using Application.Dtos;
 using Application.Votes.Events;
 using Domain.Aggregates;
 using Domain.Common;
-using Domain.Events;
 using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Votes.Commands;
@@ -86,7 +82,7 @@ public class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
     }
 }
 
-public class VoteCommandHandler(
+public class CastVoteCommandHandler(
     IAppDbContext dbContext,
     ILogger<VoteAddedEventHandler> logger,
     IMediator mediator,
@@ -98,7 +94,8 @@ public class VoteCommandHandler(
         var currentBlock = (Block)currentBlockDto;
 
         // TODO this must never happen concurrently.
-        // and if it does, we can have more vote in a block than the limit.
+        // have the CastVoteCommand just create and validate the vote,
+        // and then push it to the queue to process it synchronously.
         if (currentBlock.Votes.Count >= Block.VoteLimit)
         {
             var mineCurrentBlockCommand = new MineCurrentBlockCommand();
