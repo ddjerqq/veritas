@@ -1,6 +1,4 @@
-﻿using Application;
-using Application.Dtos;
-using Domain;
+﻿using Application.Dtos;
 using Domain.Aggregates;
 using Domain.Common;
 using Domain.ValueObjects;

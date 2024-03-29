@@ -2,7 +2,6 @@ using Application;
 using Application.Abstractions;
 using Application.Behaviours;
 using Application.Services;
-using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
