@@ -27,12 +27,6 @@ public class ConfigureApplication : IHostingStartup
             services.AddScoped<IBlockCache, DbBlockCache>();
             services.AddInMemoryProcessedVoteCache();
 
-            services.AddAutoMapper(mapper =>
-            {
-                mapper.AddMaps(DomainAssembly.Assembly);
-                mapper.AddMaps(ApplicationAssembly.Assembly);
-            });
-
             services.AddMediatR(options =>
             {
                 options.RegisterServicesFromAssembly(ApplicationAssembly.Assembly);

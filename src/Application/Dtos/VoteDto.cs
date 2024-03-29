@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.ValueObjects;
 
 namespace Application.Dtos;
@@ -23,11 +22,8 @@ public record VoteDto
     public long BlockIndex { get; set; }
 
     public BlockDto Block { get; init; } = default!;
-}
 
-public class VoteTypeConverter : ITypeConverter<VoteDto, Vote>, ITypeConverter<Vote, VoteDto>
-{
-    public Vote Convert(VoteDto source, Vote destination, ResolutionContext context)
+    public static explicit operator Vote(VoteDto source)
     {
         var vote = new Vote
         {
@@ -55,7 +51,7 @@ public class VoteTypeConverter : ITypeConverter<VoteDto, Vote>, ITypeConverter<V
         return vote;
     }
 
-    public VoteDto Convert(Vote source, VoteDto destination, ResolutionContext context)
+    public static implicit operator VoteDto(Vote source)
     {
         return new VoteDto
         {
@@ -68,14 +64,5 @@ public class VoteTypeConverter : ITypeConverter<VoteDto, Vote>, ITypeConverter<V
             BlockIndex = source.BlockIndex,
             Nonce = source.Nonce,
         };
-    }
-}
-
-public class VoteDtoMappingProfile : Profile
-{
-    public VoteDtoMappingProfile()
-    {
-        CreateMap<Vote, VoteDto>().ConvertUsing<VoteTypeConverter>();
-        CreateMap<VoteDto, Vote>().ConvertUsing<VoteTypeConverter>();
     }
 }

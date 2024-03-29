@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Domain.Aggregates;
+﻿using Domain.Aggregates;
 using Domain.Common;
 using Domain.ValueObjects;
 
@@ -18,18 +17,15 @@ public record BlockDto
     public string PreviousHash { get; init; } = default!;
 
     public ICollection<VoteDto> Votes { get; init; } = [];
-}
 
-public class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConverter<Block, BlockDto>
-{
-    public Block Convert(BlockDto source, Block destination, ResolutionContext context)
+    public static explicit operator Block(BlockDto source)
     {
         var block = new Block
         {
             Index = source.Index,
             Nonce = source.Nonce,
             PreviousHash = source.PreviousHash.ToBytesFromHex(),
-            Votes = source.Votes.Select(v => context.Mapper.Map<VoteDto, Vote>(v)).ToList(),
+            Votes = source.Votes.Select(v => (Vote)v).ToList(),
         };
 
         if (!block.IsHashValid)
@@ -45,7 +41,7 @@ public class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConverte
         return block;
     }
 
-    public BlockDto Convert(Block source, BlockDto destination, ResolutionContext context)
+    public static implicit operator BlockDto(Block source)
     {
         return new BlockDto
         {
@@ -54,16 +50,7 @@ public class BlockTypeConverter : ITypeConverter<BlockDto, Block>, ITypeConverte
             Hash = source.Hash.ToHexString(),
             MerkleRoot = source.MerkleRoot.ToHexString(),
             PreviousHash = source.PreviousHash.ToHexString(),
-            Votes = source.Votes.Select(v => context.Mapper.Map<Vote, VoteDto>(v)).ToList(),
+            Votes = source.Votes.Select(v => (VoteDto)v).ToList(),
         };
-    }
-}
-
-public class BlockDtoMappingProfile : Profile
-{
-    public BlockDtoMappingProfile()
-    {
-        CreateMap<Block, BlockDto>().ConvertUsing<BlockTypeConverter>();
-        CreateMap<BlockDto, Block>().ConvertUsing<BlockTypeConverter>();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Application;
 using Application.Dtos;
-using AutoMapper;
 using Domain;
 using Domain.Aggregates;
 using Domain.Common;
@@ -10,29 +9,16 @@ namespace Test.Application.Dtos;
 
 internal class BlockDtoTest
 {
-    private IMapper _mapper;
-
-    [SetUp]
-    public void SetUp()
-    {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddMaps(DomainAssembly.Assembly);
-            cfg.AddMaps(ApplicationAssembly.Assembly);
-        });
-        _mapper = new Mapper(config);
-    }
-
     [Test]
     [Parallelizable]
     public void TestConversion()
     {
         var block = Block.Genesis();
 
-        var blockDto = _mapper.Map<Block, BlockDto>(block);
+        var blockDto = (BlockDto)block;
         Console.WriteLine(blockDto);
 
-        var convertedBack = _mapper.Map<BlockDto, Block>(blockDto);
+        var convertedBack = (Block)blockDto;
 
         Assert.That(block.Index, Is.EqualTo(convertedBack.Index));
         Assert.That(block.Index, Is.EqualTo(convertedBack.Index));
@@ -70,11 +56,11 @@ internal class BlockDtoTest
         block = block.Mine();
         Console.WriteLine(block.Votes.Count);
 
-        var blockDto = _mapper.Map<Block, BlockDto>(block);
+        var blockDto = (BlockDto)block;
         Console.WriteLine(blockDto);
         Console.WriteLine(blockDto.Votes.Count);
 
-        var convertedBack = _mapper.Map<BlockDto, Block>(blockDto);
+        var convertedBack = (Block)blockDto;
 
         Assert.That(block.Index, Is.EqualTo(convertedBack.Index));
         Assert.That(block.Index, Is.EqualTo(convertedBack.Index));

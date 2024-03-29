@@ -1,6 +1,5 @@
 ﻿using Application;
 using Application.Dtos;
-using AutoMapper;
 using Domain;
 using Domain.Common;
 using Domain.ValueObjects;
@@ -9,19 +8,6 @@ namespace Test.Application.Dtos;
 
 internal class VoteDtoTest
 {
-    private IMapper _mapper;
-
-    [SetUp]
-    public void SetUp()
-    {
-        var config = new MapperConfiguration(cfg =>
-        {
-            cfg.AddMaps(DomainAssembly.Assembly);
-            cfg.AddMaps(ApplicationAssembly.Assembly);
-        });
-        _mapper = new Mapper(config);
-    }
-
     [Test]
     [Parallelizable]
     public void TestConversion()
@@ -30,10 +16,10 @@ internal class VoteDtoTest
         var vote = new Vote(voter, 5, 0);
         vote = vote.Mine();
 
-        var voteDto = _mapper.Map<Vote, VoteDto>(vote);
+        var voteDto = (VoteDto)vote;
         Console.WriteLine(voteDto);
 
-        var convertedBack = _mapper.Map<VoteDto, Vote>(voteDto);
+        var convertedBack = (Vote)voteDto;
 
         Assert.That(vote.Hash.ArrayEquals(convertedBack.Hash));
         Assert.That(vote.Voter, Is.EqualTo(convertedBack.Voter));
@@ -50,10 +36,10 @@ internal class VoteDtoTest
         var vote = new Vote(voter, 5, 0);
         vote = vote.Mine();
 
-        var voteDto = _mapper.Map<Vote, VoteDto>(vote);
+        var voteDto = (VoteDto)vote;
         Console.WriteLine(voteDto);
 
-        var convertedBack = _mapper.Map<VoteDto, Vote>(voteDto);
+        var convertedBack = (Vote)voteDto;
 
         Assert.That(convertedBack.Voter.Verify(convertedBack.SignaturePayload, vote.Signature), Is.True);
         Assert.That(vote.Voter.Verify(vote.SignaturePayload, convertedBack.Signature), Is.True);

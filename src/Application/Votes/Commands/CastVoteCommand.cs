@@ -2,7 +2,6 @@
 using Application.Abstractions;
 using Application.Dtos;
 using Application.Votes.Events;
-using AutoMapper;
 using Domain.Aggregates;
 using Domain.Common;
 using Domain.Events;
@@ -89,7 +88,6 @@ public class VoteCommandHandler(
     IAppDbContext dbContext,
     IDateTimeProvider dateTimeProvider,
     ILogger<VoteAddedEventHandler> logger,
-    IMapper mapper,
     IBlockCache blockCache
 )
     : IRequestHandler<CastVoteCommand, Vote>
@@ -108,8 +106,7 @@ public class VoteCommandHandler(
 
         currentBlock.TryAddVote(vote);
 
-        var voteDto = mapper.Map<Vote, VoteDto>(vote);
-        dbContext.Set<VoteDto>().Add(voteDto);
+        dbContext.Set<VoteDto>().Add(vote);
         await dbContext.SaveChangesAsync(ct);
 
         await PublishVoteAddedEventAsync(vote, ct);
@@ -127,8 +124,7 @@ public class VoteCommandHandler(
         stopwatch.Stop();
         logger.LogInformation("new block mined in {Elapsed:c}", stopwatch.Elapsed);
 
-        var minedBlockDto = mapper.Map<Block, BlockDto>(currentBlock);
-        dbContext.Set<BlockDto>().Add(minedBlockDto);
+        dbContext.Set<BlockDto>().Add(currentBlock);
 
         var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
         dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);
