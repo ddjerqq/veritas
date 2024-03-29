@@ -1,11 +1,10 @@
 ﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
-using Presentation.Config;
-using Presentation.Filters;
+using Presentation.Swagger;
 
 [assembly: HostingStartup(typeof(ConfigureSwagger))]
 
-namespace Presentation.Config;
+namespace Presentation.Swagger;
 
 public class ConfigureSwagger : IHostingStartup
 {

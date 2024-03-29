@@ -17,12 +17,12 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             Detail = exception.Message,
             Extensions =
             {
-                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr"),
+                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
                 ["traceId"] = httpContext.TraceIdentifier,
             },
         };
 
-        httpContext.Response.StatusCode = problemDetails.Status.Value;
+        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
         await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken: ct);
 
         return true;

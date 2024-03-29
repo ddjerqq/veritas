@@ -37,6 +37,7 @@ public record Block
         if (Votes.Count >= VoteLimit || !vote.IsHashValid || !vote.IsSignatureValid)
             return false;
 
+        vote.BlockIndex = Index;
         Votes.Add(vote);
 
         return true;

@@ -1,16 +1,36 @@
-﻿using Application.Abstractions;
-using Application.Common;
+﻿using System.Diagnostics;
+using Application.Abstractions;
+using Application.Dtos;
+using Application.Votes.Events;
+using AutoMapper;
+using Domain.Aggregates;
 using Domain.Common;
 using Domain.Events;
 using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace Application.Votes.Commands;
 
-public record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, long Timestamp, long Nonce) : IRequest<Vote>;
+public record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, long Timestamp, long Nonce) : IRequest<Vote>
+{
+    public Vote GetVote()
+    {
+        var votesVoter = Voter.FromPubKey(Pkey.ToBytesFromHex());
 
-public class CastVoteCommandValidator : AbstractValidator<CastVoteCommand>
+        return new Vote
+        {
+            Voter = votesVoter,
+            PartyId = PartyId,
+            Timestamp = Timestamp,
+            Signature = Sig.ToBytesFromHex(),
+            Nonce = Nonce,
+        };
+    }
+}
+
+public class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
 {
     public CastVoteCommandValidator(ICurrentVoterAccessor currentVoterAccessor, IDateTimeProvider dateTimeProvider)
     {
@@ -25,7 +45,7 @@ public class CastVoteCommandValidator : AbstractValidator<CastVoteCommand>
             .WithMessage("Invalid {PropertyName}");
 
         RuleFor(x => x.Sig)
-            .Length(64, 256)
+            .Length(128)
             .Must(value => value.All(char.IsAsciiHexDigit))
             .WithMessage("Invalid {PropertyName}");
 
@@ -49,20 +69,12 @@ public class CastVoteCommandValidator : AbstractValidator<CastVoteCommand>
             .LessThan(500_000_000);
 
         RuleFor(x => x)
-            .Must(voteDto =>
+            .Must(command =>
             {
                 var currentVoter = currentVoterAccessor.GetCurrentVoter();
                 if (currentVoter is null) return false;
 
-                var votesVoter = Voter.FromPubKey(voteDto.Pkey.ToBytesFromHex());
-                var vote = new Vote
-                {
-                    Voter = votesVoter,
-                    PartyId = voteDto.PartyId,
-                    Timestamp = voteDto.Timestamp,
-                    Signature = voteDto.Sig.ToBytesFromHex(),
-                    Nonce = voteDto.Nonce,
-                };
+                var vote = command.GetVote();
 
                 var voteIsValid = vote is { IsHashValid: true, IsSignatureValid: true };
                 var currentVoterIsTheVotesVoter = vote.Voter.Address == currentVoter.Address;
@@ -75,33 +87,61 @@ public class CastVoteCommandValidator : AbstractValidator<CastVoteCommand>
 
 public class VoteCommandHandler(
     IAppDbContext dbContext,
-    IDateTimeProvider dateTimeProvider)
+    IDateTimeProvider dateTimeProvider,
+    ILogger<VoteAddedEventHandler> logger,
+    IMapper mapper,
+    IBlockCache blockCache
+)
     : IRequestHandler<CastVoteCommand, Vote>
 {
     public async Task<Vote> Handle(CastVoteCommand request, CancellationToken ct)
     {
-        var votesVoter = Voter.FromPubKey(request.Pkey.ToBytesFromHex());
-        var vote = new Vote
+        var currentBlock = await blockCache.GetCurrentAsync(ct);
+
+        if (currentBlock.Votes.Count >= Block.VoteLimit)
         {
-            Voter = votesVoter,
-            PartyId = request.PartyId,
-            Timestamp = request.Timestamp,
-            Signature = request.Sig.ToBytesFromHex(),
-            Nonce = request.Nonce,
-        };
+            currentBlock = await MineBlockAsync(ct);
+        }
 
-        var voteAddedEvent = new VoteAddedEvent(
-            vote.Voter.PublicKey.ToHexString(),
-            vote.PartyId,
-            vote.Timestamp,
-            vote.Nonce,
-            vote.Hash.ToHexString(),
-            vote.Signature.ToHexString());
+        var vote = request.GetVote();
+        vote.BlockIndex = currentBlock.Index;
 
-        var msg = OutboxMessage.FromDomainEvent(voteAddedEvent, dateTimeProvider);
-        dbContext.Set<OutboxMessage>().Add(msg);
+        currentBlock.TryAddVote(vote);
+
+        var voteDto = mapper.Map<Vote, VoteDto>(vote);
+        dbContext.Set<VoteDto>().Add(voteDto);
         await dbContext.SaveChangesAsync(ct);
 
+        await PublishVoteAddedEventAsync(vote, ct);
+
         return vote;
+    }
+
+
+    private async Task<Block> MineBlockAsync(CancellationToken ct = default)
+    {
+        var stopwatch = Stopwatch.StartNew();
+
+        var currentBlock = await blockCache.MineAndRotateAsync(ct);
+
+        stopwatch.Stop();
+        logger.LogInformation("new block mined in {Elapsed:c}", stopwatch.Elapsed);
+
+        var minedBlockDto = mapper.Map<Block, BlockDto>(currentBlock);
+        dbContext.Set<BlockDto>().Add(minedBlockDto);
+
+        var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
+        dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);
+
+        await dbContext.SaveChangesAsync(ct);
+
+        return currentBlock;
+    }
+
+    private async Task PublishVoteAddedEventAsync(Vote vote, CancellationToken ct = default)
+    {
+        var voteAddedEvent = new VoteAddedEvent(vote.Hash.ToHexString());
+        dbContext.AddDomainEvent(voteAddedEvent, dateTimeProvider);
+        await dbContext.SaveChangesAsync(ct);
     }
 }

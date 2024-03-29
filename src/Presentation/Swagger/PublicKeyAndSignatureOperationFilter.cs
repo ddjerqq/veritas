@@ -5,7 +5,7 @@ using Microsoft.OpenApi.Models;
 using Presentation.Auth;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Presentation.Filters;
+namespace Presentation.Swagger;
 
 public class PublicKeyAndSignatureOperationFilter : IOperationFilter
 {

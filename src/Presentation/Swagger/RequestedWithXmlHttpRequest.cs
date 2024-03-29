@@ -2,7 +2,7 @@ using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Presentation.Filters;
+namespace Presentation.Swagger;
 
 public sealed class RequestedWithXmlHttpRequest : IOperationFilter
 {

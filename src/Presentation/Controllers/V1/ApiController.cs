@@ -53,15 +53,14 @@ public class ApiController(
     [HttpPost("vote")]
     public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct = default)
     {
-        var processedVote = processedVotesCache.GetByHash(command.Hash);
-        if (processedVote is not null)
+        if (processedVotesCache.Contains(command.Hash))
         {
-            logger.LogWarning("Tried processing the same vote twice: {Hash}", processedVote.Hash.ToHexString());
-            return BadRequest($"Tried processing the same vote twice: {processedVote.Hash.ToHexString()}");
+            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
+            return BadRequest($"Tried processing the same vote twice: {command.Hash}");
         }
 
         var vote = await mediator.Send(command, ct);
-        processedVotesCache.Set(vote);
+        processedVotesCache.Add(vote.Hash.ToHexString());
 
         return Created();
     }
@@ -86,15 +85,14 @@ public class ApiController(
             minedVote.Timestamp,
             minedVote.Nonce);
 
-        var processedVote = processedVotesCache.GetByHash(command.Hash);
-        if (processedVote is not null)
+        if (processedVotesCache.Contains(command.Hash))
         {
-            logger.LogWarning("Tried processing the same vote twice: {Hash}", processedVote.Hash.ToHexString());
-            return BadRequest($"Tried processing the same vote twice: {processedVote.Hash.ToHexString()}");
+            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
+            return BadRequest($"Tried processing the same vote twice: {command.Hash}");
         }
 
         var vote = await mediator.Send(command, ct);
-        processedVotesCache.Set(vote);
+        processedVotesCache.Add(vote.Hash.ToHexString());
 
         return Created();
     }

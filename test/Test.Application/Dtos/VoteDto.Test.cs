@@ -23,10 +23,12 @@ internal class VoteDtoTest
     }
 
     [Test]
+    [Parallelizable]
     public void TestConversion()
     {
         var voter = Voter.NewVoter();
         var vote = new Vote(voter, 5, 0);
+        vote = vote.Mine();
 
         var voteDto = _mapper.Map<Vote, VoteDto>(vote);
         Console.WriteLine(voteDto);
@@ -41,10 +43,12 @@ internal class VoteDtoTest
     }
 
     [Test]
+    [Parallelizable]
     public void TestSignatureOnSerializationAndDeserialization()
     {
         var voter = Voter.NewVoter();
         var vote = new Vote(voter, 5, 0);
+        vote = vote.Mine();
 
         var voteDto = _mapper.Map<Vote, VoteDto>(vote);
         Console.WriteLine(voteDto);

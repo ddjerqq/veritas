@@ -24,7 +24,7 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
             Detail = validationException.Message,
             Extensions =
             {
-                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr"),
+                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
                 ["traceId"] = httpContext.TraceIdentifier,
                 ["errors"] = errors,
             },

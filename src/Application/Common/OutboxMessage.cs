@@ -15,7 +15,6 @@ public sealed class OutboxMessage
         Converters =
         {
             new StringEnumConverter(),
-            new ByteArrayJsonConverter(),
         },
         ContractResolver = new DefaultContractResolver
         {

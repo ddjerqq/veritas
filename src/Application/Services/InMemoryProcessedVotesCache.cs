@@ -1,24 +1,17 @@
 ﻿using Application.Abstractions;
 using Application.Dtos;
-using AutoMapper;
-using AutoMapper.QueryableExtensions;
-using Domain.Common;
-using Domain.ValueObjects;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services;
 
-// TODO optimization use the hashes of the votes here instead of the actual objects please.
-public sealed class InMemoryProcessedVotesCache : IProcessedVotesCache
+public sealed class InMemoryProcessedVotesCache(HashSet<string> hashes) : IProcessedVotesCache
 {
-    public List<Vote> Votes { get; init; } = [];
+    public bool Contains(string hash) => hashes.Contains(hash);
 
-    public Vote? GetByHash(string hash) => Votes.FirstOrDefault(vote => vote.Hash.ToHexString() == hash);
-
-    public void Set(Vote vote) => Votes.Add(vote);
+    public void Add(string hash) => hashes.Add(hash);
 }
 
-public static partial class ServiceCollectionExtensions
+public static class ServiceCollectionExtensions
 {
     public static IServiceCollection AddInMemoryProcessedVoteCache(this IServiceCollection services)
     {
@@ -26,17 +19,13 @@ public static partial class ServiceCollectionExtensions
         {
             using var scope = sp.CreateScope();
             var dbContext = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
-            var mapper = scope.ServiceProvider.GetRequiredService<IMapper>();
 
-            var votes = dbContext
+            var voteHashes = dbContext
                 .Set<VoteDto>()
-                .ProjectTo<Vote>(mapper.ConfigurationProvider)
-                .ToList();
+                .Select(x => x.Hash)
+                .ToHashSet();
 
-            return new InMemoryProcessedVotesCache
-            {
-                Votes = votes,
-            };
+            return new InMemoryProcessedVotesCache(voteHashes);
         });
 
         return services;

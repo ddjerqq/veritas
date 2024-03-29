@@ -21,8 +21,7 @@ public record Vote()
 
     public byte[] Hash => SHA256.HashData(HashPayload);
 
-    // Purely for efcore.
-    public long BlockIndex { get; init; }
+    public long BlockIndex { get; set; }  // for ef-core.
 
     public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
 

@@ -1,10 +1,8 @@
-﻿using Domain.ValueObjects;
-
-namespace Application.Abstractions;
+﻿namespace Application.Abstractions;
 
 public interface IProcessedVotesCache
 {
-    public Vote? GetByHash(string hash);
+    public bool Contains(string hash);
 
-    public void Set(Vote vote);
+    public void Add(string hash);
 }
