@@ -65,14 +65,14 @@ public class ApiController(
         return Created();
     }
 
-    [HttpPost("vote/{partyId:int}")]
-    public async Task<IActionResult> CastVote(int partyId, CancellationToken ct = default)
+    [HttpPost("vote_random")]
+    public async Task<IActionResult> VoteRandom(CancellationToken ct = default)
     {
         if (HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>() is var env && !env.IsDevelopment())
             return NotFound();
 
         var voter = Voter.NewVoter();
-        var minedVote = new Vote(voter, partyId, dateTimeProvider.UtcNowUnixTimeMilliseconds).Mine();
+        var minedVote = new Vote(voter, Random.Shared.Next(1, 100), dateTimeProvider.UtcNowUnixTimeMilliseconds).Mine();
 
         // override the test voter
         HttpContext.Items[nameof(Voter)] = voter;
@@ -81,7 +81,7 @@ public class ApiController(
             minedVote.Hash.ToHexString(),
             voter.PublicKey.ToHexString(),
             minedVote.Signature.ToHexString(),
-            partyId,
+            minedVote.PartyId,
             minedVote.Timestamp,
             minedVote.Nonce);
 

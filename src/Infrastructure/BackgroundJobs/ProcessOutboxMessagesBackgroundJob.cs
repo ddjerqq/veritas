@@ -51,6 +51,7 @@ public sealed class ProcessOutboxMessagesBackgroundJob(
             }
 
             message.ProcessedOnUtc = dateTimeProvider.UtcNow;
+            dbContext.Set<OutboxMessage>().Update(message);
         }
 
         await dbContext.SaveChangesAsync(context.CancellationToken);
