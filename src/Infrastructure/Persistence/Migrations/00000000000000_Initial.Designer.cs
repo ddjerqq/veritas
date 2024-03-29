@@ -29,10 +29,12 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Content")
                         .IsRequired()
+                        .HasMaxLength(2048)
                         .HasColumnType("TEXT")
                         .HasColumnName("content");
 
                     b.Property<string>("Error")
+                        .HasMaxLength(4096)
                         .HasColumnType("TEXT")
                         .HasColumnName("error");
 
@@ -46,6 +48,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
+                        .HasMaxLength(128)
                         .HasColumnType("TEXT")
                         .HasColumnName("type");
 
@@ -58,7 +61,6 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Application.Dtos.BlockDto", b =>
                 {
                     b.Property<long>("Index")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER")
                         .HasColumnName("idx");
 

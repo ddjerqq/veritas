@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using Application.Abstractions;
+using Application.Common;
 using Application.Dtos;
 using Application.Votes.Events;
 using Domain.Aggregates;
@@ -8,6 +9,7 @@ using Domain.Events;
 using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace Application.Votes.Commands;
@@ -86,58 +88,42 @@ public class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
 
 public class VoteCommandHandler(
     IAppDbContext dbContext,
-    IDateTimeProvider dateTimeProvider,
     ILogger<VoteAddedEventHandler> logger,
-    IBlockCache blockCache
-)
-    : IRequestHandler<CastVoteCommand, Vote>
+    IMediator mediator,
+    IBlockCache blockCache) : IRequestHandler<CastVoteCommand, Vote>
 {
     public async Task<Vote> Handle(CastVoteCommand request, CancellationToken ct)
     {
-        var currentBlock = await blockCache.GetCurrentAsync(ct);
+        var currentBlockDto = await blockCache.GetCurrentAsync(ct);
+        var currentBlock = (Block)currentBlockDto;
 
+        // TODO this must never happen concurrently.
+        // and if it does, we can have more vote in a block than the limit.
         if (currentBlock.Votes.Count >= Block.VoteLimit)
         {
-            currentBlock = await MineBlockAsync(ct);
+            var mineCurrentBlockCommand = new MineCurrentBlockCommand();
+            currentBlock = await mediator.Send(mineCurrentBlockCommand, ct);
+            currentBlockDto = currentBlock;
+            // TODO we will no longer need this, after we implement a better, global cache.
+            blockCache.SetCurrent(currentBlockDto);
         }
 
         var vote = request.GetVote();
-        vote.BlockIndex = currentBlock.Index;
-
         currentBlock.TryAddVote(vote);
-
         dbContext.Set<VoteDto>().Add(vote);
         await dbContext.SaveChangesAsync(ct);
 
-        await PublishVoteAddedEventAsync(vote, ct);
+        currentBlockDto.CopyFrom(currentBlock);
+        dbContext.ClearChangeTracker();
+        dbContext.Set<BlockDto>().Update(currentBlockDto);
+        // var success = dbContext.Set<BlockDto>().TryUpdate(currentBlockDto);
+        // Console.WriteLine(success ? "updating entity success" : "updating entity failed ig?");
+
+        // var voteAddedEvent = new VoteAddedEvent(vote.Hash.ToHexString());
+        // dbContext.AddDomainEvent(voteAddedEvent, dateTimeProvider);
+
+        await dbContext.SaveChangesAsync(ct);
 
         return vote;
-    }
-
-
-    private async Task<Block> MineBlockAsync(CancellationToken ct = default)
-    {
-        var stopwatch = Stopwatch.StartNew();
-
-        var currentBlock = await blockCache.MineAndRotateAsync(ct);
-
-        stopwatch.Stop();
-        logger.LogInformation("new block mined in {Elapsed:c}", stopwatch.Elapsed);
-
-        dbContext.Set<BlockDto>().Add(currentBlock);
-
-        var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
-        dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);
-
-        await dbContext.SaveChangesAsync(ct);
-
-        return currentBlock;
-    }
-
-    private async Task PublishVoteAddedEventAsync(Vote vote, CancellationToken ct = default)
-    {
-        var voteAddedEvent = new VoteAddedEvent(vote.Hash.ToHexString());
-        dbContext.AddDomainEvent(voteAddedEvent, dateTimeProvider);
-        await dbContext.SaveChangesAsync(ct);
     }
 }

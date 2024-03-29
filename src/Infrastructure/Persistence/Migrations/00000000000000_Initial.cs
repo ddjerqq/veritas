@@ -15,8 +15,7 @@ namespace Infrastructure.Persistence.Migrations
                 name: "block",
                 columns: table => new
                 {
-                    idx = table.Column<long>(type: "INTEGER", nullable: false)
-                        .Annotation("Sqlite:Autoincrement", true),
+                    idx = table.Column<long>(type: "INTEGER", nullable: false),
                     nonce = table.Column<long>(type: "INTEGER", nullable: false),
                     hash = table.Column<string>(type: "TEXT", nullable: false),
                     mrkl_root = table.Column<string>(type: "TEXT", nullable: false),
@@ -32,11 +31,11 @@ namespace Infrastructure.Persistence.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "TEXT", nullable: false),
-                    type = table.Column<string>(type: "TEXT", nullable: false),
-                    content = table.Column<string>(type: "TEXT", nullable: false),
+                    type = table.Column<string>(type: "TEXT", maxLength: 128, nullable: false),
+                    content = table.Column<string>(type: "TEXT", maxLength: 2048, nullable: false),
                     occured_on_utc = table.Column<DateTime>(type: "TEXT", nullable: false),
                     processed_on_utc = table.Column<DateTime>(type: "TEXT", nullable: true),
-                    error = table.Column<string>(type: "TEXT", nullable: true)
+                    error = table.Column<string>(type: "TEXT", maxLength: 4096, nullable: true)
                 },
                 constraints: table =>
                 {

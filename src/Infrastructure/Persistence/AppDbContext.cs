@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Application.Common;
 using Application.Dtos;
+using Domain.Aggregates;
 using Domain.Common;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.ValueConverters;
@@ -18,6 +19,8 @@ public sealed class AppDbContext(
     public DbSet<VoteDto> Votes => Set<VoteDto>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
+
+    public void ClearChangeTracker() => ChangeTracker.Clear();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {
@@ -39,6 +42,20 @@ public sealed class AppDbContext(
             .HaveConversion<DateTimeUtcValueConverter>();
 
         base.ConfigureConventions(builder);
+    }
+
+    public void SeedGenesisBlock()
+    {
+        if (!Blocks.AsNoTracking().Any())
+        {
+            var genesis = Block.Genesis();
+            var next = genesis.Next();
+
+            Blocks.Add(genesis);
+            Blocks.Add(next);
+
+            SaveChanges(true);
+        }
     }
 
     private static void SnakeCaseRename(ModelBuilder builder)

@@ -32,6 +32,8 @@ public static class WebAppExtensions
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         dbContext.Database.EnsureCreated();
 
+        dbContext.SeedGenesisBlock();
+
         if (dbContext.Database.GetPendingMigrations().Any())
             dbContext.Database.Migrate();
     }

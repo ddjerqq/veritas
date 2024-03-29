@@ -1,17 +1,12 @@
-﻿using Domain.Aggregates;
+﻿using Application.Dtos;
 
 namespace Application.Abstractions;
 
 public interface IBlockCache
 {
-    public Task<Block> GetCurrentAsync(CancellationToken ct = default);
+    protected BlockDto? Current { get; set; }
 
-    /// <summary>
-    /// This method will mine the current block and return the mined block.
-    /// It will set its predecessor to the current block.
-    /// </summary>
-    /// <note>
-    /// It is the caller's responsibility to add the mined block to the database
-    /// </note>
-    public Task<Block> MineAndRotateAsync(CancellationToken ct = default);
+    public Task<BlockDto> GetCurrentAsync(CancellationToken ct = default);
+
+    public void SetCurrent(BlockDto block) => Current = block;
 }

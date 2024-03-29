@@ -1,4 +1,5 @@
-﻿using Domain.Aggregates;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using Domain.Aggregates;
 using Domain.Common;
 using Domain.ValueObjects;
 
@@ -6,17 +7,28 @@ namespace Application.Dtos;
 
 public record BlockDto
 {
-    public long Index { get; init; }
+    [DatabaseGenerated(DatabaseGeneratedOption.None)]
+    public long Index { get; private set; }
 
-    public long Nonce { get; init; }
+    public long Nonce { get; private set; }
 
-    public string Hash { get; init; } = default!;
+    public string Hash { get; private set; } = default!;
 
-    public string MerkleRoot { get; init; } = default!;
+    public string MerkleRoot { get; private set; } = default!;
 
-    public string PreviousHash { get; init; } = default!;
+    public string PreviousHash { get; private set; } = default!;
 
-    public ICollection<VoteDto> Votes { get; init; } = [];
+    public ICollection<VoteDto> Votes { get; private set; } = [];
+
+    public void CopyFrom(Block block)
+    {
+        Index = block.Index;
+        Nonce = block.Nonce;
+        Hash = block.Hash.ToHexString();
+        MerkleRoot = block.MerkleRoot.ToHexString();
+        PreviousHash = block.PreviousHash.ToHexString();
+        Votes = block.Votes.Select(v => (VoteDto)v).ToList();
+    }
 
     public static explicit operator Block(BlockDto source)
     {
@@ -28,15 +40,16 @@ public record BlockDto
             Votes = source.Votes.Select(v => (Vote)v).ToList(),
         };
 
-        if (!block.IsHashValid)
-            throw new InvalidOperationException($"failed to convert Block, invalid hash: {block.Hash.ToHexString()}");
+        // this is disabled, because we can have incomplete blocks stored in the database
+        // if (!block.IsHashValid)
+        //     throw new InvalidOperationException($"failed to convert Block, invalid hash: {block.Hash.ToHexString()}");
 
         if (source.Hash != block.Hash.ToHexString())
-            throw new InvalidOperationException($"failed to convert Block, expected: {source.Hash} was: {block.Hash.ToHexString()}");
+            throw new InvalidOperationException($"failed to convert Block, Invalid hash, expected: {block.Hash.ToHexString()} but was: {source.Hash}");
 
         if (source.MerkleRoot != block.MerkleRoot.ToHexString())
             throw new InvalidOperationException(
-                $"failed to convert Block, expected: {source.MerkleRoot} was: {block.MerkleRoot.ToHexString()}");
+                $"failed to convert Block, Invalid merkle root, expected: {block.MerkleRoot.ToHexString()} but was: {source.MerkleRoot}");
 
         return block;
     }

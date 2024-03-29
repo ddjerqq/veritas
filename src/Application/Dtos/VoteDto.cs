@@ -35,18 +35,18 @@ public record VoteDto
             BlockIndex = source.BlockIndex,
         };
 
-        if (source.Hash != vote.Hash.ToHexString())
-            throw new InvalidOperationException($"failed to convert Vote, expected: {source.Hash} was: {vote.Hash.ToHexString()}");
-
-        if (!vote.VerifySignature(source.Signature.ToBytesFromHex()))
-            throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Signature.ToHexString()}");
+        if (!vote.IsHashValid)
+            throw new InvalidOperationException(
+                $"failed to convert Vote, the hash is not valid. Missing proof of work. was: {vote.Hash.ToHexString()}");
 
         if (!vote.IsSignatureValid)
             throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Hash.ToHexString()}");
 
-        if (!vote.IsHashValid)
-            throw new InvalidOperationException(
-                $"failed to convert Vote, the hash is not valid. Missing proof of work. was: {vote.Hash.ToHexString()}");
+        if (source.Hash != vote.Hash.ToHexString())
+            throw new InvalidOperationException($"failed to convert Vote, Invalid hash, expected: {vote.Hash.ToHexString()} but was: {source.Hash}");
+
+        if (!vote.VerifySignature(source.Signature.ToBytesFromHex()))
+            throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Signature.ToHexString()}");
 
         return vote;
     }

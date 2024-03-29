@@ -23,6 +23,7 @@ public class ConfigureApplication : IHostingStartup
         {
             services.AddTransient<IDateTimeProvider, UtcDateTimeProvider>();
 
+            // TODO think of a better way to actually CACHE the current block.
             services.AddScoped<IBlockCache, DbBlockCache>();
             services.AddInMemoryProcessedVoteCache();
 
