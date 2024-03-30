@@ -1,5 +1,4 @@
 ﻿using Domain.ValueObjects;
-using Microsoft.AspNetCore.HttpLogging;
 using Presentation.Config;
 using Serilog;
 using Serilog.Events;
@@ -51,38 +50,22 @@ public static class WebAppExtensions
 {
     public static void UseConfiguredSerilogRequestLogging(this IApplicationBuilder app)
     {
-        // TODO add these fields
-        // services.AddHttpLogging(options =>
-        // {
-        //     options.LoggingFields =
-        //         HttpLoggingFields.RequestPath
-        //         | HttpLoggingFields.ResponseStatusCode
-        //         | HttpLoggingFields.RequestMethod
-        //         | HttpLoggingFields.RequestQuery
-        //         | HttpLoggingFields.RequestHeaders
-        //         | HttpLoggingFields.ResponseHeaders;
-        //
-        //     options.RequestHeaders.Add("X-Idempotency-Key");
-        //     options.ResponseHeaders.Add("X-Client-IP");
-        //     options.ResponseHeaders.Add("X-Response-Time");
-        //
-        //     options.RequestBodyLogLimit = 4096;
-        //     options.ResponseBodyLogLimit = 4096;
-        // });
-
         app.UseSerilogRequestLogging(options =>
         {
             options.IncludeQueryInRequestPath = true;
-            options.MessageTemplate = "{RequestMethod} {RequestPath}";
+            options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms\n" +
+                                      "Address: {VoterAddress}\n" +
+                                      "Host: {RequestHost}\n" +
+                                      "UserAgent: {RequestUserAgent}";
 
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
             {
-                if (httpContext.Items.TryGetValue(nameof(Voter), out var value) && value is Voter voter)
-                    diagnosticContext.Set("VoterAddress", voter.Address);
+                diagnosticContext.Set("VoterAddress", "NaN");
+                if (httpContext.Items.TryGetValue(nameof(Voter), out var value) && value is Voter { Address: var address })
+                    diagnosticContext.Set("VoterAddress", address);
 
-                diagnosticContext.Set("RequestUserAgent", httpContext.Request.Headers.UserAgent);
                 diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
-                diagnosticContext.Set("RequestScheme", httpContext.Request.Scheme);
+                diagnosticContext.Set("RequestUserAgent", (string?)httpContext.Request.Headers.UserAgent);
             };
         });
     }
