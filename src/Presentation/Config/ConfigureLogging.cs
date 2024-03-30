@@ -11,31 +11,13 @@ public class ConfigureLogging : IHostingStartup
 {
     private static bool _configured;
 
-    public const string OutputFormat = "[{Timestamp:dd-MM-yyyy HH:mm:ss.fff} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}";
-
-    private static string LogDir => Environment.GetEnvironmentVariable("LOG__DIRECTORY")?.TrimEnd('/') ?? "/var/log/veritas";
-
-    public static string LogPath => $"{LogDir}/veritas-{DateTime.UtcNow:s}.log";
-
     public void Configure(IWebHostBuilder builder)
     {
         if (_configured) return;
         _configured = true;
 
         Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Information()
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-            .MinimumLevel.Override("Quartz", LogEventLevel.Warning)
-            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.Debug()
-            .WriteTo.Console(outputTemplate: OutputFormat)
-            .WriteTo.File(LogPath,
-                flushToDiskInterval: TimeSpan.FromSeconds(10),
-                outputTemplate: OutputFormat,
-                fileSizeLimitBytes: 100_000_000,
-                rollOnFileSizeLimit: true,
-                rollingInterval: RollingInterval.Day)
+            .Configure()
             .CreateLogger();
 
         builder.ConfigureServices(services =>
@@ -48,6 +30,31 @@ public class ConfigureLogging : IHostingStartup
 
 public static class WebAppExtensions
 {
+    private const string OutputFormat = "[{Timestamp:dd-MM-yyyy HH:mm:ss.fff} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}";
+
+    public static LoggerConfiguration Configure(this LoggerConfiguration config)
+    {
+        var logPath = Environment.GetEnvironmentVariable("LOG__PATH") ?? ".logs/veritas-.log";
+
+        return config
+            .MinimumLevel.Information()
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+            .MinimumLevel.Override("Quartz", LogEventLevel.Warning)
+            .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .Enrich.WithProcessId()
+            .Enrich.WithThreadId()
+            .Enrich.WithAssemblyName()
+            .WriteTo.Debug()
+            .WriteTo.Console(outputTemplate: OutputFormat)
+            .WriteTo.File(logPath,
+                outputTemplate: OutputFormat,
+                flushToDiskInterval: TimeSpan.FromSeconds(10),
+                fileSizeLimitBytes: 100_000_000,
+                rollOnFileSizeLimit: true,
+                rollingInterval: RollingInterval.Day);
+    }
+
     public static void UseConfiguredSerilogRequestLogging(this IApplicationBuilder app)
     {
         app.UseSerilogRequestLogging(options =>
@@ -72,22 +79,6 @@ public static class WebAppExtensions
 
     public static void UseConfiguredSerilog(this ConfigureHostBuilder host)
     {
-        host.UseSerilog((_, configuration) =>
-        {
-            configuration
-                .MinimumLevel.Information()
-                .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-                .MinimumLevel.Override("Quartz", LogEventLevel.Warning)
-                .MinimumLevel.Override("Microsoft.EntityFrameworkCore", LogEventLevel.Warning)
-                .Enrich.FromLogContext()
-                .WriteTo.Debug()
-                .WriteTo.Console(outputTemplate: ConfigureLogging.OutputFormat)
-                .WriteTo.File(ConfigureLogging.LogPath,
-                    flushToDiskInterval: TimeSpan.FromSeconds(10),
-                    outputTemplate: ConfigureLogging.OutputFormat,
-                    fileSizeLimitBytes: 100_000_000,
-                    rollOnFileSizeLimit: true,
-                    rollingInterval: RollingInterval.Day);
-        });
+        host.UseSerilog((_, configuration) => configuration.Configure());
     }
 }
