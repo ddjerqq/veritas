@@ -10,7 +10,7 @@ internal sealed class LoggingBehaviour<TRequest, TResponse>(ILogger<LoggingBehav
 {
     public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken ct)
     {
-        logger.LogDebug("started request {@RequestName} {@Request}", typeof(TRequest).Name, request);
+        logger.LogInformation("started request {@RequestName} {@Request}", typeof(TRequest).Name, request);
 
         var stopwatch = Stopwatch.StartNew();
         var result = await next();

@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using Domain.Common;
+using Serilog;
 
 namespace Domain.ValueObjects;
 
@@ -43,8 +44,7 @@ public record Voter : IDisposable
         }
         catch (CryptographicException ex)
         {
-            // TODO logging after we implement Serilog, log the exception info here,
-            //  we should stay alert for users trying suspicious public keys
+            Log.Error(ex, "Invalid public key");
             throw new InvalidOperationException("Invalid public key", ex);
         }
 

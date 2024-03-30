@@ -1,20 +1,28 @@
 using dotenv.net;
 using Presentation;
+using Presentation.Config;
 
 // fix postgres timestamp issue
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
+var solutionDir = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent;
+
 DotEnv.Fluent()
     .WithTrimValues()
+    .WithEnvFiles($"{solutionDir}/.env")
     .WithOverwriteExistingVars()
-    .WithProbeForEnv(5)
     .Load();
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseConfiguredSerilog();
+
 builder.WebHost.UseStaticWebAssets();
 builder.WebHost.ConfigureAssemblies();
 
 var app = builder.Build();
+
+app.UseConfiguredSerilogRequestLogging();
 
 app.MigrateDatabase();
 

@@ -21,7 +21,7 @@ public static class WebAppExtensions
             .ForEach(hostingStartup =>
             {
                 var name = hostingStartup.GetType().Name.Replace("Configure", "");
-                Console.WriteLine($@"[{DateTime.UtcNow:s}.000] [info]: Configured {name}");
+                Console.WriteLine($@"[{DateTime.UtcNow:s}.000 INF] Configured {name}");
                 hostingStartup.Configure(builder);
             });
     }
@@ -40,7 +40,6 @@ public static class WebAppExtensions
 
     public static void UseDevelopmentMiddleware(this WebApplication app)
     {
-        app.UseHttpLogging();
         app.UseDeveloperExceptionPage();
         app.UseMigrationsEndPoint();
         app.UseSwagger();

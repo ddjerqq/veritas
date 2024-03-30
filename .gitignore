@@ -11,3 +11,5 @@ riderModule.iml
 *.sqlite
 *.DotSettings.user
 .env
+
+.logs
