@@ -14,12 +14,12 @@ public sealed record VoterInfo
     public IEnumerable<Vote> Votes { get; set; } = [];
 }
 
-public sealed record GetVoterInfo(string Address) : IRequest<VoterInfo?>;
+public sealed record GetVoterInfoQuery(string Address) : IRequest<VoterInfo?>;
 
 // ReSharper disable once UnusedType.Global
-public sealed class GetVoterInfoHandler(IAppDbContext dbContext) : IRequestHandler<GetVoterInfo, VoterInfo?>
+public sealed class GetVoterInfoQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetVoterInfoQuery, VoterInfo?>
 {
-    public async Task<VoterInfo?> Handle(GetVoterInfo request, CancellationToken ct)
+    public async Task<VoterInfo?> Handle(GetVoterInfoQuery request, CancellationToken ct)
     {
         var voter = await dbContext.Set<Voter>()
             .AsNoTracking()

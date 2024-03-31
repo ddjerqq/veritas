@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Diagnostics;
+﻿using Application.Common.Abstractions;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.ExceptionHandling;
@@ -9,6 +10,9 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
     {
         logger.LogError(exception, "An unhandled exception occurred. {Message}", exception.Message);
 
+        var currentVoterAccessor = httpContext.RequestServices.GetRequiredService<ICurrentVoterAccessor>();
+        var voter = currentVoterAccessor.TryGetCurrentVoter();
+
         var problemDetails = new ProblemDetails
         {
             Type = "https://httpstatuses.com/500",
@@ -17,13 +21,13 @@ public sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> logge
             Detail = exception.Message,
             Extensions =
             {
-                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
+                ["addr"] = voter?.Address,
                 ["traceId"] = httpContext.TraceIdentifier,
             },
         };
 
         httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, cancellationToken: ct);
+        await httpContext.Response.WriteAsJsonAsync(problemDetails, ct);
 
         return true;
     }

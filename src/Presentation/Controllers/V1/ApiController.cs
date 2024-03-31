@@ -42,7 +42,7 @@ public class ApiController(
     [HttpGet("voters/{address}")]
     public async Task<ActionResult<VoterInfo>> GetVoterInfo(string address, CancellationToken ct)
     {
-        var query = new GetVoterInfo(address);
+        var query = new GetVoterInfoQuery(address);
         var voterInfo = await mediator.Send(query, ct);
         return voterInfo is not null
             ? Ok(voterInfo)
@@ -79,7 +79,6 @@ public class ApiController(
             : NotFound();
     }
 
-
     [HttpGet("new_identity")]
     public IActionResult NewIdentity()
     {
@@ -87,25 +86,29 @@ public class ApiController(
             return NotFound();
 
         var voter = Voter.NewVoter();
-        var vote = Vote.NewVote(voter, 5, dateTimeProvider.UtcNow);
-        vote.Mine();
+
+        var votes = Enumerable.Range(0, 3)
+            .Select(i =>
+            {
+                var vote = Vote.NewVote(voter, i, dateTimeProvider.UtcNow);
+                vote.Mine();
+                return new
+                {
+                    hash = vote.Hash,
+                    pkey = voter.PublicKey,
+                    sig = vote.Signature,
+                    party_id = vote.PartyId,
+                    timestamp = vote.UnixTimestampMs,
+                    nonce = vote.Nonce,
+                };
+            });
 
         return Ok(new
         {
             addr = voter.Address,
-
             pkey = voter.PublicKey,
             addr_signed = voter.Sign(voter.Address.ToBytesFromHex()).ToHexString(),
-
-            vote = new
-            {
-                hash = vote.Hash,
-                pkey = voter.PublicKey,
-                sig = vote.Signature,
-                party_id = vote.PartyId,
-                timestamp = vote.UnixTimestampMs,
-                nonce = vote.Nonce,
-            },
+            votes,
         });
     }
 

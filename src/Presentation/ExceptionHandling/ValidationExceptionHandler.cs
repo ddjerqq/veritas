@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Serilog;
 
 namespace Presentation.ExceptionHandling;
 
@@ -24,14 +25,23 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
             Detail = validationException.Message,
             Extensions =
             {
-                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
+                // ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
                 ["traceId"] = httpContext.TraceIdentifier,
                 ["errors"] = errors,
             },
         };
 
-        httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
-        await httpContext.Response.WriteAsJsonAsync(problemDetails, ct);
+        try
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;
+            await httpContext.Response.WriteAsJsonAsync(problemDetails, ct);
+        }
+        catch (Exception ex)
+        {
+            Log.Error(ex, "failed to write validation problem details {@ProblemDetails}", problemDetails);
+        }
+
+
         return true;
     }
 }

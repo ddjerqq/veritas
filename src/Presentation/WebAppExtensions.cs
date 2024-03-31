@@ -70,8 +70,9 @@ public static class WebAppExtensions
             app.UseBlazorFrameworkFiles();
 
         // compress and then cache static files
-        app.UseResponseCompression();
-        app.UseResponseCaching();
+        // app.UseResponseCompression();
+        // app.UseResponseCaching();
+
         app.UseStaticFiles();
     }
 

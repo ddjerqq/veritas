@@ -6,7 +6,7 @@ namespace Infrastructure.Services;
 
 public sealed class CurrentVoterAccessor(IHttpContextAccessor httpContextAccessor) : ICurrentVoterAccessor
 {
-    public Voter? GetCurrentVoter()
+    public Voter? TryGetCurrentVoter()
     {
         var ctx = httpContextAccessor.HttpContext;
         if (ctx is null) return null;

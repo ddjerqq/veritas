@@ -1,4 +1,5 @@
-﻿using Application.Common.Abstractions;
+﻿using Application.Blockchain.Queries;
+using Application.Common.Abstractions;
 using Domain.Entities;
 using Domain.Events;
 using FluentValidation;
@@ -63,7 +64,7 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
         RuleFor(x => x)
             .Must(command =>
             {
-                var currentVoter = currentVoterAccessor.GetCurrentVoter();
+                var currentVoter = currentVoterAccessor.TryGetCurrentVoter();
                 if (currentVoter is null) return false;
 
                 var vote = command.GetVote();
@@ -78,10 +79,22 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
 }
 
 // ReSharper disable once UnusedType.Global
-public sealed class CastVoteCommandHandler(IAppDbContext dbContext, IDateTimeProvider dateTimeProvider) : IRequestHandler<CastVoteCommand>
+public sealed class CastVoteCommandHandler(
+    IAppDbContext dbContext,
+    IMediator mediator,
+    ICurrentVoterAccessor currentVoterAccessor,
+    IDateTimeProvider dateTimeProvider) : IRequestHandler<CastVoteCommand>
 {
     public async Task Handle(CastVoteCommand request, CancellationToken ct)
     {
+        var voter = currentVoterAccessor.GetCurrentVoter();
+        var voterInfoQuery = new GetVoterInfoQuery(voter.Address);
+        var voterInfo = await mediator.Send(voterInfoQuery, ct);
+
+        var lastVote = voterInfo!.Votes.LastOrDefault();
+        if (lastVote is not null && dateTimeProvider.UtcNow - lastVote.Timestamp < TimeSpan.FromHours(12))
+            throw new ValidationException("User tried voting more than once in a 12 hour window.");
+
         var vote = request.GetVote();
 
         dbContext.Set<Vote>().Add(vote);
