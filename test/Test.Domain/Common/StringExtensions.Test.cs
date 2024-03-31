@@ -2,7 +2,7 @@
 
 namespace Test.Domain.Common;
 
-internal class StringExtensionsTest
+internal class StringExtTest
 {
     [Test]
     [Parallelizable]

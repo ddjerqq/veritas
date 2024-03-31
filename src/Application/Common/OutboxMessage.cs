@@ -1,4 +1,3 @@
-using System.ComponentModel.DataAnnotations;
 using Application.Common.Abstractions;
 using Domain.Abstractions;
 using Newtonsoft.Json;

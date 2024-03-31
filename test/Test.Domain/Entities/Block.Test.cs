@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using Domain.Common;
 using Domain.Entities;
 
 namespace Test.Domain.Entities;
@@ -13,7 +14,7 @@ internal class BlockTest
         var block = Block.GenesisBlock().NextBlock();
 
         for (int i = 0; i < 256; i++)
-            block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, 0));
+            block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
 
         var stopwatch = Stopwatch.StartNew();
         block.Mine();
@@ -37,14 +38,12 @@ internal class BlockTest
     [Parallelizable]
     public void TestCalculateMerkleRootForVotes()
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
         var block = Block.GenesisBlock();
 
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
 
         Console.WriteLine(block.MerkleRoot);
     }
@@ -53,14 +52,12 @@ internal class BlockTest
     [Parallelizable]
     public void TestHashBlockWithVotes()
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
         var block = Block.GenesisBlock();
 
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
 
         block.Mine();
 
@@ -76,14 +73,12 @@ internal class BlockTest
     [Parallelizable]
     public void TestHashBlockWithMaxVotes()
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
         var block = Block.GenesisBlock();
 
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
-        block.TryAddVote(Vote.NewVote(Voter.NewVoter(), 0, timestamp));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
 
         Console.WriteLine(block.MerkleRoot);
 

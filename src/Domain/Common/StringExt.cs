@@ -2,7 +2,7 @@
 
 namespace Domain.Common;
 
-public static class StringExtensions
+public static class StringExt
 {
     private static int GetHexVal(char hex) => hex - (hex < 58 ? 48 : hex < 97 ? 55 : 87);
 

@@ -1,10 +1,11 @@
 ﻿using System.Security.Cryptography;
 using Domain.Common;
-using Newtonsoft.Json;
+using SJsonIgnore = System.Text.Json.Serialization.JsonIgnoreAttribute;
+using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace Domain.Entities;
 
-public class Vote
+public sealed class Vote
 {
     private const int Difficulty = 6;
 
@@ -21,7 +22,10 @@ public class Vote
 
     public int PartyId { get; init; }
 
-    public long Timestamp { get; init; }
+    public DateTime Timestamp { get; init; }
+
+    [NJsonIgnore, SJsonIgnore]
+    public long UnixTimestampMs => Timestamp.ToUnixMs();
 
     public string Signature { get; init; } = default!;
 
@@ -29,22 +33,23 @@ public class Vote
 
     public long? BlockIndex { get; set; }
 
+    [NJsonIgnore, SJsonIgnore]
     public Block? Block { get; set; }
 
-    [JsonIgnore]
+    [NJsonIgnore, SJsonIgnore]
     public bool IsHashValid => Hash.StartsWith(new string('0', Difficulty));
 
-    [JsonIgnore]
+    [NJsonIgnore, SJsonIgnore]
     public bool IsSignatureValid => Voter.Verify(this.GetSignaturePayload(), Signature.ToBytesFromHex());
 
-    public static Vote NewVote(Voter voter, int partyId, long timestamp)
+    public static Vote NewVote(Voter voter, int partyId, DateTime timestamp)
     {
         return new Vote
         {
             Voter = voter,
             PartyId = partyId,
             Timestamp = timestamp,
-            Signature = voter.Sign(VoteExt.GetSignaturePayload(partyId, timestamp)).ToHexString(),
+            Signature = voter.Sign(VoteExt.GetSignaturePayload(partyId, timestamp.ToUnixMs())).ToHexString(),
         };
     }
 
@@ -68,15 +73,15 @@ public static class VoteExt
         return buffer.ToArray();
     }
 
-    public static byte[] GetSignaturePayload(this Vote vote) => GetSignaturePayload(vote.PartyId, vote.Timestamp);
+    public static byte[] GetSignaturePayload(this Vote vote) => GetSignaturePayload(vote.PartyId, vote.UnixTimestampMs);
 
     public static byte[] GetHashPayload(this Vote vote)
     {
         var buffer = new List<byte>();
-        buffer.AddRange(vote.Voter.Address.ToBytesFromHex());
+        buffer.AddRange(vote.Voter?.Address.ToBytesFromHex() ?? []);
         buffer.AddRange(vote.Signature.ToBytesFromHex());
         buffer.AddRange(BitConverter.GetBytes(vote.PartyId));
-        buffer.AddRange(BitConverter.GetBytes(vote.Timestamp));
+        buffer.AddRange(BitConverter.GetBytes(vote.UnixTimestampMs));
         buffer.AddRange(BitConverter.GetBytes(vote.Nonce));
         return buffer.ToArray();
     }

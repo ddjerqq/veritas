@@ -2,7 +2,7 @@
 
 namespace Domain.Common;
 
-public static class ByteArrayExtensions
+public static class ByteArrayExt
 {
     public static string ToHexString(this byte[] bytes) => BitConverter
         .ToString(bytes)

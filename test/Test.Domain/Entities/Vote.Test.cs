@@ -10,8 +10,7 @@ internal class VoteTest
     [Parallelizable]
     public void TestVoteHash()
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var vote = Vote.NewVote(Voter.NewVoter(), 0, timestamp);
+        var vote = Vote.NewVote(Voter.NewVoter(), 0, DateTime.UtcNow);
         var hash = vote.Hash;
 
         Console.WriteLine(hash);
@@ -22,8 +21,7 @@ internal class VoteTest
     [Parallelizable]
     public void TestVoteSignature()
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var vote = Vote.NewVote(Voter.NewVoter(), 0, timestamp);
+        var vote = Vote.NewVote(Voter.NewVoter(), 0, DateTime.UtcNow);
 
         Console.WriteLine($"Vote Hash: {vote.Hash}");
         Assert.That(vote.Hash, Is.Not.Null);
@@ -39,8 +37,7 @@ internal class VoteTest
     [NonParallelizable]
     public void TestVoteMine()
     {
-        var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var vote = Vote.NewVote(Voter.NewVoter(), 0, timestamp);
+        var vote = Vote.NewVote(Voter.NewVoter(), 0, DateTime.UtcNow);
 
         var watch = Stopwatch.StartNew();
         vote.Mine();

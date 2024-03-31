@@ -23,7 +23,6 @@ public class ConfigureApplication : IHostingStartup
         {
             services.AddTransient<IDateTimeProvider, UtcDateTimeProvider>();
 
-            services.AddGloballyCachedCurrentBlockAccessorSingleton();
             services.AddInMemoryProcessedVoteCacheSingleton();
 
             services.AddMediatR(options =>

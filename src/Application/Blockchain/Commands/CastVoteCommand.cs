@@ -1,13 +1,12 @@
 ﻿using Application.Common.Abstractions;
-using Application.Votes.Events;
 using Domain.Entities;
+using Domain.Events;
 using FluentValidation;
 using MediatR;
-using Microsoft.Extensions.Logging;
 
-namespace Application.Votes.Commands;
+namespace Application.Blockchain.Commands;
 
-public record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, long Timestamp, long Nonce) : IRequest<Vote>
+public sealed record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, DateTime Timestamp, long Nonce) : IRequest
 {
     public Vote GetVote()
     {
@@ -22,7 +21,8 @@ public record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId,
     }
 }
 
-public class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
+// ReSharper disable once UnusedType.Global
+public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
 {
     public CastVoteCommandValidator(ICurrentVoterAccessor currentVoterAccessor, IDateTimeProvider dateTimeProvider)
     {
@@ -48,10 +48,9 @@ public class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
         RuleFor(x => x.Timestamp)
             .Must(ts =>
             {
-                var dateProduced = DateTimeOffset.FromUnixTimeMilliseconds(ts).UtcDateTime;
                 var date = dateTimeProvider.UtcNow;
 
-                var offset = date - dateProduced;
+                var offset = date - ts;
                 return offset.TotalSeconds is > 0 and < 120;
             })
             .WithMessage("The timestamp must be no more than two minutes old");
@@ -77,42 +76,18 @@ public class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
     }
 }
 
-public class CastVoteCommandHandler(
-    IAppDbContext dbContext,
-    ILogger<VoteAddedEventHandler> logger,
-    IMediator mediator,
-    ICurrentBlockAccessor currentBlockAccessor) : IRequestHandler<CastVoteCommand, Vote>
+// ReSharper disable once UnusedType.Global
+public sealed class CastVoteCommandHandler(IAppDbContext dbContext, IDateTimeProvider dateTimeProvider) : IRequestHandler<CastVoteCommand>
 {
-    public async Task<Vote> Handle(CastVoteCommand request, CancellationToken ct)
+    public async Task Handle(CastVoteCommand request, CancellationToken ct)
     {
-        var currentBlock = await currentBlockAccessor.GetCurrentBlockAsync(ct);
-
-        // TODO this must never happen concurrently.
-        // have the CastVoteCommand just create and validate the vote,
-        // and then push it to the queue to process it synchronously.
-        if (currentBlock.Votes.Count >= 256)
-        {
-            var mineCurrentBlockCommand = new MineCurrentBlockCommand();
-            currentBlock = await mediator.Send(mineCurrentBlockCommand, ct);
-            // TODO we will no longer need this, after we implement a better, global cache.
-            currentBlockAccessor.SetCurrent(currentBlock);
-        }
-
         var vote = request.GetVote();
-        currentBlock.TryAddVote(vote);
+
         dbContext.Set<Vote>().Add(vote);
-        await dbContext.SaveChangesAsync(ct);
 
-        // dbContext.ClearChangeTracker();
-        dbContext.Set<Block>().Update(currentBlock);
-        // var success = dbContext.Set<Block>().TryUpdate(currentBlock);
-        // Console.WriteLine(success ? "updating entity success" : "updating entity failed ig?");
-
-        // var voteAddedEvent = new VoteAddedEvent(vote.Hash.ToHexString());
-        // dbContext.AddDomainEvent(voteAddedEvent, dateTimeProvider);
+        var voteAddedEvent = new VoteAddedEvent(vote.Hash);
+        dbContext.AddDomainEvent(voteAddedEvent, dateTimeProvider);
 
         await dbContext.SaveChangesAsync(ct);
-
-        return vote;
     }
 }

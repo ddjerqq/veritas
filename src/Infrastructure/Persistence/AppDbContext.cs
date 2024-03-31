@@ -55,6 +55,11 @@ public sealed class AppDbContext(
         }
     }
 
+    public void EnsureBlockchainIsConsistent()
+    {
+        throw new NotImplementedException("ensure all votes and all blocks are valid. all voters have atleast one vote");
+    }
+
     private static void SnakeCaseRename(ModelBuilder builder)
     {
         foreach (var entity in builder.Model.GetEntityTypes())

@@ -1,5 +1,6 @@
+using Application.Blockchain.Commands;
+using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
-using Application.Votes.Commands;
 using Domain.Common;
 using Domain.Entities;
 using MediatR;
@@ -21,8 +22,11 @@ public class ApiController(
     [HttpGet("new_identity")]
     public IActionResult NewIdentity()
     {
+        if (HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>() is var env && !env.IsDevelopment())
+            return NotFound();
+
         var voter = Voter.NewVoter();
-        var vote = Vote.NewVote(voter, 5, dateTimeProvider.UtcNowUnixTimeMilliseconds);
+        var vote = Vote.NewVote(voter, 5, dateTimeProvider.UtcNow);
         vote.Mine();
 
         return Ok(new
@@ -38,7 +42,7 @@ public class ApiController(
                 pkey = voter.PublicKey,
                 sig = vote.Signature,
                 party_id = vote.PartyId,
-                timestamp = vote.Timestamp,
+                timestamp = vote.UnixTimestampMs,
                 nonce = vote.Nonce,
             },
         });
@@ -59,10 +63,17 @@ public class ApiController(
             return BadRequest($"Tried processing the same vote twice: {command.Hash}");
         }
 
-        var vote = await mediator.Send(command, ct);
-        processedVotesCache.Add(vote.Hash);
-
+        processedVotesCache.Add(command.Hash);
+        await mediator.Send(command, ct);
         return Created();
+    }
+
+    [HttpGet("block")]
+    public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks(CancellationToken ct = default)
+    {
+        var query = new AllBlocksQuery();
+        var blocks = await mediator.Send(query, ct);
+        return Ok(blocks);
     }
 
     [HttpPost("vote_random")]
@@ -72,7 +83,7 @@ public class ApiController(
             return NotFound();
 
         var voter = Voter.NewVoter();
-        var vote = Vote.NewVote(voter, Random.Shared.Next(1, 100), dateTimeProvider.UtcNowUnixTimeMilliseconds);
+        var vote = Vote.NewVote(voter, Random.Shared.Next(1, 100), dateTimeProvider.UtcNow);
         vote.Mine();
 
         // override the test voter
@@ -82,16 +93,8 @@ public class ApiController(
             vote.Hash, voter.PublicKey, vote.Signature,
             vote.PartyId, vote.Timestamp, vote.Nonce);
 
-        if (processedVotesCache.Contains(command.Hash))
-        {
-            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
-            return BadRequest($"Tried processing the same vote twice: {command.Hash}");
-        }
-
-        vote = await mediator.Send(command, ct);
-        processedVotesCache.Add(vote.Hash);
+        await mediator.Send(command, ct);
 
         return Created();
     }
 }
-

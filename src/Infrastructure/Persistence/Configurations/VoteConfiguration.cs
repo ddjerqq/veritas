@@ -29,6 +29,8 @@ internal class VoteConfiguration : IEntityTypeConfiguration<Vote>
         builder.HasIndex(x => x.PartyId)
             .IsDescending(false);
 
+        builder.Ignore(x => x.UnixTimestampMs);
+
         builder.HasOne(x => x.Block)
             .WithMany(b => b.Votes)
             .HasForeignKey(x => x.BlockIndex)

@@ -1,6 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
 using Domain.Common;
+using SJsonIgnore = System.Text.Json.Serialization.JsonIgnoreAttribute;
+using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace Domain.Entities;
 
@@ -21,8 +23,6 @@ public class Block
         private init => _ = value;
     }
 
-    public string PreviousHash { get; init; } = default!;
-
     public string MerkleRoot
     {
         get => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash.ToBytesFromHex())).ToHexString();
@@ -30,21 +30,22 @@ public class Block
         private init => _ = value;
     }
 
+    public string PreviousHash { get; init; } = default!;
+
     public IReadOnlyCollection<Vote> Votes => _votes.AsReadOnly();
 
+    [NJsonIgnore, SJsonIgnore]
     public bool IsHashValid => Hash.StartsWith(new string('0', Difficulty));
 
-    public bool TryAddVote(Vote vote)
+    public void AddVote(Vote vote)
     {
         if (!vote.IsHashValid || !vote.IsSignatureValid)
-            return false;
+            throw new InvalidOperationException("Invalid vote, either the hash or the signature is not valid");
 
         vote.Block = this;
         vote.BlockIndex = Index;
 
         _votes.Add(vote);
-
-        return true;
     }
 
     public void Mine()

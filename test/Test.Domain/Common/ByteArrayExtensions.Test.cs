@@ -2,7 +2,7 @@
 
 namespace Test.Domain.Common;
 
-internal class ByteArrayExtensionsTest
+internal class ByteArrayExtTest
 {
     [Test]
     [Parallelizable]

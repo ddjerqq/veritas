@@ -1,7 +1,8 @@
 ﻿using System.Security.Cryptography;
 using Domain.Common;
-using Newtonsoft.Json;
 using Serilog;
+using SJsonIgnore = System.Text.Json.Serialization.JsonIgnoreAttribute;
+using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace Domain.Entities;
 
@@ -18,7 +19,7 @@ public sealed class Voter : IDisposable
 
     public string PublicKey { get; init; } = default!;
 
-    [JsonIgnore]
+    [NJsonIgnore, SJsonIgnore]
     public string? PrivateKey { get; init; }
 
     public static Voter NewVoter()

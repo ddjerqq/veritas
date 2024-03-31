@@ -45,7 +45,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(128)
+                        .HasMaxLength(256)
                         .HasColumnType("TEXT")
                         .HasColumnName("type");
 
@@ -55,7 +55,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("outbox_message");
                 });
 
-            modelBuilder.Entity("Application.Dtos.Block", b =>
+            modelBuilder.Entity("Domain.Entities.Block", b =>
                 {
                     b.Property<long>("Index")
                         .HasColumnType("INTEGER")
@@ -63,11 +63,13 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("Hash")
                         .IsRequired()
+                        .HasMaxLength(64)
                         .HasColumnType("TEXT")
                         .HasColumnName("hash");
 
                     b.Property<string>("MerkleRoot")
                         .IsRequired()
+                        .HasMaxLength(64)
                         .HasColumnType("TEXT")
                         .HasColumnName("mrkl_root");
 
@@ -77,6 +79,7 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("PreviousHash")
                         .IsRequired()
+                        .HasMaxLength(64)
                         .HasColumnType("TEXT")
                         .HasColumnName("previous_hash");
 
@@ -90,13 +93,14 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("block");
                 });
 
-            modelBuilder.Entity("Application.Dtos.Vote", b =>
+            modelBuilder.Entity("Domain.Entities.Vote", b =>
                 {
                     b.Property<string>("Hash")
+                        .HasMaxLength(64)
                         .HasColumnType("TEXT")
                         .HasColumnName("hash");
 
-                    b.Property<long>("BlockIndex")
+                    b.Property<long?>("BlockIndex")
                         .HasColumnType("INTEGER")
                         .HasColumnName("block_index");
 
@@ -119,13 +123,9 @@ namespace Infrastructure.Persistence.Migrations
 
                     b.Property<string>("VoterAddress")
                         .IsRequired()
+                        .HasMaxLength(44)
                         .HasColumnType("TEXT")
-                        .HasColumnName("voter_address");
-
-                    b.Property<string>("VoterPubKey")
-                        .IsRequired()
-                        .HasColumnType("TEXT")
-                        .HasColumnName("voter_pub_key");
+                        .HasColumnName("addr");
 
                     b.HasKey("Hash")
                         .HasName("p_k_vote");
@@ -137,25 +137,54 @@ namespace Infrastructure.Persistence.Migrations
                         .HasDatabaseName("i_x_vote_party_id");
 
                     b.HasIndex("VoterAddress")
-                        .IsUnique()
-                        .HasDatabaseName("i_x_vote_voter_address");
+                        .HasDatabaseName("i_x_vote_addr");
 
                     b.ToTable("vote");
                 });
 
-            modelBuilder.Entity("Application.Dtos.Vote", b =>
+            modelBuilder.Entity("Domain.Entities.Voter", b =>
                 {
-                    b.HasOne("Application.Dtos.Block", "Block")
-                        .WithMany("Votes")
-                        .HasForeignKey("BlockIndex")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
-                        .HasConstraintName("f_k_vote_block_block_index");
+                    b.Property<string>("Address")
+                        .HasMaxLength(44)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("addr");
 
-                    b.Navigation("Block");
+                    b.Property<string>("PublicKey")
+                        .IsRequired()
+                        .HasMaxLength(182)
+                        .HasColumnType("TEXT")
+                        .HasColumnName("pkey");
+
+                    b.HasKey("Address")
+                        .HasName("p_k_voter");
+
+                    b.HasIndex("PublicKey")
+                        .IsUnique()
+                        .HasDatabaseName("i_x_voter_pkey");
+
+                    b.ToTable("voter");
                 });
 
-            modelBuilder.Entity("Application.Dtos.Block", b =>
+            modelBuilder.Entity("Domain.Entities.Vote", b =>
+                {
+                    b.HasOne("Domain.Entities.Block", "Block")
+                        .WithMany("Votes")
+                        .HasForeignKey("BlockIndex")
+                        .HasConstraintName("f_k_vote_block_block_index");
+
+                    b.HasOne("Domain.Entities.Voter", "Voter")
+                        .WithMany()
+                        .HasForeignKey("VoterAddress")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("f_k_vote__voter_addr");
+
+                    b.Navigation("Block");
+
+                    b.Navigation("Voter");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Block", b =>
                 {
                     b.Navigation("Votes");
                 });
