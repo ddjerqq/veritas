@@ -2,7 +2,7 @@
 using Application.Abstractions;
 using Application.Dtos;
 using Application.Votes.Events;
-using Domain.Aggregates;
+using Domain.Entities;
 using Domain.Events;
 using MediatR;
 using Microsoft.Extensions.Logging;

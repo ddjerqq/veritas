@@ -1,8 +1,8 @@
 using Application.Abstractions;
 using Application.Common;
 using Application.Dtos;
-using Domain.Aggregates;
 using Domain.Common;
+using Domain.Entities;
 using Infrastructure.Persistence.Interceptors;
 using Infrastructure.Persistence.ValueConverters;
 using Microsoft.EntityFrameworkCore;

@@ -1,10 +1,8 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
 using Domain.Common;
-using Domain.Entities;
-using Domain.ValueObjects;
 
-namespace Domain.Aggregates;
+namespace Domain.Entities;
 
 public record Block
 {
