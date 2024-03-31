@@ -1,5 +1,5 @@
 ﻿using System.Diagnostics;
-using Application.Abstractions;
+using Application.Common.Abstractions;
 using Application.Votes.Events;
 using Domain.Entities;
 using Domain.Events;

@@ -1,4 +1,4 @@
-using Application.Abstractions;
+using Application.Common.Abstractions;
 using Infrastructure.Persistence;
 using Infrastructure.Persistence.Interceptors;
 using Microsoft.AspNetCore.Hosting;

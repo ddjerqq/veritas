@@ -1,5 +1,5 @@
-using Application.Abstractions;
 using Application.Common;
+using Application.Common.Abstractions;
 using Domain.Common;
 using Domain.Entities;
 using Infrastructure.Persistence.Interceptors;
@@ -18,8 +18,6 @@ public sealed class AppDbContext(
     public DbSet<Vote> Votes => Set<Vote>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
-
-    public void ClearChangeTracker() => ChangeTracker.Clear();
 
     protected override void OnModelCreating(ModelBuilder builder)
     {

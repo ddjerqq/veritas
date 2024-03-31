@@ -1,4 +1,4 @@
-using Application.Abstractions;
+using Application.Common.Abstractions;
 using Application.Votes.Commands;
 using Domain.Common;
 using Domain.Entities;

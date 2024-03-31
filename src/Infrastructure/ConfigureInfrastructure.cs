@@ -1,5 +1,5 @@
 using System.Threading.RateLimiting;
-using Application.Abstractions;
+using Application.Common.Abstractions;
 using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Idempotency;

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Application.Abstractions;
+namespace Application.Common.Abstractions;
 
 public abstract class RequestValidator<T> : AbstractValidator<T>
 {

@@ -1,6 +1,6 @@
 using Application;
-using Application.Abstractions;
-using Application.Behaviours;
+using Application.Common.Abstractions;
+using Application.Common.Behaviours;
 using Application.Services;
 using MediatR;
 using Microsoft.AspNetCore.Hosting;

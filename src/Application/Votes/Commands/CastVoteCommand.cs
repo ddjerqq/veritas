@@ -1,4 +1,4 @@
-﻿using Application.Abstractions;
+﻿using Application.Common.Abstractions;
 using Application.Votes.Events;
 using Domain.Entities;
 using FluentValidation;
@@ -94,7 +94,6 @@ public class CastVoteCommandHandler(
         {
             var mineCurrentBlockCommand = new MineCurrentBlockCommand();
             currentBlock = await mediator.Send(mineCurrentBlockCommand, ct);
-            currentBlock = currentBlock;
             // TODO we will no longer need this, after we implement a better, global cache.
             currentBlockAccessor.SetCurrent(currentBlock);
         }
@@ -104,7 +103,7 @@ public class CastVoteCommandHandler(
         dbContext.Set<Vote>().Add(vote);
         await dbContext.SaveChangesAsync(ct);
 
-        dbContext.ClearChangeTracker();
+        // dbContext.ClearChangeTracker();
         dbContext.Set<Block>().Update(currentBlock);
         // var success = dbContext.Set<Block>().TryUpdate(currentBlock);
         // Console.WriteLine(success ? "updating entity success" : "updating entity failed ig?");
