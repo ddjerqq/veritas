@@ -1,7 +1,6 @@
 ﻿using Application.Dtos;
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 
 namespace Test.Application.Dtos;
 
@@ -11,7 +10,7 @@ internal class BlockDtoTest
     [Parallelizable]
     public void TestConversion()
     {
-        var block = Block.Genesis();
+        var block = Block.GenesisBlock();
 
         var blockDto = (BlockDto)block;
         Console.WriteLine(blockDto);
@@ -25,16 +24,19 @@ internal class BlockDtoTest
         Assert.That(block.MerkleRoot, Is.EqualTo(convertedBack.MerkleRoot));
         Assert.That(block.PreviousHash, Is.EqualTo(convertedBack.PreviousHash));
 
-        for (int i = 0; i < block.Votes.Count; i++)
+        var votes = block.Votes.ToList();
+        var convertedVotes = convertedBack.Votes.ToList();
+
+        for (var i = 0; i < votes.Count; i++)
         {
-            var vote = block.Votes[i];
-            var converted = convertedBack.Votes[i];
+            var vote = votes[i];
+            var converted = convertedVotes[i];
 
             Assert.That(vote.Hash.ArrayEquals(converted.Hash));
             Assert.That(vote.Voter, Is.EqualTo(converted.Voter));
             Assert.That(vote.PartyId, Is.EqualTo(converted.PartyId));
             Assert.That(vote.Timestamp, Is.EqualTo(converted.Timestamp));
-            Assert.That(vote.Signature.ArrayEquals(converted.Signature));
+            Assert.That(vote.Signature, Is.EqualTo(converted.Signature));
         }
     }
 
@@ -43,15 +45,15 @@ internal class BlockDtoTest
     [Parallelizable]
     public void TestConversionOfComplexBlock()
     {
-        var block = Block.Genesis().Next();
-        for (int i = 0; i < Block.VoteLimit; i++)
+        var block = Block.GenesisBlock().NextBlock();
+        for (int i = 0; i < 4; i++)
         {
-            var vote = new Vote(Voter.NewVoter(), 5, 5);
-            vote = vote.Mine();
+            var vote = Vote.NewVote(Voter.NewVoter(), 5, 5);
+            vote.Mine();
             Assert.That(block.TryAddVote(vote), Is.True);
         }
 
-        block = block.Mine();
+        block.Mine();
         Console.WriteLine(block.Votes.Count);
 
         var blockDto = (BlockDto)block;
@@ -67,16 +69,19 @@ internal class BlockDtoTest
         Assert.That(block.MerkleRoot, Is.EqualTo(convertedBack.MerkleRoot));
         Assert.That(block.PreviousHash, Is.EqualTo(convertedBack.PreviousHash));
 
-        for (int i = 0; i < block.Votes.Count; i++)
+        var votes = block.Votes.ToList();
+        var convertedVotes = convertedBack.Votes.ToList();
+
+        for (int i = 0; i < votes.Count; i++)
         {
-            var vote = block.Votes[i];
-            var converted = convertedBack.Votes[i];
+            var vote = votes[i];
+            var converted = convertedVotes[i];
 
             Assert.That(vote.Hash.ArrayEquals(converted.Hash));
             Assert.That(vote.Voter, Is.EqualTo(converted.Voter));
             Assert.That(vote.PartyId, Is.EqualTo(converted.PartyId));
             Assert.That(vote.Timestamp, Is.EqualTo(converted.Timestamp));
-            Assert.That(vote.Signature.ArrayEquals(converted.Signature));
+            Assert.That(vote.Signature, Is.EqualTo(converted.Signature));
         }
     }
 }

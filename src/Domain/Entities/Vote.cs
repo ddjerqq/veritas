@@ -1,12 +1,21 @@
-﻿using System.Diagnostics.Contracts;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using Domain.Common;
+using Newtonsoft.Json;
 
 namespace Domain.Entities;
 
-public record Vote()
+public class Vote
 {
     private const int Difficulty = 6;
+
+    public byte[] Hash
+    {
+        get => SHA256.HashData(this.GetHashPayload());
+        // ReSharper disable once UnusedMember.Local for EF Core
+        private init => _ = value;
+    }
+
+    public string VoterAddress { get; init; } = default!;
 
     public Voter Voter { get; init; } = default!;
 
@@ -14,66 +23,61 @@ public record Vote()
 
     public long Timestamp { get; init; }
 
-    public byte[] Signature { get; init; } = default!;
+    public string Signature { get; init; } = default!;
 
-    public long Nonce { get; init; }
+    public long Nonce { get; set; }
 
-    public byte[] Hash => SHA256.HashData(HashPayload);
+    public long? BlockIndex { get; set; }
 
-    public long BlockIndex { get; set; }  // for ef-core.
+    public Block? Block { get; set; }
 
+    [JsonIgnore]
     public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
 
-    public bool IsSignatureValid => Voter.Verify(SignaturePayload, Signature);
+    [JsonIgnore]
+    public bool IsSignatureValid => Voter.Verify(this.GetSignaturePayload(), Signature.ToBytesFromHex());
 
-    public Vote(Voter voter, int partyId, long timestamp) : this()
+    public static Vote NewVote(Voter voter, int partyId, long timestamp)
     {
-        Voter = voter;
-        PartyId = partyId;
-        Timestamp = timestamp;
-
-        Signature = voter.HasPrivateKey
-            ? voter.Sign(SignaturePayload)
-            : Signature;
-    }
-
-    public bool VerifySignature(byte[] sig) => Voter.Verify(SignaturePayload, sig);
-
-    /// <summary>
-    /// This will mine the vote on the client side, as proof of work.
-    /// this is an attempt at a prevention of the sybil attack counter
-    /// </summary>
-    /// <returns>Mined Vote</returns>
-    [Pure]
-    public Vote Mine()
-    {
-        if (IsHashValid) return this;
-        var foundNonce = Miner.Mine(HashPayload, Difficulty);
-        return this with { Nonce = foundNonce };
-    }
-
-    public byte[] SignaturePayload
-    {
-        get
+        return new Vote
         {
-            var buffer = new List<byte>();
-            buffer.AddRange(BitConverter.GetBytes(PartyId));
-            buffer.AddRange(BitConverter.GetBytes(Timestamp));
-            return buffer.ToArray();
-        }
+            Voter = voter,
+            PartyId = partyId,
+            Timestamp = timestamp,
+            Signature = voter.Sign(VoteExt.GetSignaturePayload(partyId, timestamp)).ToHexString(),
+        };
     }
 
-    private byte[] HashPayload
+    public bool VerifySignature(byte[] sig) => Voter.Verify(this.GetSignaturePayload(), sig);
+
+    public void Mine()
     {
-        get
-        {
-            var buffer = new List<byte>();
-            buffer.AddRange(Voter.Address.ToBytesFromHex());
-            buffer.AddRange(Signature);
-            buffer.AddRange(BitConverter.GetBytes(PartyId));
-            buffer.AddRange(BitConverter.GetBytes(Timestamp));
-            buffer.AddRange(BitConverter.GetBytes(Nonce));
-            return buffer.ToArray();
-        }
+        if (IsHashValid) return;
+        var foundNonce = Miner.Mine(this.GetHashPayload(), Difficulty);
+        Nonce = foundNonce;
+    }
+}
+
+public static class VoteExt
+{
+    public static byte[] GetSignaturePayload(int partyId, long timestamp)
+    {
+        var buffer = new List<byte>();
+        buffer.AddRange(BitConverter.GetBytes(partyId));
+        buffer.AddRange(BitConverter.GetBytes(timestamp));
+        return buffer.ToArray();
+    }
+
+    public static byte[] GetSignaturePayload(this Vote vote) => GetSignaturePayload(vote.PartyId, vote.Timestamp);
+
+    public static byte[] GetHashPayload(this Vote vote)
+    {
+        var buffer = new List<byte>();
+        buffer.AddRange(vote.Voter.Address.ToBytesFromHex());
+        buffer.AddRange(vote.Signature.ToBytesFromHex());
+        buffer.AddRange(BitConverter.GetBytes(vote.PartyId));
+        buffer.AddRange(BitConverter.GetBytes(vote.Timestamp));
+        buffer.AddRange(BitConverter.GetBytes(vote.Nonce));
+        return buffer.ToArray();
     }
 }

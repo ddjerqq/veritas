@@ -25,14 +25,14 @@ public class MineCurrentBlockCommandHandler(
 
         // MINE AND TIME
         var stopwatch = Stopwatch.StartNew();
-        currentBlock = currentBlock.Mine();
+        currentBlock.Mine();
         stopwatch.Stop();
         logger.LogInformation("new block mined in {Elapsed:c}", stopwatch.Elapsed);
 
         currentBlockDto.CopyFrom(currentBlock);
         dbContext.Set<BlockDto>().Update(currentBlockDto);
 
-        var next = currentBlock.Next();
+        var next = currentBlock.NextBlock();
         blockCache.SetCurrent(next);
         dbContext.Set<BlockDto>().Add(next);
 

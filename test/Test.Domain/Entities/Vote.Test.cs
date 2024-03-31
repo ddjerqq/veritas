@@ -1,7 +1,6 @@
 ﻿using System.Diagnostics;
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 
 namespace Test.Domain.Entities;
 
@@ -12,7 +11,7 @@ internal class VoteTest
     public void TestVoteHash()
     {
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var vote = new Vote(Voter.NewVoter(), 0, timestamp);
+        var vote = Vote.NewVote(Voter.NewVoter(), 0, timestamp);
         var hash = vote.Hash.ToHexString();
 
         Console.WriteLine(hash);
@@ -24,15 +23,15 @@ internal class VoteTest
     public void TestVoteSignature()
     {
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var vote = new Vote(Voter.NewVoter(), 0, timestamp);
+        var vote = Vote.NewVote(Voter.NewVoter(), 0, timestamp);
 
         Console.WriteLine($"Vote Hash: {vote.Hash.ToHexString()}");
         Assert.That(vote.Hash.ToHexString(), Is.Not.Null);
 
-        Console.WriteLine($"Vote Signature: {vote.Signature.ToHexString()}");
-        Assert.That(vote.Signature.ToHexString(), Is.Not.Null);
+        Console.WriteLine($"Vote Signature: {vote.Signature}");
+        Assert.That(vote.Signature, Is.Not.Null);
 
-        var isValid = vote.VerifySignature(vote.Signature);
+        var isValid = vote.VerifySignature(vote.Signature.ToBytesFromHex());
         Assert.That(isValid, Is.True);
     }
 
@@ -41,17 +40,17 @@ internal class VoteTest
     public void TestVoteMine()
     {
         var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-        var vote = new Vote(Voter.NewVoter(), 0, timestamp);
+        var vote = Vote.NewVote(Voter.NewVoter(), 0, timestamp);
 
         var watch = Stopwatch.StartNew();
-        var minedVote = vote.Mine();
+        vote.Mine();
         watch.Stop();
 
-        Console.WriteLine(minedVote.Nonce.ToString("N0"));
+        Console.WriteLine(vote.Nonce.ToString("N0"));
         Console.WriteLine(watch.Elapsed.ToString("c"));
-        Console.WriteLine(minedVote);
-        Console.WriteLine(minedVote.Hash.ToHexString());
+        Console.WriteLine(vote);
+        Console.WriteLine(vote.Hash.ToHexString());
 
-        Assert.That(minedVote.IsHashValid, Is.True);
+        Assert.That(vote.IsHashValid, Is.True);
     }
 }

@@ -4,83 +4,79 @@ using Domain.Common;
 
 namespace Domain.Entities;
 
-public record Block
+public class Block
 {
     private const int Difficulty = 6;
 
-    /// <summary>
-    /// The number of votes allowed in one block, the less this number, the more fault-tolerant the app will be,
-    /// because we do not store votes that have not been added to the blockchain yet.
-    /// </summary>
-    public const int VoteLimit = 128;
+    private readonly List<Vote> _votes = [];
 
     public long Index { get; init; }
 
-    public long Nonce { get; init; }
+    public long Nonce { get; private set; }
 
-    public byte[] PreviousHash { get; init; } = new byte[32];
+    public string Hash
+    {
+        get => SHA256.HashData(this.GetHashPayload()).ToHexString();
+        // ReSharper disable once UnusedMember.Local for EF Core
+        private init => _ = value;
+    }
 
-    public List<Vote> Votes { get; init; } = [];
+    public string PreviousHash { get; init; } = default!;
 
-    public byte[] MerkleRoot => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash).ToList());
+    public string MerkleRoot
+    {
+        get => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash).ToList()).ToHexString();
+        // ReSharper disable once UnusedMember.Local for EF Core
+        private init => _ = value;
+    }
 
-    public byte[] Hash => SHA256.HashData(HashPayload);
+    public IReadOnlyCollection<Vote> Votes => _votes.AsReadOnly();
 
-    public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
+    public bool IsHashValid => Hash.StartsWith(new string('0', Difficulty));
 
     public bool TryAddVote(Vote vote)
     {
-        if (Votes.Count >= VoteLimit || !vote.IsHashValid || !vote.IsSignatureValid)
+        if (!vote.IsHashValid || !vote.IsSignatureValid)
             return false;
 
+        vote.Block = this;
         vote.BlockIndex = Index;
-        Votes.Add(vote);
+
+        _votes.Add(vote);
 
         return true;
     }
 
-    [Pure]
-    public Block Mine()
+    public void Mine()
     {
-        if (IsHashValid) return this;
-        var foundNonce = Miner.Mine(HashPayload, Difficulty);
-        return this with { Nonce = foundNonce };
+        if (IsHashValid) return;
+        Nonce = Miner.Mine(this.GetHashPayload(), Difficulty);
     }
 
     [Pure]
-    public Block Next()
+    public Block NextBlock() => new()
     {
-        return this with
-        {
-            Index = Index + 1,
-            Nonce = 0,
-            Votes = [],
-            PreviousHash = Hash,
-        };
-    }
+        Index = Index + 1,
+        PreviousHash = Hash,
+    };
 
-    public static Block Genesis()
+    public static Block GenesisBlock() => new()
     {
-        var block = new Block
-        {
-            Index = 0,
-            Nonce = 14261917,
-            PreviousHash = new byte[32],
-        };
+        Index = 0,
+        Nonce = 14261917,
+        PreviousHash = new string('0', 64),
+    };
+}
 
-        return block;
-    }
-
-    private byte[] HashPayload
+public static class BlockExt
+{
+    public static byte[] GetHashPayload(this Block block)
     {
-        get
-        {
-            var buffer = new List<byte>();
-            buffer.AddRange(BitConverter.GetBytes(Index));
-            buffer.AddRange(PreviousHash);
-            buffer.AddRange(MerkleRoot);
-            buffer.AddRange(BitConverter.GetBytes(Nonce));
-            return buffer.ToArray();
-        }
+        var buffer = new List<byte>();
+        buffer.AddRange(BitConverter.GetBytes(block.Index));
+        buffer.AddRange(block.PreviousHash.ToBytesFromHex());
+        buffer.AddRange(block.MerkleRoot.ToBytesFromHex());
+        buffer.AddRange(BitConverter.GetBytes(block.Nonce));
+        return buffer.ToArray();
     }
 }

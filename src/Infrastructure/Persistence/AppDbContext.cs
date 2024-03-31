@@ -48,8 +48,8 @@ public sealed class AppDbContext(
     {
         if (!Blocks.AsNoTracking().Any())
         {
-            var genesis = Block.Genesis();
-            var next = genesis.Next();
+            var genesis = Block.GenesisBlock();
+            var next = genesis.NextBlock();
 
             Blocks.Add(genesis);
             Blocks.Add(next);

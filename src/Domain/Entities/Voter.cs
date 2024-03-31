@@ -1,22 +1,25 @@
 ﻿using System.Security.Cryptography;
 using Domain.Common;
+using Newtonsoft.Json;
 using Serilog;
 
 namespace Domain.Entities;
 
-// ReSharper disable MemberCanBePrivate.Global for json serialization
-public record Voter : IDisposable
+public sealed class Voter : IDisposable
 {
-    private ECDsa Dsa { get; set; } = default!;
+    private ECDsa Dsa { get; init; } = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
-    public bool HasPrivateKey { get; init; }
+    public string Address
+    {
+        get => "0x" + SHA256.HashData(PublicKey.ToBytesFromHex()).ToHexString()[22..64];
+        // ReSharper disable once UnusedMember.Local for EF Core
+        private init => _ = value;
+    }
 
-    public string Address => "0x" + SHA256.HashData(PublicKey).ToHexString()[22..64];
+    public string PublicKey { get; init; } = default!;
 
-    public byte[] PublicKey { get; init; } = default!;
-
-    // ReSharper disable once UnusedAutoPropertyAccessor.Global this will come in handy when saving the privatekey to the users local storage.
-    public byte[]? PrivateKey { get; init; }
+    [JsonIgnore]
+    public string? PrivateKey { get; init; }
 
     public static Voter NewVoter()
     {
@@ -25,22 +28,18 @@ public record Voter : IDisposable
         return new Voter
         {
             Dsa = dsa,
-            PublicKey = dsa.ExportSubjectPublicKeyInfo(),
-            PrivateKey = dsa.ExportPkcs8PrivateKey(),
-            HasPrivateKey = true,
+            PublicKey = dsa.ExportSubjectPublicKeyInfo().ToHexString(),
+            PrivateKey = dsa.ExportPkcs8PrivateKey().ToHexString(),
         };
     }
 
-    public static Voter FromPubKey(byte[] publicKey)
+    public static Voter FromPublicKey(string publicKey)
     {
         var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
         try
         {
-            dsa.ImportSubjectPublicKeyInfo(publicKey, out var pKeyBytesRead);
-
-            if (publicKey.Length != pKeyBytesRead)
-                throw new InvalidOperationException($"Invalid public key length, read {pKeyBytesRead} but the key is {publicKey.Length}");
+            dsa.ImportSubjectPublicKeyInfo(publicKey.ToBytesFromHex(), out _);
         }
         catch (CryptographicException ex)
         {
@@ -51,8 +50,7 @@ public record Voter : IDisposable
         var voter = new Voter
         {
             Dsa = dsa,
-            PublicKey = dsa.ExportSubjectPublicKeyInfo(),
-            HasPrivateKey = false,
+            PublicKey = publicKey,
         };
 
         return voter;
@@ -60,30 +58,18 @@ public record Voter : IDisposable
 
     public byte[] Sign(byte[] data)
     {
-        if (!HasPrivateKey) throw new InvalidOperationException("Cannot sign without private key");
+        if (string.IsNullOrWhiteSpace(PrivateKey)) throw new InvalidOperationException("Cannot sign without private key");
         return Dsa.SignData(data, HashAlgorithmName.SHA512);
     }
 
     public bool Verify(byte[] data, byte[] signature)
     {
-        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-        if (Dsa is not null) return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
-
-        // if we serialize from json back to memory, then Dsa will not be set, so we will need to create it.
-        Dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-        Dsa.ImportSubjectPublicKeyInfo(PublicKey, out _);
-
+        Dsa.ImportSubjectPublicKeyInfo(PublicKey.ToBytesFromHex(), out _);
         return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
     }
 
-    public override int GetHashCode() => Address.GetHashCode();
-
-    public virtual bool Equals(Voter? other)
+    public void Dispose()
     {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return Address == other.Address;
+        Dsa.Dispose();
     }
-
-    public void Dispose() => Dsa.Dispose();
 }

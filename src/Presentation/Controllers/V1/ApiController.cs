@@ -22,21 +22,21 @@ public class ApiController(
     public IActionResult NewIdentity()
     {
         var voter = Voter.NewVoter();
-        var vote = new Vote(voter, 5, dateTimeProvider.UtcNowUnixTimeMilliseconds);
-        vote = vote.Mine();
+        var vote = Vote.NewVote(voter, 5, dateTimeProvider.UtcNowUnixTimeMilliseconds);
+        vote.Mine();
 
         return Ok(new
         {
             addr = voter.Address,
 
-            pkey = voter.PublicKey.ToHexString(),
+            pkey = voter.PublicKey,
             addr_signed = voter.Sign(voter.Address.ToBytesFromHex()).ToHexString(),
 
             vote = new
             {
                 hash = vote.Hash.ToHexString(),
-                pkey = voter.PublicKey.ToHexString(),
-                sig = vote.Signature.ToHexString(),
+                pkey = voter.PublicKey,
+                sig = vote.Signature,
                 party_id = vote.PartyId,
                 timestamp = vote.Timestamp,
                 nonce = vote.Nonce,
@@ -72,18 +72,15 @@ public class ApiController(
             return NotFound();
 
         var voter = Voter.NewVoter();
-        var minedVote = new Vote(voter, Random.Shared.Next(1, 100), dateTimeProvider.UtcNowUnixTimeMilliseconds).Mine();
+        var vote = Vote.NewVote(voter, Random.Shared.Next(1, 100), dateTimeProvider.UtcNowUnixTimeMilliseconds);
+        vote.Mine();
 
         // override the test voter
         HttpContext.Items[nameof(Voter)] = voter;
 
         var command = new CastVoteCommand(
-            minedVote.Hash.ToHexString(),
-            voter.PublicKey.ToHexString(),
-            minedVote.Signature.ToHexString(),
-            minedVote.PartyId,
-            minedVote.Timestamp,
-            minedVote.Nonce);
+            vote.Hash.ToHexString(), voter.PublicKey, vote.Signature,
+            vote.PartyId, vote.Timestamp, vote.Nonce);
 
         if (processedVotesCache.Contains(command.Hash))
         {
@@ -91,7 +88,7 @@ public class ApiController(
             return BadRequest($"Tried processing the same vote twice: {command.Hash}");
         }
 
-        var vote = await mediator.Send(command, ct);
+        vote = await mediator.Send(command, ct);
         processedVotesCache.Add(vote.Hash.ToHexString());
 
         return Created();

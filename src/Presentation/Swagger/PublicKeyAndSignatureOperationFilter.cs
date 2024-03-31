@@ -17,8 +17,8 @@ public class PublicKeyAndSignatureOperationFilter : IOperationFilter
         var bob = Voter.NewVoter();
         var exampleVoters = new Dictionary<string, (string PubKey, string Sig)>
         {
-            ["alice"] = (alice.PublicKey.ToHexString(), alice.Sign(alice.Address.ToBytesFromHex()).ToHexString()),
-            ["bob"] = (bob.PublicKey.ToHexString(), bob.Sign(bob.Address.ToBytesFromHex()).ToHexString()),
+            ["alice"] = (alice.PublicKey, alice.Sign(alice.Address.ToBytesFromHex()).ToHexString()),
+            ["bob"] = (bob.PublicKey, bob.Sign(bob.Address.ToBytesFromHex()).ToHexString()),
         };
 
         operation.Parameters.Add(new OpenApiParameter

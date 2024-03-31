@@ -25,44 +25,46 @@ public record VoteDto
 
     public static explicit operator Vote(VoteDto source)
     {
-        var vote = new Vote
-        {
-            Voter = Voter.FromPubKey(source.VoterPubKey.ToBytesFromHex()),
-            PartyId = source.PartyId,
-            Timestamp = new DateTimeOffset(source.Timestamp).ToUnixTimeMilliseconds(),
-            Signature = source.Signature.ToBytesFromHex(),
-            Nonce = source.Nonce,
-            BlockIndex = source.BlockIndex,
-        };
-
-        if (!vote.IsHashValid)
-            throw new InvalidOperationException(
-                $"failed to convert Vote, the hash is not valid. Missing proof of work. was: {vote.Hash.ToHexString()}");
-
-        if (!vote.IsSignatureValid)
-            throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Hash.ToHexString()}");
-
-        if (source.Hash != vote.Hash.ToHexString())
-            throw new InvalidOperationException($"failed to convert Vote, Invalid hash, expected: {vote.Hash.ToHexString()} but was: {source.Hash}");
-
-        if (!vote.VerifySignature(source.Signature.ToBytesFromHex()))
-            throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Signature.ToHexString()}");
-
-        return vote;
+        // var vote = new Vote
+        // {
+        //     Voter = Voter.FromPublicKey(source.VoterPubKey),
+        //     PartyId = source.PartyId,
+        //     Timestamp = new DateTimeOffset(source.Timestamp).ToUnixTimeMilliseconds(),
+        //     Signature = source.Signature.ToBytesFromHex(),
+        //     Nonce = source.Nonce,
+        //     BlockIndex = source.BlockIndex,
+        // };
+        //
+        // if (!vote.IsHashValid)
+        //     throw new InvalidOperationException(
+        //         $"failed to convert Vote, the hash is not valid. Missing proof of work. was: {vote.Hash.ToHexString()}");
+        //
+        // if (!vote.IsSignatureValid)
+        //     throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Hash.ToHexString()}");
+        //
+        // if (source.Hash != vote.Hash.ToHexString())
+        //     throw new InvalidOperationException($"failed to convert Vote, Invalid hash, expected: {vote.Hash.ToHexString()} but was: {source.Hash}");
+        //
+        // if (!vote.VerifySignature(source.Signature.ToBytesFromHex()))
+        //     throw new InvalidOperationException($"failed to convert Vote, Invalid signature. was: {vote.Signature.ToHexString()}");
+        //
+        // return vote;
+        throw new NotImplementedException();
     }
 
     public static implicit operator VoteDto(Vote source)
     {
-        return new VoteDto
-        {
-            Hash = source.Hash.ToHexString(),
-            VoterAddress = source.Voter.Address,
-            VoterPubKey = source.Voter.PublicKey.ToHexString(),
-            PartyId = source.PartyId,
-            Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(source.Timestamp).UtcDateTime,
-            Signature = source.Signature.ToHexString(),
-            BlockIndex = source.BlockIndex,
-            Nonce = source.Nonce,
-        };
+        // return new VoteDto
+        // {
+        //     Hash = source.Hash.ToHexString(),
+        //     VoterAddress = source.Voter.Address,
+        //     VoterPubKey = source.Voter.PublicKey,
+        //     PartyId = source.PartyId,
+        //     Timestamp = DateTimeOffset.FromUnixTimeMilliseconds(source.Timestamp).UtcDateTime,
+        //     Signature = source.Signature.ToHexString(),
+        //     BlockIndex = source.BlockIndex,
+        //     Nonce = source.Nonce,
+        // };
+        throw new NotImplementedException();
     }
 }

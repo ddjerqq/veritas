@@ -28,7 +28,7 @@ public class PublicKeyBearerAuthHandler(
         if (pKey is null || sig is null)
             return Task.FromResult(AuthenticateResult.Fail("no public key or signature provided"));
 
-        var voter = Voter.FromPubKey(pKey.ToBytesFromHex());
+        var voter = Voter.FromPublicKey(pKey);
         var signatureValid = voter.Verify(voter.Address.ToBytesFromHex(), sig.ToBytesFromHex());
         if (!signatureValid)
             return Task.FromResult(AuthenticateResult.Fail("invalid signature"));

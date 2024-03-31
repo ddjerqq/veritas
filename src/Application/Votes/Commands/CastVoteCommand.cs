@@ -13,14 +13,12 @@ public record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId,
 {
     public Vote GetVote()
     {
-        var votesVoter = Voter.FromPubKey(Pkey.ToBytesFromHex());
-
         return new Vote
         {
-            Voter = votesVoter,
+            Voter = Voter.FromPublicKey(Pkey),
             PartyId = PartyId,
             Timestamp = Timestamp,
-            Signature = Sig.ToBytesFromHex(),
+            Signature = Sig,
             Nonce = Nonce,
         };
     }
@@ -95,7 +93,7 @@ public class CastVoteCommandHandler(
         // TODO this must never happen concurrently.
         // have the CastVoteCommand just create and validate the vote,
         // and then push it to the queue to process it synchronously.
-        if (currentBlock.Votes.Count >= Block.VoteLimit)
+        if (currentBlock.Votes.Count >= 256)
         {
             var mineCurrentBlockCommand = new MineCurrentBlockCommand();
             currentBlock = await mediator.Send(mineCurrentBlockCommand, ct);
