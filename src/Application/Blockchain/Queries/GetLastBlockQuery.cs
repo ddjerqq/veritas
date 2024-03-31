@@ -10,7 +10,7 @@ public sealed record GetLastBlockQuery : IRequest<Block>;
 // TODO REDIS - implement cache eventually.
 
 // ReSharper disable once UnusedType.Global
-public sealed class LastBlockQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetLastBlockQuery, Block>
+public sealed class GetLastBlockQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetLastBlockQuery, Block>
 {
     public async Task<Block> Handle(GetLastBlockQuery request, CancellationToken ct)
     {

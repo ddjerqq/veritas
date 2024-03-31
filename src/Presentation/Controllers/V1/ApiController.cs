@@ -55,7 +55,7 @@ public class ApiController(
     }
 
     [HttpPost("vote")]
-    public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct = default)
+    public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
     {
         if (processedVotesCache.Contains(command.Hash))
         {
@@ -68,8 +68,19 @@ public class ApiController(
         return Created();
     }
 
-    [HttpGet("block")]
-    public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks(CancellationToken ct = default)
+    [HttpGet("voter/{address}")]
+    public async Task<ActionResult<VoterInfo>> GetVoterInfo(string address, CancellationToken ct)
+    {
+        var query = new GetVoterInfo(address);
+        var voterInfo = await mediator.Send(query, ct);
+        return voterInfo is not null
+            ? Ok(voterInfo)
+            : NotFound();
+    }
+
+    [HttpGet("block/all")]
+    // TODO pagination
+    public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks(CancellationToken ct)
     {
         var query = new GetAllBlocksQuery();
         var blocks = await mediator.Send(query, ct);
@@ -77,7 +88,7 @@ public class ApiController(
     }
 
     [HttpGet("block/{index:long}")]
-    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByIndex(long index, CancellationToken ct = default)
+    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByIndex(long index, CancellationToken ct)
     {
         var query = new GetBlockByIndexQuery(index);
         var block = await mediator.Send(query, ct);
@@ -88,7 +99,7 @@ public class ApiController(
     }
 
     [HttpGet("block/{hash}")]
-    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByHash(string hash, CancellationToken ct = default)
+    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByHash(string hash, CancellationToken ct)
     {
         var query = new GetBlockByHashQuery(hash);
         var block = await mediator.Send(query, ct);
@@ -99,7 +110,7 @@ public class ApiController(
     }
 
     [HttpPost("vote_random")]
-    public async Task<IActionResult> VoteRandom(CancellationToken ct = default)
+    public async Task<IActionResult> VoteRandom(CancellationToken ct)
     {
         if (HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>() is var env && !env.IsDevelopment())
             return NotFound();

@@ -9,6 +9,8 @@ public sealed record GetAllBlocksQuery : IRequest<IEnumerable<Block>>;
 
 // TODO REDIS - implement cache eventually.
 
+// TODO pagination here.
+
 // ReSharper disable once UnusedType.Global
 public sealed class AllBlocksQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetAllBlocksQuery, IEnumerable<Block>>
 {

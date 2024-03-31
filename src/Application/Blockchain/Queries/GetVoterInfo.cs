@@ -1,0 +1,43 @@
+﻿using Application.Common.Abstractions;
+using Domain.Entities;
+using MediatR;
+using Microsoft.EntityFrameworkCore;
+
+namespace Application.Blockchain.Queries;
+
+public sealed record VoterInfo
+{
+    public string Address { get; set; } = default!;
+
+    public string PublicKey { get; set; } = default!;
+
+    public IEnumerable<Vote> Votes { get; set; } = [];
+}
+
+public sealed record GetVoterInfo(string Address) : IRequest<VoterInfo?>;
+
+// TODO REDIS - implement cache eventually.
+
+// ReSharper disable once UnusedType.Global
+public sealed class GetVoterInfoHandler(IAppDbContext dbContext) : IRequestHandler<GetVoterInfo, VoterInfo?>
+{
+    public async Task<VoterInfo?> Handle(GetVoterInfo request, CancellationToken ct)
+    {
+        var voter = await dbContext.Set<Voter>()
+            .AsNoTracking()
+            .FirstOrDefaultAsync(x => x.Address == request.Address, ct);
+
+        if (voter is null) return null;
+
+        var votes = await dbContext.Set<Vote>()
+            .Where(x => x.Voter.Address == request.Address)
+            .ToListAsync(ct);
+
+        return new VoterInfo
+        {
+            Address = voter.Address,
+            PublicKey = voter.PublicKey,
+            Votes = votes,
+        };
+    }
+}
