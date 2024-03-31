@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Application.Common;
 using Application.Common.Abstractions;
 using Domain.Common;
@@ -53,7 +54,44 @@ public sealed class AppDbContext(
 
     public void EnsureBlockchainIsConsistent()
     {
-        throw new NotImplementedException("ensure all votes and all blocks are valid. all voters have atleast one vote");
+        ValidateBlocks();
+        ValidateVotes();
+    }
+
+    private void ValidateBlocks()
+    {
+        var blocks = Blocks
+            .Include(b => b.Votes)
+            .ThenInclude(v => v.Voter)
+            .ToList();
+
+        for (var i = 0; i < blocks.Count; i++)
+        {
+            var block = blocks[i];
+
+            if (!block.IsHashValid)
+                throw new ValidationException($"Block hash is not valid. Block Index: {block.Index}");
+
+            var previous = i == 0 ? null : blocks[i - 1];
+            if (previous is not null && block.PreviousHash != previous.Hash)
+                throw new ValidationException($"Block hash does not equal the previous hash. expected: {previous.Hash} but was: {block.Hash}");
+        }
+    }
+
+    private void ValidateVotes()
+    {
+        var votes = Votes
+            .Include(v => v.Voter)
+            .ToList();
+
+        foreach (var vote in votes)
+        {
+            if (!vote.IsHashValid)
+                throw new ValidationException($"Vote hash is not valid. Hash: {vote.Hash}");
+
+            if (!vote.IsSignatureValid)
+                throw new ValidationException($"Vote signature is not valid. Hash: {vote.Hash} Signature: {vote.Signature}");
+        }
     }
 
     private static void SnakeCaseRename(ModelBuilder builder)

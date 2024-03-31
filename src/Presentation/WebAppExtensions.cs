@@ -33,6 +33,7 @@ public static class WebAppExtensions
         dbContext.Database.EnsureCreated();
 
         dbContext.SeedGenesisBlock();
+        dbContext.EnsureBlockchainIsConsistent();
 
         if (dbContext.Database.GetPendingMigrations().Any())
             dbContext.Database.Migrate();

@@ -7,7 +7,7 @@ namespace Application.Blockchain.Queries;
 
 public sealed record GetBlockByIndexQuery(long Index) : IRequest<Block?>;
 
-// TODO implement REDIS cache eventually.
+// TODO REDIS - implement cache eventually.
 
 // ReSharper disable once UnusedType.Global
 public sealed class GetBlockByIndexQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetBlockByIndexQuery, Block?>

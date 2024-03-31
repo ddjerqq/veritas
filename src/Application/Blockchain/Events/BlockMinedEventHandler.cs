@@ -9,7 +9,7 @@ public sealed class BlockMinedEventHandler(ILogger<BlockMinedEventHandler> logge
 {
     public Task Handle(BlockMinedEvent notification, CancellationToken ct)
     {
-        // TODO implement
+        // TODO signalR implement
         logger.LogInformation("not implemented");
         return Task.CompletedTask;
     }

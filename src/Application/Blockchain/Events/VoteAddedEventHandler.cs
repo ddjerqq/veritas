@@ -9,7 +9,7 @@ public sealed class VoteAddedEventHandler(ILogger<VoteAddedEventHandler> logger)
 {
     public Task Handle(VoteAddedEvent notification, CancellationToken ct)
     {
-        // TODO implement
+        // TODO signalR implement
         logger.LogInformation("not implemented");
         return Task.CompletedTask;
     }
