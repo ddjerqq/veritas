@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
 using Domain.Common;
+using Domain.ValueObjects;
 
-namespace Domain.ValueObjects;
+namespace Domain.Entities;
 
 public record Vote()
 {

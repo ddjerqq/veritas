@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Domain.Common;
+using Domain.Entities;
 using Domain.ValueObjects;
 
 namespace Test.Application.Dtos;

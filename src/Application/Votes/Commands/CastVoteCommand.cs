@@ -3,6 +3,7 @@ using Application.Dtos;
 using Application.Votes.Events;
 using Domain.Aggregates;
 using Domain.Common;
+using Domain.Entities;
 using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;

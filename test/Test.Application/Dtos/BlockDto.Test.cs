@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Aggregates;
 using Domain.Common;
+using Domain.Entities;
 using Domain.ValueObjects;
 
 namespace Test.Application.Dtos;
