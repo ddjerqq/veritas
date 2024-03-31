@@ -9,12 +9,8 @@ public sealed class Vote
 {
     private const int Difficulty = 6;
 
-    public string Hash
-    {
-        get => SHA256.HashData(this.GetHashPayload()).ToHexString();
-        // ReSharper disable once UnusedMember.Local for EF Core
-        private init => _ = value;
-    }
+    // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local for EF Core
+    public required string Hash { get; set; }
 
     public string VoterAddress { get; init; } = default!;
 
@@ -44,12 +40,17 @@ public sealed class Vote
 
     public static Vote NewVote(Voter voter, int partyId, DateTime timestamp)
     {
+        var signature = voter.Sign(VoteExt.GetSignaturePayload(partyId, timestamp.ToUnixMs())).ToHexString();
+        var hashPayload = VoteExt.GetHashPayload(voter.Address, signature, partyId, timestamp.ToUnixMs(), 0);
+        var hash = SHA256.HashData(hashPayload).ToHexString();
+
         return new Vote
         {
+            Hash = hash,
             Voter = voter,
             PartyId = partyId,
             Timestamp = timestamp,
-            Signature = voter.Sign(VoteExt.GetSignaturePayload(partyId, timestamp.ToUnixMs())).ToHexString(),
+            Signature = signature,
         };
     }
 
@@ -59,7 +60,9 @@ public sealed class Vote
     {
         if (IsHashValid) return;
         var foundNonce = Miner.Mine(this.GetHashPayload(), Difficulty);
+
         Nonce = foundNonce;
+        Hash = SHA256.HashData(this.GetHashPayload()).ToHexString();
     }
 }
 
@@ -75,14 +78,18 @@ public static class VoteExt
 
     public static byte[] GetSignaturePayload(this Vote vote) => GetSignaturePayload(vote.PartyId, vote.UnixTimestampMs);
 
-    public static byte[] GetHashPayload(this Vote vote)
+    public static byte[] GetHashPayload(string address, string signature, int partyId, long timestamp, long nonce)
     {
         var buffer = new List<byte>();
-        buffer.AddRange(vote.Voter?.Address.ToBytesFromHex() ?? []);
-        buffer.AddRange(vote.Signature.ToBytesFromHex());
-        buffer.AddRange(BitConverter.GetBytes(vote.PartyId));
-        buffer.AddRange(BitConverter.GetBytes(vote.UnixTimestampMs));
-        buffer.AddRange(BitConverter.GetBytes(vote.Nonce));
+        // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract for EF Core
+        buffer.AddRange(address.ToBytesFromHex());
+        buffer.AddRange(signature.ToBytesFromHex());
+        buffer.AddRange(BitConverter.GetBytes(partyId));
+        buffer.AddRange(BitConverter.GetBytes(timestamp));
+        buffer.AddRange(BitConverter.GetBytes(nonce));
         return buffer.ToArray();
     }
+
+    public static byte[] GetHashPayload(this Vote vote) =>
+        GetHashPayload(vote.Voter?.Address ?? "", vote.Signature, vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
 }

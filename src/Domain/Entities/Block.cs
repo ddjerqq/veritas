@@ -1,6 +1,8 @@
-﻿using System.Diagnostics.Contracts;
+﻿using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Security.Cryptography;
 using Domain.Common;
+using Serilog;
 using SJsonIgnore = System.Text.Json.Serialization.JsonIgnoreAttribute;
 using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
@@ -42,16 +44,35 @@ public class Block
         if (!vote.IsHashValid || !vote.IsSignatureValid)
             throw new InvalidOperationException("Invalid vote, either the hash or the signature is not valid");
 
-        vote.Block = this;
         vote.BlockIndex = Index;
 
         _votes.Add(vote);
     }
 
+    public void AddVotes(IEnumerable<Vote> votes)
+    {
+        var voteList = votes.ToList();
+
+        voteList.ForEach(vote =>
+        {
+            if (!vote.IsHashValid || !vote.IsSignatureValid)
+                throw new InvalidOperationException("Invalid vote, either the hash or the signature is not valid");
+
+            vote.BlockIndex = Index;
+        });
+
+        _votes.AddRange(voteList);
+    }
+
     public void Mine()
     {
         if (IsHashValid) return;
+
+        var stopwatch = Stopwatch.StartNew();
         Nonce = Miner.Mine(this.GetHashPayload(), Difficulty);
+        stopwatch.Stop();
+
+        Log.Information("Block mined in {Elapsed:s}", stopwatch.Elapsed);
     }
 
     [Pure]

@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers.V1;
 
+// TODO block/ID
+// TODO block/HASH endpoints
+
 [Authorize]
 [ApiController]
 [Route("/api/v1/")]
@@ -71,7 +74,7 @@ public class ApiController(
     [HttpGet("block")]
     public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks(CancellationToken ct = default)
     {
-        var query = new AllBlocksQuery();
+        var query = new GetAllBlocksQuery();
         var blocks = await mediator.Send(query, ct);
         return Ok(blocks);
     }
@@ -89,9 +92,7 @@ public class ApiController(
         // override the test voter
         HttpContext.Items[nameof(Voter)] = voter;
 
-        var command = new CastVoteCommand(
-            vote.Hash, voter.PublicKey, vote.Signature,
-            vote.PartyId, vote.Timestamp, vote.Nonce);
+        var command = new CastVoteCommand(vote.Hash, voter.PublicKey, vote.Signature, vote.PartyId, vote.Timestamp, vote.Nonce);
 
         await mediator.Send(command, ct);
 

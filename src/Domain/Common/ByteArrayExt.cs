@@ -11,8 +11,6 @@ public static class ByteArrayExt
 
     public static string ToBase64String(this byte[] bytes) => Convert.ToBase64String(bytes);
 
-    public static byte[] Sha256(this byte[] bytes) => SHA256.HashData(bytes);
-
     public static bool ArrayEquals(this byte[]? a, byte[]? b)
     {
         if (a is null) return b is null;

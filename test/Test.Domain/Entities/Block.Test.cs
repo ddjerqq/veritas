@@ -13,8 +13,19 @@ internal class BlockTest
         // 1 difficulty means 2 leading zeroes
         var block = Block.GenesisBlock().NextBlock();
 
-        for (int i = 0; i < 256; i++)
-            block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
+        for (var i = 0; i < 2; i++)
+        {
+            var vote = Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime());
+            vote.Mine();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(vote.IsHashValid, Is.True);
+                Assert.That(vote.IsSignatureValid, Is.True);
+            });
+
+            block.AddVote(vote);
+        }
 
         var stopwatch = Stopwatch.StartNew();
         block.Mine();
@@ -23,6 +34,7 @@ internal class BlockTest
         Console.WriteLine(block.Nonce.ToString("N0"));
         Console.WriteLine(block.Hash);
         Console.WriteLine(stopwatch.Elapsed.ToString("c"));
+
         Assert.That(block.IsHashValid, Is.True);
     }
 
@@ -32,62 +44,5 @@ internal class BlockTest
     {
         var block = Block.GenesisBlock();
         Console.WriteLine(block.Hash);
-    }
-
-    [Test]
-    [Parallelizable]
-    public void TestCalculateMerkleRootForVotes()
-    {
-        var block = Block.GenesisBlock();
-
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-
-        Console.WriteLine(block.MerkleRoot);
-    }
-
-    [Test]
-    [Parallelizable]
-    public void TestHashBlockWithVotes()
-    {
-        var block = Block.GenesisBlock();
-
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-
-        block.Mine();
-
-        Console.WriteLine(block.MerkleRoot);
-
-        Console.WriteLine(block.Nonce.ToString("N0"));
-        Console.WriteLine(block.Hash);
-
-        Assert.That(block.IsHashValid, Is.True);
-    }
-
-    [Test]
-    [Parallelizable]
-    public void TestHashBlockWithMaxVotes()
-    {
-        var block = Block.GenesisBlock();
-
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-        block.AddVote(Vote.NewVote(Voter.NewVoter(), 0, 0L.ToUtcDateTime()));
-
-        Console.WriteLine(block.MerkleRoot);
-
-        // mine operation
-        block.Mine();
-
-        Console.WriteLine(block.Nonce.ToString("N0"));
-        Console.WriteLine(block.Hash);
-
-        Assert.That(block.IsHashValid, Is.True);
     }
 }

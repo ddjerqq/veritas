@@ -1,4 +1,5 @@
-﻿using Domain.Common;
+﻿using System.Security.Cryptography;
+using Domain.Common;
 
 namespace Test.Domain.Common;
 
@@ -9,7 +10,7 @@ internal class ByteArrayExtTest
     public void TestSha256Hash()
     {
         byte[] bytes = "aaa"u8.ToArray();
-        var hash = bytes.Sha256().ToHexString();
+        var hash = SHA256.HashData(bytes).ToHexString();
         Console.WriteLine(hash);
         Assert.That(hash, Is.EqualTo("9834876dcfb05cb167a5c24953eba58c4ac89b1adf57f28f2f9d09af107ee8f0"));
     }
@@ -19,7 +20,7 @@ internal class ByteArrayExtTest
     public void TestToBase64String()
     {
         byte[] bytes = "aaa"u8.ToArray();
-        var hash = bytes.Sha256().ToBase64String();
+        var hash = SHA256.HashData(bytes).ToBase64String();
         Console.WriteLine(hash);
         Assert.That(hash, Is.EqualTo("mDSHbc+wXLFnpcJJU+uljErImxrfV/KPL50JrxB+6PA="));
     }

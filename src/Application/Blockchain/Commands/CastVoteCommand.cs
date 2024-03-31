@@ -12,6 +12,7 @@ public sealed record CastVoteCommand(string Hash, string Pkey, string Sig, int P
     {
         return new Vote
         {
+            Hash = Hash,
             Voter = Voter.FromPublicKey(Pkey),
             PartyId = PartyId,
             Timestamp = Timestamp,

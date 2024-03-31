@@ -28,6 +28,14 @@ public class ConfigureBackgroundJobs : IHostingStartup
                             .WithInterval(TimeSpan.FromSeconds(10))
                             .RepeatForever()));
 
+                config
+                    .AddJob<MineCurrentBlockBackgroundJob>(MineCurrentBlockBackgroundJob.Key, job => { job.StoreDurably(); })
+                    .AddTrigger(trigger => trigger
+                        .ForJob(MineCurrentBlockBackgroundJob.Key)
+                        .WithSimpleSchedule(schedule => schedule
+                            .WithInterval(TimeSpan.FromMinutes(10))
+                            .RepeatForever()));
+
                 config.UseInMemoryStore();
             });
 

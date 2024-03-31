@@ -6,15 +6,14 @@ public static class Miner
 {
     private static void CopyWithoutAllocating(long value, Span<byte> dest)
     {
-        for (var i = 0; i < sizeof(long); i++)
-        {
-            dest[i] = (byte)((value >> 8 * i) & 0xFF);
-        }
-    }
-
-    private static void CopyWithAllocating(long value, Span<byte> dest)
-    {
-        BitConverter.GetBytes(value).AsSpan().CopyTo(dest);
+        dest[0] = (byte)((value >> 8 * 0) & 0xFF);
+        dest[1] = (byte)((value >> 8 * 1) & 0xFF);
+        dest[2] = (byte)((value >> 8 * 2) & 0xFF);
+        dest[3] = (byte)((value >> 8 * 3) & 0xFF);
+        dest[4] = (byte)((value >> 8 * 4) & 0xFF);
+        dest[5] = (byte)((value >> 8 * 5) & 0xFF);
+        dest[6] = (byte)((value >> 8 * 6) & 0xFF);
+        dest[7] = (byte)((value >> 8 * 7) & 0xFF);
     }
 
     public static long Mine(byte[] data, int difficulty)
@@ -25,8 +24,7 @@ public static class Miner
         ReadOnlySpan<byte> predicate = stackalloc byte[halfDifficulty];
         Span<byte> payload = data;
 
-        Span<byte> nonceBuffer = stackalloc byte[8];
-        Span<byte> nonceBufferA = stackalloc byte[8];
+        Span<byte> nonceBuffer = stackalloc byte[sizeof(long)];
         Span<byte> hashBuffer = stackalloc byte[32];
 
         long nonce = 0;

@@ -46,11 +46,7 @@ public sealed class AppDbContext(
         if (!Blocks.AsNoTracking().Any())
         {
             var genesis = Block.GenesisBlock();
-            var next = genesis.NextBlock();
-
             Blocks.Add(genesis);
-            Blocks.Add(next);
-
             SaveChanges(true);
         }
     }
