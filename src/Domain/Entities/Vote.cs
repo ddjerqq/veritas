@@ -12,6 +12,7 @@ public sealed class Vote
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local for EF Core
     public required string Hash { get; set; }
 
+    [NJsonIgnore, SJsonIgnore]
     public string VoterAddress { get; init; } = default!;
 
     public Voter Voter { get; init; } = default!;
@@ -27,6 +28,7 @@ public sealed class Vote
 
     public long Nonce { get; set; }
 
+    [NJsonIgnore, SJsonIgnore]
     public long? BlockIndex { get; set; }
 
     [NJsonIgnore, SJsonIgnore]

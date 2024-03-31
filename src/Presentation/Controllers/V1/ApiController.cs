@@ -9,9 +9,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers.V1;
 
-// TODO block/ID
-// TODO block/HASH endpoints
-
 [Authorize]
 [ApiController]
 [Route("/api/v1/")]
@@ -77,6 +74,28 @@ public class ApiController(
         var query = new GetAllBlocksQuery();
         var blocks = await mediator.Send(query, ct);
         return Ok(blocks);
+    }
+
+    [HttpGet("block/{index:long}")]
+    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByIndex(long index, CancellationToken ct = default)
+    {
+        var query = new GetBlockByIndexQuery(index);
+        var block = await mediator.Send(query, ct);
+
+        return block is not null
+            ? Ok(block)
+            : NotFound();
+    }
+
+    [HttpGet("block/{hash}")]
+    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByHash(string hash, CancellationToken ct = default)
+    {
+        var query = new GetBlockByHashQuery(hash);
+        var block = await mediator.Send(query, ct);
+
+        return block is not null
+            ? Ok(block)
+            : NotFound();
     }
 
     [HttpPost("vote_random")]

@@ -72,7 +72,7 @@ public class Block
         Nonce = Miner.Mine(this.GetHashPayload(), Difficulty);
         stopwatch.Stop();
 
-        Log.Information("Block mined in {Elapsed:s}", stopwatch.Elapsed);
+        Log.Information("Block mined in {@Elapsed:s}", stopwatch.Elapsed);
     }
 
     [Pure]
