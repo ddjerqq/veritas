@@ -33,7 +33,6 @@ public class ConfigurePersistence : IHostingStartup
 
                 var dbPath = Environment.GetEnvironmentVariable("DB__PATH") ?? "C:/work/mieci/app.db";
 
-                options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
                 options.UseSqlite($"Data Source={dbPath}");
             });
 

@@ -58,7 +58,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("outbox_message");
                 });
 
-            modelBuilder.Entity("Application.Dtos.BlockDto", b =>
+            modelBuilder.Entity("Application.Dtos.Block", b =>
                 {
                     b.Property<long>("Index")
                         .HasColumnType("INTEGER")
@@ -93,7 +93,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("block");
                 });
 
-            modelBuilder.Entity("Application.Dtos.VoteDto", b =>
+            modelBuilder.Entity("Application.Dtos.Vote", b =>
                 {
                     b.Property<string>("Hash")
                         .HasColumnType("TEXT")
@@ -146,9 +146,9 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("vote");
                 });
 
-            modelBuilder.Entity("Application.Dtos.VoteDto", b =>
+            modelBuilder.Entity("Application.Dtos.Vote", b =>
                 {
-                    b.HasOne("Application.Dtos.BlockDto", "Block")
+                    b.HasOne("Application.Dtos.Block", "Block")
                         .WithMany("Votes")
                         .HasForeignKey("BlockIndex")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -158,7 +158,7 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Block");
                 });
 
-            modelBuilder.Entity("Application.Dtos.BlockDto", b =>
+            modelBuilder.Entity("Application.Dtos.Block", b =>
                 {
                     b.Navigation("Votes");
                 });

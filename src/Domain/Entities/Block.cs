@@ -25,7 +25,7 @@ public class Block
 
     public string MerkleRoot
     {
-        get => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash).ToList()).ToHexString();
+        get => Common.MerkleRoot.BuildMerkleRoot(Votes.Select(v => v.Hash.ToBytesFromHex())).ToHexString();
         // ReSharper disable once UnusedMember.Local for EF Core
         private init => _ = value;
     }

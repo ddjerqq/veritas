@@ -34,7 +34,7 @@ public class ApiController(
 
             vote = new
             {
-                hash = vote.Hash.ToHexString(),
+                hash = vote.Hash,
                 pkey = voter.PublicKey,
                 sig = vote.Signature,
                 party_id = vote.PartyId,
@@ -60,7 +60,7 @@ public class ApiController(
         }
 
         var vote = await mediator.Send(command, ct);
-        processedVotesCache.Add(vote.Hash.ToHexString());
+        processedVotesCache.Add(vote.Hash);
 
         return Created();
     }
@@ -79,7 +79,7 @@ public class ApiController(
         HttpContext.Items[nameof(Voter)] = voter;
 
         var command = new CastVoteCommand(
-            vote.Hash.ToHexString(), voter.PublicKey, vote.Signature,
+            vote.Hash, voter.PublicKey, vote.Signature,
             vote.PartyId, vote.Timestamp, vote.Nonce);
 
         if (processedVotesCache.Contains(command.Hash))
@@ -89,7 +89,7 @@ public class ApiController(
         }
 
         vote = await mediator.Send(command, ct);
-        processedVotesCache.Add(vote.Hash.ToHexString());
+        processedVotesCache.Add(vote.Hash);
 
         return Created();
     }

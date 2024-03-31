@@ -1,5 +1,5 @@
 ﻿using Application.Abstractions;
-using Application.Dtos;
+using Domain.Entities;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services;
@@ -21,7 +21,7 @@ public static class ServiceCollectionExtensions
             var dbContext = scope.ServiceProvider.GetRequiredService<IAppDbContext>();
 
             var voteHashes = dbContext
-                .Set<VoteDto>()
+                .Set<Vote>()
                 .Select(x => x.Hash)
                 .ToHashSet();
 

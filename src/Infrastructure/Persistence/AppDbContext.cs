@@ -1,6 +1,5 @@
 using Application.Abstractions;
 using Application.Common;
-using Application.Dtos;
 using Domain.Common;
 using Domain.Entities;
 using Infrastructure.Persistence.Interceptors;
@@ -14,9 +13,9 @@ public sealed class AppDbContext(
     ConvertDomainEventsToOutboxMessagesInterceptor convertDomainEventsToOutboxMessagesInterceptor)
     : DbContext(options), IAppDbContext
 {
-    public DbSet<BlockDto> Blocks => Set<BlockDto>();
+    public DbSet<Block> Blocks => Set<Block>();
 
-    public DbSet<VoteDto> Votes => Set<VoteDto>();
+    public DbSet<Vote> Votes => Set<Vote>();
 
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
 

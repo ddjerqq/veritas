@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics;
 using Application.Abstractions;
-using Application.Dtos;
 using Application.Votes.Events;
 using Domain.Entities;
 using Domain.Events;
@@ -20,8 +19,7 @@ public class MineCurrentBlockCommandHandler(
 {
     public async Task<Block> Handle(MineCurrentBlockCommand request, CancellationToken ct)
     {
-        var currentBlockDto = await blockCache.GetCurrentAsync(ct);
-        var currentBlock = (Block)currentBlockDto;
+        var currentBlock = await blockCache.GetCurrentAsync(ct);
 
         // MINE AND TIME
         var stopwatch = Stopwatch.StartNew();
@@ -29,12 +27,11 @@ public class MineCurrentBlockCommandHandler(
         stopwatch.Stop();
         logger.LogInformation("new block mined in {Elapsed:c}", stopwatch.Elapsed);
 
-        currentBlockDto.CopyFrom(currentBlock);
-        dbContext.Set<BlockDto>().Update(currentBlockDto);
+        dbContext.Set<Block>().Update(currentBlock);
 
         var next = currentBlock.NextBlock();
         blockCache.SetCurrent(next);
-        dbContext.Set<BlockDto>().Add(next);
+        dbContext.Set<Block>().Add(next);
 
         var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
         dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);

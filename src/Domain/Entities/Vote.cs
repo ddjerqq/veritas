@@ -8,9 +8,9 @@ public class Vote
 {
     private const int Difficulty = 6;
 
-    public byte[] Hash
+    public string Hash
     {
-        get => SHA256.HashData(this.GetHashPayload());
+        get => SHA256.HashData(this.GetHashPayload()).ToHexString();
         // ReSharper disable once UnusedMember.Local for EF Core
         private init => _ = value;
     }
@@ -32,7 +32,7 @@ public class Vote
     public Block? Block { get; set; }
 
     [JsonIgnore]
-    public bool IsHashValid => Hash.ToHexString().StartsWith(new string('0', Difficulty));
+    public bool IsHashValid => Hash.StartsWith(new string('0', Difficulty));
 
     [JsonIgnore]
     public bool IsSignatureValid => Voter.Verify(this.GetSignaturePayload(), Signature.ToBytesFromHex());

@@ -1,7 +1,5 @@
 ﻿using Application.Abstractions;
-using Application.Dtos;
 using Application.Votes.Events;
-using Domain.Common;
 using Domain.Entities;
 using FluentValidation;
 using MediatR;
@@ -87,8 +85,7 @@ public class CastVoteCommandHandler(
 {
     public async Task<Vote> Handle(CastVoteCommand request, CancellationToken ct)
     {
-        var currentBlockDto = await blockCache.GetCurrentAsync(ct);
-        var currentBlock = (Block)currentBlockDto;
+        var currentBlock = await blockCache.GetCurrentAsync(ct);
 
         // TODO this must never happen concurrently.
         // have the CastVoteCommand just create and validate the vote,
@@ -97,20 +94,19 @@ public class CastVoteCommandHandler(
         {
             var mineCurrentBlockCommand = new MineCurrentBlockCommand();
             currentBlock = await mediator.Send(mineCurrentBlockCommand, ct);
-            currentBlockDto = currentBlock;
+            currentBlock = currentBlock;
             // TODO we will no longer need this, after we implement a better, global cache.
-            blockCache.SetCurrent(currentBlockDto);
+            blockCache.SetCurrent(currentBlock);
         }
 
         var vote = request.GetVote();
         currentBlock.TryAddVote(vote);
-        dbContext.Set<VoteDto>().Add(vote);
+        dbContext.Set<Vote>().Add(vote);
         await dbContext.SaveChangesAsync(ct);
 
-        currentBlockDto.CopyFrom(currentBlock);
         dbContext.ClearChangeTracker();
-        dbContext.Set<BlockDto>().Update(currentBlockDto);
-        // var success = dbContext.Set<BlockDto>().TryUpdate(currentBlockDto);
+        dbContext.Set<Block>().Update(currentBlock);
+        // var success = dbContext.Set<Block>().TryUpdate(currentBlock);
         // Console.WriteLine(success ? "updating entity success" : "updating entity failed ig?");
 
         // var voteAddedEvent = new VoteAddedEvent(vote.Hash.ToHexString());
