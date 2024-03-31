@@ -1,4 +1,4 @@
-﻿using Domain.ValueObjects;
+﻿using Domain.Entities;
 using Presentation.Config;
 using Serilog;
 using Serilog.Events;

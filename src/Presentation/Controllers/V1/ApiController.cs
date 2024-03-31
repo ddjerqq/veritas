@@ -2,7 +2,6 @@ using Application.Abstractions;
 using Application.Votes.Commands;
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

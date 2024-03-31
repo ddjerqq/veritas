@@ -3,7 +3,6 @@ using Application.Dtos;
 using Application.Votes.Events;
 using Domain.Common;
 using Domain.Entities;
-using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.Logging;

@@ -1,5 +1,5 @@
 using Domain.Common;
-using Domain.ValueObjects;
+using Domain.Entities;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
 using Presentation.Auth;

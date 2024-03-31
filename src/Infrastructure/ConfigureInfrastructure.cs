@@ -1,6 +1,6 @@
 using System.Threading.RateLimiting;
 using Application.Abstractions;
-using Domain.ValueObjects;
+using Domain.Entities;
 using Infrastructure;
 using Infrastructure.Idempotency;
 using Infrastructure.Services;

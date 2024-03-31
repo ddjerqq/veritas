@@ -1,5 +1,5 @@
 using Application.Abstractions;
-using Domain.ValueObjects;
+using Domain.Entities;
 using Microsoft.AspNetCore.Http;
 
 namespace Infrastructure.Services;

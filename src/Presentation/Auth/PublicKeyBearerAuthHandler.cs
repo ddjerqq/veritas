@@ -1,7 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Domain.Common;
-using Domain.ValueObjects;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 

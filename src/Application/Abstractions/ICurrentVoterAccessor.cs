@@ -1,4 +1,4 @@
-using Domain.ValueObjects;
+using Domain.Entities;
 
 namespace Application.Abstractions;
 

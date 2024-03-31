@@ -2,7 +2,7 @@
 using Domain.Common;
 using Serilog;
 
-namespace Domain.ValueObjects;
+namespace Domain.Entities;
 
 // ReSharper disable MemberCanBePrivate.Global for json serialization
 public record Voter : IDisposable
