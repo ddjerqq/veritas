@@ -81,11 +81,11 @@ public class CastVoteCommandHandler(
     IAppDbContext dbContext,
     ILogger<VoteAddedEventHandler> logger,
     IMediator mediator,
-    IBlockCache blockCache) : IRequestHandler<CastVoteCommand, Vote>
+    ICurrentBlockAccessor currentBlockAccessor) : IRequestHandler<CastVoteCommand, Vote>
 {
     public async Task<Vote> Handle(CastVoteCommand request, CancellationToken ct)
     {
-        var currentBlock = await blockCache.GetCurrentAsync(ct);
+        var currentBlock = await currentBlockAccessor.GetCurrentBlockAsync(ct);
 
         // TODO this must never happen concurrently.
         // have the CastVoteCommand just create and validate the vote,
@@ -96,7 +96,7 @@ public class CastVoteCommandHandler(
             currentBlock = await mediator.Send(mineCurrentBlockCommand, ct);
             currentBlock = currentBlock;
             // TODO we will no longer need this, after we implement a better, global cache.
-            blockCache.SetCurrent(currentBlock);
+            currentBlockAccessor.SetCurrent(currentBlock);
         }
 
         var vote = request.GetVote();

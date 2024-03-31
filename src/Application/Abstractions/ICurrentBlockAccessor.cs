@@ -2,11 +2,11 @@
 
 namespace Application.Abstractions;
 
-public interface IBlockCache
+public interface ICurrentBlockAccessor
 {
     protected Block? Current { get; set; }
 
-    public Task<Block> GetCurrentAsync(CancellationToken ct = default);
+    public Task<Block> GetCurrentBlockAsync(CancellationToken ct = default);
 
     public void SetCurrent(Block block) => Current = block;
 }

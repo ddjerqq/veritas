@@ -23,10 +23,8 @@ public class ConfigureApplication : IHostingStartup
         {
             services.AddTransient<IDateTimeProvider, UtcDateTimeProvider>();
 
-            // TODO think of a better way to actually CACHE the current block.
-            // implement a singleton cache, which will be more capable.
-            services.AddScoped<IBlockCache, DbBlockCache>();
-            services.AddInMemoryProcessedVoteCache();
+            services.AddGloballyCachedCurrentBlockAccessorSingleton();
+            services.AddInMemoryProcessedVoteCacheSingleton();
 
             services.AddMediatR(options =>
             {

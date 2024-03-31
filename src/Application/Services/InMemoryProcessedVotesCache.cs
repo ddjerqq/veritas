@@ -11,9 +11,9 @@ public sealed class InMemoryProcessedVotesCache(HashSet<string> hashes) : IProce
     public void Add(string hash) => hashes.Add(hash);
 }
 
-public static class ServiceCollectionExtensions
+public static class InMemoryProcessedVotesCacheExt
 {
-    public static IServiceCollection AddInMemoryProcessedVoteCache(this IServiceCollection services)
+    public static void AddInMemoryProcessedVoteCacheSingleton(this IServiceCollection services)
     {
         services.AddSingleton<IProcessedVotesCache, InMemoryProcessedVotesCache>(sp =>
         {
@@ -27,7 +27,5 @@ public static class ServiceCollectionExtensions
 
             return new InMemoryProcessedVotesCache(voteHashes);
         });
-
-        return services;
     }
 }

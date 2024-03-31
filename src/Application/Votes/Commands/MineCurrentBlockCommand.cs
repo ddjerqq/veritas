@@ -12,14 +12,14 @@ public record MineCurrentBlockCommand : IRequest<Block>;
 
 public class MineCurrentBlockCommandHandler(
     IAppDbContext dbContext,
-    IBlockCache blockCache,
+    ICurrentBlockAccessor currentBlockAccessor,
     IDateTimeProvider dateTimeProvider,
     ILogger<VoteAddedEventHandler> logger)
     : IRequestHandler<MineCurrentBlockCommand, Block>
 {
     public async Task<Block> Handle(MineCurrentBlockCommand request, CancellationToken ct)
     {
-        var currentBlock = await blockCache.GetCurrentAsync(ct);
+        var currentBlock = await currentBlockAccessor.GetCurrentBlockAsync(ct);
 
         // MINE AND TIME
         var stopwatch = Stopwatch.StartNew();
@@ -30,7 +30,7 @@ public class MineCurrentBlockCommandHandler(
         dbContext.Set<Block>().Update(currentBlock);
 
         var next = currentBlock.NextBlock();
-        blockCache.SetCurrent(next);
+        currentBlockAccessor.SetCurrent(next);
         dbContext.Set<Block>().Add(next);
 
         var blockMinedEvent = new BlockMinedEvent(currentBlock.Index);
