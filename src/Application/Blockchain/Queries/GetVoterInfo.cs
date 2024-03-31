@@ -16,8 +16,6 @@ public sealed record VoterInfo
 
 public sealed record GetVoterInfo(string Address) : IRequest<VoterInfo?>;
 
-// TODO REDIS - implement cache eventually.
-
 // ReSharper disable once UnusedType.Global
 public sealed class GetVoterInfoHandler(IAppDbContext dbContext) : IRequestHandler<GetVoterInfo, VoterInfo?>
 {

@@ -38,6 +38,7 @@ public sealed class MineCurrentBlockBackgroundJob(IAppDbContext dbContext, IMedi
         await Task.Run(() => block.Mine());
 
         // insert it into the database.
+        // TODO REDIS also insert in cache
         dbContext.Set<Block>().Add(block);
         await dbContext.SaveChangesAsync(context.CancellationToken);
     }

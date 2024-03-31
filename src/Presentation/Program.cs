@@ -23,10 +23,10 @@ builder.WebHost.ConfigureAssemblies();
 var app = builder.Build();
 
 app.UseConfiguredSerilogRequestLogging();
-
 app.MigrateDatabase();
-
 app.UseExceptionHandler();
+
+app.UseRateLimiter();
 
 if (app.Environment.IsDevelopment())
     app.UseDevelopmentMiddleware();

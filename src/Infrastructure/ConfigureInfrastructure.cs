@@ -43,11 +43,11 @@ public class ConfigureInfrastructure : IHostingStartup
     private static TokenBucketRateLimiterOptions GlobalPolicy => new()
     {
         AutoReplenishment = true,
-        QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "10"),
+        QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "0"),
         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-        ReplenishmentPeriod = TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__REPLENISHMENT_PERIOD") ?? "5")),
-        TokenLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKEN_LIMIT") ?? "50"),
-        TokensPerPeriod = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKENS_PER_PERIOD") ?? "10"),
+        ReplenishmentPeriod = TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__REPLENISHMENT_PERIOD") ?? "1")),
+        TokenLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKEN_LIMIT") ?? "10"),
+        TokensPerPeriod = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKENS_PER_PERIOD") ?? "1"),
     };
 
     private static readonly PartitionedRateLimiter<HttpContext> GlobalRateLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
@@ -69,8 +69,13 @@ public class ConfigureInfrastructure : IHostingStartup
 
     private static ValueTask OnRejected(OnRejectedContext ctx, CancellationToken ct)
     {
+        var dateTimeProvider = ctx.HttpContext.RequestServices.GetRequiredService<IDateTimeProvider>();
+
         if (ctx.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
-            ctx.HttpContext.Response.Headers.RetryAfter = retryAfter.ToString("R");
+        {
+            var retryAfterDateRelative = dateTimeProvider.UtcNow.Add(retryAfter);
+            ctx.HttpContext.Response.Headers.RetryAfter = retryAfterDateRelative.ToString("R");
+        }
 
         return ValueTask.CompletedTask;
     }

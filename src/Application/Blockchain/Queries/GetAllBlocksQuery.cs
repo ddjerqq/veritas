@@ -5,11 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Blockchain.Queries;
 
-public sealed record GetAllBlocksQuery : IRequest<IEnumerable<Block>>;
+public sealed record GetAllBlocksQuery(int Page) : IRequest<IEnumerable<Block>>
+{
+    public const int PerPage = 25;
+}
 
 // TODO REDIS - implement cache eventually.
-
-// TODO pagination here.
 
 // ReSharper disable once UnusedType.Global
 public sealed class AllBlocksQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetAllBlocksQuery, IEnumerable<Block>>
@@ -20,6 +21,9 @@ public sealed class AllBlocksQueryHandler(IAppDbContext dbContext) : IRequestHan
             .AsNoTracking()
             .Include(b => b.Votes)
             .ThenInclude(v => v.Voter)
+            .OrderBy(x => x.Index)
+            .Skip(request.Page * GetAllBlocksQuery.PerPage)
+            .Take(GetAllBlocksQuery.PerPage)
             .ToListAsync(ct);
     }
 }

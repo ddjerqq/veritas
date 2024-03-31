@@ -50,6 +50,7 @@ public static class WebAppExtensions
 
     public static void UseProductionMiddleware(this WebApplication app)
     {
+        app.UseRateLimiter();
         app.UseHsts();
         app.UseHttpsRedirection();
         app.UseIdempotency();

@@ -19,6 +19,67 @@ public class ApiController(
     IProcessedVotesCache processedVotesCache,
     IDateTimeProvider dateTimeProvider) : ControllerBase
 {
+    [HttpGet("user_claims")]
+    public ActionResult<Dictionary<string, string>> GetUserClaims()
+    {
+        return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
+    }
+
+    [HttpPost("votes")]
+    public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
+    {
+        if (processedVotesCache.Contains(command.Hash))
+        {
+            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
+            return BadRequest($"Tried processing the same vote twice: {command.Hash}");
+        }
+
+        processedVotesCache.Add(command.Hash);
+        await mediator.Send(command, ct);
+        return Created();
+    }
+
+    [HttpGet("voters/{address}")]
+    public async Task<ActionResult<VoterInfo>> GetVoterInfo(string address, CancellationToken ct)
+    {
+        var query = new GetVoterInfo(address);
+        var voterInfo = await mediator.Send(query, ct);
+        return voterInfo is not null
+            ? Ok(voterInfo)
+            : NotFound();
+    }
+
+    [HttpGet("blocks/all")]
+    public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks([FromQuery] int page, CancellationToken ct)
+    {
+        var query = new GetAllBlocksQuery(page);
+        var blocks = await mediator.Send(query, ct);
+        return Ok(blocks);
+    }
+
+    [HttpGet("blocks/{index:long}")]
+    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByIndex(long index, CancellationToken ct)
+    {
+        var query = new GetBlockByIndexQuery(index);
+        var block = await mediator.Send(query, ct);
+
+        return block is not null
+            ? Ok(block)
+            : NotFound();
+    }
+
+    [HttpGet("blocks/{hash}")]
+    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByHash(string hash, CancellationToken ct)
+    {
+        var query = new GetBlockByHashQuery(hash);
+        var block = await mediator.Send(query, ct);
+
+        return block is not null
+            ? Ok(block)
+            : NotFound();
+    }
+
+
     [HttpGet("new_identity")]
     public IActionResult NewIdentity()
     {
@@ -46,67 +107,6 @@ public class ApiController(
                 nonce = vote.Nonce,
             },
         });
-    }
-
-    [HttpGet("user_claims")]
-    public ActionResult<Dictionary<string, string>> GetUserClaims()
-    {
-        return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
-    }
-
-    [HttpPost("vote")]
-    public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
-    {
-        if (processedVotesCache.Contains(command.Hash))
-        {
-            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
-            return BadRequest($"Tried processing the same vote twice: {command.Hash}");
-        }
-
-        processedVotesCache.Add(command.Hash);
-        await mediator.Send(command, ct);
-        return Created();
-    }
-
-    [HttpGet("voter/{address}")]
-    public async Task<ActionResult<VoterInfo>> GetVoterInfo(string address, CancellationToken ct)
-    {
-        var query = new GetVoterInfo(address);
-        var voterInfo = await mediator.Send(query, ct);
-        return voterInfo is not null
-            ? Ok(voterInfo)
-            : NotFound();
-    }
-
-    [HttpGet("block/all")]
-    // TODO pagination
-    public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks(CancellationToken ct)
-    {
-        var query = new GetAllBlocksQuery();
-        var blocks = await mediator.Send(query, ct);
-        return Ok(blocks);
-    }
-
-    [HttpGet("block/{index:long}")]
-    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByIndex(long index, CancellationToken ct)
-    {
-        var query = new GetBlockByIndexQuery(index);
-        var block = await mediator.Send(query, ct);
-
-        return block is not null
-            ? Ok(block)
-            : NotFound();
-    }
-
-    [HttpGet("block/{hash}")]
-    public async Task<ActionResult<IEnumerable<Block>>> GetBlockByHash(string hash, CancellationToken ct)
-    {
-        var query = new GetBlockByHashQuery(hash);
-        var block = await mediator.Send(query, ct);
-
-        return block is not null
-            ? Ok(block)
-            : NotFound();
     }
 
     [HttpPost("vote_random")]
