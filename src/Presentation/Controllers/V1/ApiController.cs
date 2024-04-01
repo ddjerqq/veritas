@@ -28,13 +28,13 @@ public class ApiController(
     [HttpPost("votes")]
     public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
     {
-        if (processedVotesCache.Contains(command.Hash))
-        {
-            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
-            return BadRequest($"Tried processing the same vote twice: {command.Hash}");
-        }
-
-        processedVotesCache.Add(command.Hash);
+        // if (processedVotesCache.Contains(command.Hash))
+        // {
+        //     logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
+        //     return BadRequest($"Tried processing the same vote twice: {command.Hash}");
+        // }
+        //
+        // processedVotesCache.Add(command.Hash);
         await mediator.Send(command, ct);
         return Created();
     }
@@ -87,7 +87,7 @@ public class ApiController(
 
         var voter = Voter.NewVoter();
 
-        var votes = Enumerable.Range(0, 3)
+        var votes = Enumerable.Range(5, 2)
             .Select(i =>
             {
                 var vote = Vote.NewVote(voter, i, dateTimeProvider.UtcNow);
@@ -125,7 +125,7 @@ public class ApiController(
         // override the test voter
         HttpContext.Items[nameof(Voter)] = voter;
 
-        var command = new CastVoteCommand(vote.Hash, voter.PublicKey, vote.Signature, vote.PartyId, vote.Timestamp, vote.Nonce);
+        var command = new CastVoteCommand(vote.Hash, voter.PublicKey, vote.Signature, vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
 
         await mediator.Send(command, ct);
 

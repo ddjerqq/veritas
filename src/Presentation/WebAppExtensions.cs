@@ -41,7 +41,7 @@ public static class WebAppExtensions
 
     public static void UseDevelopmentMiddleware(this WebApplication app)
     {
-        app.UseDeveloperExceptionPage();
+        // app.UseDeveloperExceptionPage();
         app.UseMigrationsEndPoint();
         app.UseSwagger();
         app.UseSwaggerUI();

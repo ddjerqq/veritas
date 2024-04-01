@@ -21,6 +21,7 @@ public sealed class FluentValidationFilter : IActionFilter
                     ["addr"] = context.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
                     ["traceId"] = context.HttpContext.TraceIdentifier,
                     ["errors"] = problem.Errors,
+                    ["handler"] = "fluent_validation_filter",
                 },
             };
             context.Result = new ObjectResult(problemDetails);

@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-
-namespace Domain.Common;
+﻿namespace Domain.Common;
 
 public static class ByteArrayExt
 {

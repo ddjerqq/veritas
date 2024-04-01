@@ -24,7 +24,8 @@ var app = builder.Build();
 
 app.UseConfiguredSerilogRequestLogging();
 app.MigrateDatabase();
-app.UseExceptionHandler();
+
+app.UseGlobalExceptionHandler();
 
 app.UseRateLimiter();
 

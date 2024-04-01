@@ -1,5 +1,6 @@
 ﻿using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
+using Domain.Common;
 using Domain.Entities;
 using Domain.Events;
 using FluentValidation;
@@ -7,7 +8,7 @@ using MediatR;
 
 namespace Application.Blockchain.Commands;
 
-public sealed record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, DateTime Timestamp, long Nonce) : IRequest
+public sealed record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, long Timestamp, long Nonce) : IRequest
 {
     public Vote GetVote()
     {
@@ -16,7 +17,7 @@ public sealed record CastVoteCommand(string Hash, string Pkey, string Sig, int P
             Hash = Hash,
             Voter = Voter.FromPublicKey(Pkey),
             PartyId = PartyId,
-            Timestamp = Timestamp,
+            Timestamp = Timestamp.ToUtcDateTime(),
             Signature = Sig,
             Nonce = Nonce,
         };
@@ -51,11 +52,10 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
             .Must(ts =>
             {
                 var date = dateTimeProvider.UtcNow;
-
-                var offset = date - ts;
-                return offset.TotalSeconds is > 0 and < 120;
+                var offset = date - ts.ToUtcDateTime();
+                return offset is { Ticks: > 0, TotalMinutes: < 5 };
             })
-            .WithMessage("The timestamp must be no more than two minutes old");
+            .WithMessage("The timestamp must be no more than five minutes old");
 
         RuleFor(x => x.Nonce)
             .GreaterThan(0)
@@ -91,7 +91,7 @@ public sealed class CastVoteCommandHandler(
         var voterInfoQuery = new GetVoterInfoQuery(voter.Address);
         var voterInfo = await mediator.Send(voterInfoQuery, ct);
 
-        var lastVote = voterInfo!.Votes.LastOrDefault();
+        var lastVote = voterInfo?.Votes.LastOrDefault();
         if (lastVote is not null && dateTimeProvider.UtcNow - lastVote.Timestamp < TimeSpan.FromHours(12))
             throw new ValidationException("User tried voting more than once in a 12 hour window.");
 

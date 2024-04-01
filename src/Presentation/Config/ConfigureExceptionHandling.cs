@@ -14,20 +14,14 @@ public class ConfigureExceptionHandling : IHostingStartup
         if (_configured) return;
         _configured = true;
 
-        builder.ConfigureServices(services =>
-        {
-            services.AddExceptionHandler<ValidationExceptionHandler>();
-            services.AddExceptionHandler<GlobalExceptionHandler>();
+        builder.ConfigureServices(services => services.AddTransient<GlobalExceptionHandlerMiddleware>());
+    }
+}
 
-            services.AddProblemDetails(options =>
-            {
-                options.CustomizeProblemDetails = ctx =>
-                {
-                    ctx.ProblemDetails.Type = $"https://httpstatuses.com/{ctx.ProblemDetails.Status}";
-                    ctx.ProblemDetails.Extensions["addr"] = ctx.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value;
-                    ctx.ProblemDetails.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
-                };
-            });
-        });
+public static class ExceptionHandlingExt
+{
+    public static void UseGlobalExceptionHandler(this WebApplication app)
+    {
+        app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
     }
 }
