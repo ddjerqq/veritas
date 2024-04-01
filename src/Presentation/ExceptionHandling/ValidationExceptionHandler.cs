@@ -21,11 +21,11 @@ public sealed class ValidationExceptionHandler : IExceptionHandler
         {
             Title = "An error occurred",
             Type = "https://httpstatuses.com/400",
-            Status = StatusCodes.Status500InternalServerError,
+            Status = StatusCodes.Status400BadRequest,
             Detail = validationException.Message,
             Extensions =
             {
-                // ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
+                ["addr"] = httpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value,
                 ["traceId"] = httpContext.TraceIdentifier,
                 ["errors"] = errors,
             },

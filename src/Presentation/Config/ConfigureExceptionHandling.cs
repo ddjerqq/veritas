@@ -24,7 +24,7 @@ public class ConfigureExceptionHandling : IHostingStartup
                 options.CustomizeProblemDetails = ctx =>
                 {
                     ctx.ProblemDetails.Type = $"https://httpstatuses.com/{ctx.ProblemDetails.Status}";
-                    ctx.ProblemDetails.Extensions["addr"] = ctx.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "addr");
+                    ctx.ProblemDetails.Extensions["addr"] = ctx.HttpContext.User.Claims.FirstOrDefault(c => c.Type == "addr")?.Value;
                     ctx.ProblemDetails.Extensions["traceId"] = ctx.HttpContext.TraceIdentifier;
                 };
             });
