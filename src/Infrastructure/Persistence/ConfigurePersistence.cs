@@ -31,7 +31,7 @@ public class ConfigurePersistence : IHostingStartup
                     options.EnableSensitiveDataLogging();
                 }
 
-                var dbPath = Environment.GetEnvironmentVariable("DB__PATH") ?? "C:/work/mieci/app.db";
+                var dbPath = Environment.GetEnvironmentVariable("DB__PATH") ?? "C:/work/veritas/app.db";
 
                 options.UseSqlite($"Data Source={dbPath}");
             });

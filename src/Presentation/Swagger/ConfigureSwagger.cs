@@ -35,7 +35,7 @@ public class ConfigureSwagger : IHostingStartup
 
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "mieci.ge",
+                    Title = "Veritas - mieci.ge",
                     Version = "v1",
                     Description = "cryptographically secure exit polls, with blockchain technology",
                 });
