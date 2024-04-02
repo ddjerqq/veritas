@@ -1,0 +1,42 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Blazor.Heroicons" Version="2.1.2"/>
+        <PackageReference Include="Blazored.FluentValidation" Version="2.1.0"/>
+        <PackageReference Include="Blazored.Toast" Version="4.2.0"/>
+        <PackageReference Include="Blazored.LocalStorage" Version="4.5.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.2"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="8.0.2"/>
+    </ItemGroup>
+
+    <ItemGroup Condition=" '$(Configuration)' == 'Debug' ">
+        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.2" PrivateAssets="all"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Domain\Domain.csproj"/>
+        <ProjectReference Include="..\Application\Application.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <_ContentIncludedByDefault Remove="wwwroot\css\app.css"/>
+        <_ContentIncludedByDefault Remove="Layout\MainLayout.razor"/>
+    </ItemGroup>
+
+    <Target Name="BuildCSS" BeforeTargets="Compile" Condition=" '$(Configuration)' == 'Debug' ">
+        <Exec Command="tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify"
+              ContinueOnError="true">
+            <Output TaskParameter="ExitCode" PropertyName="ExitCode"/>
+        </Exec>
+        <Error Condition="'$(ExitCode)' != '0'" Text="Error building CSS file"/>
+    </Target>
+
+</Project>

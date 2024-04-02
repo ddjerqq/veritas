@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html class="h-full w-full" lang="en">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Klean</title>
+    <base href="/"/>
+    <link href="favicon.png" rel="icon" type="image/png"/>
+    <link href="Client.styles.css" rel="stylesheet"/>
+    <link href="/css/app.min.css" rel="stylesheet"/>
+</head>
+
+<body class="w-full h-full">
+<div class="w-full h-full" id="app">
+    <div class="absolute flex flex-col justify-center align-middle w-full h-full bg-bg text-center text-white gap-3">
+        <h1 class="text-4xl">Veritas - Mieci.ge</h1>
+        <h1 class="text-4xl">Exit polls</h1>
+
+        <div class="flex flex-col gap-3 justify-center items-center">
+
+            <svg class="loading-progress">
+                <circle cx="50%" cy="50%" r="40%"/>
+                <circle cx="50%" cy="50%" r="40%"/>
+            </svg>
+
+            <span>
+                The application is loading... <span class="loading-progress-text"></span>
+            </span>
+        </div>
+
+
+    </div>
+</div>
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a class="reload" href="">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+<script src="/_framework/aspnetcore-browser-refresh.js"></script>
+<script src="_framework/blazor.webassembly.js"></script>
+</body>
+
+</html>

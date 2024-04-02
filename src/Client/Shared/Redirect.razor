@@ -1,0 +1,13 @@
+﻿@inject NavigationManager NavigationManager
+
+@code
+{
+    [Parameter]
+    [EditorRequired]
+    public string To { get; set; } = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        NavigationManager.NavigateTo(To);
+    }
+}

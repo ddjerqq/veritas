@@ -17,7 +17,7 @@
       "hotReloadEnabled": true,
       "launchBrowser": false,
       "#inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://0.0.0.0:80;https://0.0.0.0:443",
+      "applicationUrl": "http://localhost:80;https://localhost:443",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"
@@ -28,7 +28,7 @@
       "dotnetRunMessages": true,
       "hotReloadEnabled": true,
       "launchBrowser": false,
-      "applicationUrl": "http://0.0.0.0:80;https://0.0.0.0:443",
+      "applicationUrl": "http://localhost:80;https://localhost:443",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Production",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"

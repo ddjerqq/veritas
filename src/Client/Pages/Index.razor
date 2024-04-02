@@ -1,0 +1,32 @@
+﻿@page "/"
+
+<PageTitle>Home</PageTitle>
+
+<h1 class="text-3xl sm:text-5xl md:text-7xl w-full self-center">
+    2024 არჩევნები!
+    <span class="block sm:hidden">sm</span>
+    <span class="block sm:hidden"></span>
+</h1>
+
+<div class="container grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-12 justify-items-stretch content-center gap-10 px-5 md:px-0">
+    @foreach (var (partyId, party) in Parties)
+    {
+        <PartyCard @key="partyId" Party="@party"/>
+    }
+
+    @foreach (var (partyId, party) in Parties)
+    {
+        <PartyCard @key="@(partyId + 1)" Party="@party"/>
+    }
+</div>
+
+@code
+{
+    private static readonly Dictionary<int, Party> Parties = new()
+    {
+        [5] = new Party(5, "ერთიანი ნაციონალური მოძრაობა", "unm", "მიხეილ სააკაშვილი", "hover:bg-unm-600", "hover:shadow-unm-600"),
+        [9] = new Party(9, "ლელო საქართველოსთვის", "lelo", "მამუკა ხარაძე", "hover:bg-lelo-600", "hover:shadow-lelo-600"),
+        [36] = new Party(36, "გირჩი", "girchi", "ზურაბ გირჩი ჯაფარიძე", "hover:bg-girchi-600", "hover:shadow-girchi-600"),
+        [42] = new Party(42, "ქართული ოცნება", "gd", "ბიძინა ივანიშვილი", "hover:bg-gd-600", "hover:shadow-gd-600"),
+    };
+}

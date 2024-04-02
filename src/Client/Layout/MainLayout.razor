@@ -1,0 +1,48 @@
+﻿@using Blazored.Toast.Configuration
+@inherits LayoutComponentBase
+
+<main class="transition-colors font-archyedt flex justify-center items-center w-full h-full bg-bg p-2">
+    <article class="flex flex-col gap-10 gap-y-14 py-10 justify-start text-center items-center w-full h-full bg-bg p-2
+                    overflow-y-scroll overflow-x-hidden scrollbar-none
+                    rounded-md bg-topo border-2 border-dotted border-gray-500 text-white">
+        <ErrorBoundary @ref="@ErrorBoundary" Context="Exception">
+            <ChildContent>
+                @Body
+            </ChildContent>
+
+            <ErrorContent>
+                <div class="flex flex-col gap-3 text-center p-5 text-black">
+                    <h1 class="text-2xl sm:text-6xl font-extrabold">
+                        We hit a roadblock!
+                    </h1>
+
+                    <p class="text-start text-md text-gray-500">
+                        Click below to reload the page and try again.
+                    </p>
+
+                    <button @onclick="@ErrorBoundary.Recover" class="p-4 bg-gray-300 rounded-md text-black">
+                        Reload
+                    </button>
+                </div>
+            </ErrorContent>
+        </ErrorBoundary>
+    </article>
+</main>
+
+<BlazoredToasts Position="ToastPosition.TopRight"
+                Timeout="10"
+                ShowProgressBar="false"
+                ShowCloseButton="true"
+                PauseProgressOnHover="true"
+                RemoveToastsOnNavigation="true"
+
+                InfoClass="!border !rounded-md !border-cyan-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-cyan-300"
+                SuccessClass="!border !rounded-md !border-green-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-green-300"
+                WarningClass="!border !rounded-md !border-yellow-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-yellow-300"
+                ErrorClass="!border !rounded-md !border-red-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-red-300"/>
+
+
+@code
+{
+    private ErrorBoundary ErrorBoundary { get; set; } = default!;
+}

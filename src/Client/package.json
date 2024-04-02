@@ -1,0 +1,13 @@
+{
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "build": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify",
+    "watch": "tailwindcss -i ./wwwroot/css/app.css -o ./wwwroot/css/app.min.css --minify --watch"
+  },
+  "author": "ddjerqq",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.4.3"
+  }
+}
