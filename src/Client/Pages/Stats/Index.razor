@@ -1,0 +1,15 @@
+﻿@page "/stats"
+
+<PageTitle>Stats</PageTitle>
+
+<div class="container h-full flex flex-row justify-stretch items-stretch gap-10 px-5 lg:px-0">
+    <div class="max-w-[60%] flex-grow">
+        <div class="backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card overflow-visible py-10 px-2 cursor-crosshair select-none">
+            <DailyStackedBarChart/>
+        </div>
+    </div>
+
+    <div class="rounded-[5px] backdrop-blur-[3.5px] max-w-[40%] flex-grow border-2 border-gray-400 shadow-party-card overflow-hidden py-10 cursor-crosshair select-none">
+        <PieChartSection/>
+    </div>
+</div>

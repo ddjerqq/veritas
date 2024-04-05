@@ -1,0 +1,27 @@
+﻿@using Humanizer
+
+
+<div class="flex flex-col gap-10">
+    <PieChart Parties="@_votes"/>
+
+    <ol class="text-2xl text-nowrap">
+        @foreach (var (party, voteCount) in _votes)
+        {
+            <li @key="@party.Id" class="flex flex-row justify-between px-5">
+                <span class="@party.GetTextClass() truncate">@party.GetName()</span>
+                <span>@voteCount.ToMetric()</span>
+            </li>
+        }
+    </ol>
+</div>
+
+@code
+{
+    private Dictionary<Party, int> _votes = new()
+    {
+        [new Party(42)] = 35000,
+        [new Party(5)] = 17000,
+        [new Party(9)] = 15000,
+        [new Party(36)] = 11000,
+    };
+}

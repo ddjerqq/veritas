@@ -1,33 +1,41 @@
-﻿<div class="group flex flex-col col-span-12 sm:col-span-4 lg:col-span-3 rounded-[5px]
-            bg-party-card @Party.ColorClass
+﻿@inject NavigationManager NavigationManager
+
+
+@* TODO add parameter shown, which will controll if the card is shown or not. also have a transition *@
+@* TODO have a callback named Choose which when called the parent will hide all other cards, and give some effects to the clicked one. *@
+
+
+<div @onclick="@(() => NavigationManager.NavigateTo("/stats"))"
+     class="group flex flex-col col-span-12 lg:col-span-3 rounded-[5px]
+            bg-party-card @Party.GetBgClass()
             border-2 border-gray-600 hover:border-white
             transition-[colors,transform] duration-300 ease-sweet
             hover:scale-105
-            shadow-gray-500 @Party.ShadowClass
+            shadow-gray-500 @Party.GetShadowClass()
             shadow-party-card hover:shadow-party-card-hover">
 
     <div class="relative overflow-hidden">
         <img class="object-cover z-10 transition grayscale group-hover:grayscale-0 blur-[1px]"
              src="@Party.LogoPath"
-             alt="@Party.Name's logo"/>
+             alt="@Party.GetName()'s logo"/>
 
         <img class="absolute top-5 inset-0 origin-bottom
                     transition-[opacity,transform] duration-[400ms] ease-sweet
                     group-hover:-translate-y-1
                     group-hover:scale-[102%] group-hover:opacity-100 object-cover z-20"
-             src="@Party.LeaderPortraitPath" alt="@Party.LeaderName"/>
+             src="@Party.LeaderPortraitPath" alt="@Party.GetLeaderName()"/>
 
         <img class="absolute top-5 inset-0 origin-bottom
                     transition-[opacity,transform] duration-[400ms] ease-sweet
                     group-hover:-translate-y-1 blur-[1px]
                     group-hover:scale-[102%] group-hover:opacity-0 object-cover z-20"
-             src="@Party.LeaderGoldenPortraitPath" alt="@Party.LeaderName"/>
+             src="@Party.LeaderGoldenPortraitPath" alt="@Party.GetLeaderName()"/>
     </div>
 
     <div class="py-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-[5px] text-center
                 border-t-2 border-gray-600 group-hover:border-white
                 transition duration-200 ease-sweet">
-        @Party.Name
+        @Party.GetName()
     </div>
 </div>
 

@@ -28,6 +28,7 @@ public sealed class GetVoterInfoQueryHandler(IAppDbContext dbContext) : IRequest
         if (voter is null) return null;
 
         var votes = await dbContext.Set<Vote>()
+            .AsNoTracking()
             .Where(x => x.Voter.Address == request.Address)
             .ToListAsync(ct);
 

@@ -1,5 +1,4 @@
-﻿using System.Net.Http.Json;
-using System.Security.Claims;
+﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Client.Services;

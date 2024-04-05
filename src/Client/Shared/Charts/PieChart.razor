@@ -1,0 +1,64 @@
+﻿@using ChartJs.Blazor.PieChart
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Util
+@using ChartJs.Blazor.Common.Enums
+@using ChartJs.Blazor;
+
+<Chart Config="_config"/>
+
+@code
+{
+    private PieConfig? _config;
+
+    [Parameter, EditorRequired]
+    public Dictionary<Party, int> Parties { get; set; } = [];
+
+    protected override void OnInitialized()
+    {
+        _config = new PieConfig
+        {
+            Options = new PieOptions
+            {
+                Responsive = true,
+                Animation = new ArcAnimation
+                {
+                    Easing = Easing.EaseInOutQuint,
+                    Duration = 300,
+                },
+                Legend = new Legend
+                {
+                    Display = false,
+                },
+                CutoutPercentage = 60,
+                Tooltips = new Tooltips
+                {
+                    Mode = InteractionMode.Index,
+                    Intersect = true,
+                    BackgroundColor = "#000000",
+                    DisplayColors = true,
+                    BodyFontFamily = "archyedt",
+                    BodyFontSize = 18,
+                    BodySpacing = 10,
+                    XPadding = 10,
+                    YPadding = 10,
+                },
+            },
+        };
+
+        foreach (var party in Parties.Keys)
+        {
+            _config.Data.Labels.Add($" {party.GetName()}");
+        }
+
+        var dataset = new PieDataset<int>(Parties.Values)
+        {
+            BackgroundColor = Parties.Keys.Select(party =>
+            {
+                var (r, g, b) = party.GetColorRgb();
+                return ColorUtil.ColorHexString(r, g, b);
+            }).ToArray(),
+        };
+
+        _config.Data.Datasets.Add(dataset);
+    }
+}
