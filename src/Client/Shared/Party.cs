@@ -26,7 +26,7 @@ public static class PartyExt
 
     public static string GetName(this Party party) => party.Id switch
     {
-        5 => "ერთიანი ნაციონალური მოძრაობა",
+        5 => "ნაციონალური მოძრაობა",
         9 => "ლელო საქართველოსთვის",
         36 => "გირჩი",
         42 => "ქართული ოცნება",

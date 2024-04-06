@@ -3,16 +3,19 @@
 <PageTitle>Stats</PageTitle>
 
 
-<div class="container flex h-full justify-center items-center px-5 lg:px-0">
-    <div class="flex flex-col lg:flex-row gap-10">
-        <div class="flex [&>canvas]:w-[200px] [&>canvas]:h-[100px] sm:[&>canvas]:w-[800px]
-                    backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card py-10 cursor-crosshair select-none">
-            <DailyStackedBarChartSection/>
-        </div>
+<div class="container h-full flex flex-row justify-center align-middle items-center gap-10 px-5 lg:px-0">
+    @* <div class="flex flex-col lg:flex-row gap-10"> *@
 
-        <div class="flex [&>canvas]:w-[100px] [&>canvas]:h-[100px] sm:[&>canvas]:w-[400px]
-                    backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card py-10 cursor-crosshair select-none">
-            <PieChartSection/>
-        </div>
+    <div class="h-[500px] sm:[&>canvas]:w-[800px]
+                hidden sm:flex justify-center
+                backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card py-10 cursor-crosshair select-none">
+        <DailyStackedBarChartSection/>
     </div>
+
+    <div class="h-full sm:h-[500px]
+                [&>canvas]:w-[150px] [&>canvas]:h-[150px]
+                backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card py-10 cursor-crosshair select-none">
+        <PieChartSection/>
+    </div>
+    @* </div> *@
 </div>

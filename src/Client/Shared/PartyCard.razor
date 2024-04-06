@@ -4,9 +4,10 @@
 @* TODO add parameter shown, which will controll if the card is shown or not. also have a transition *@
 @* TODO have a callback named Choose which when called the parent will hide all other cards, and give some effects to the clicked one. *@
 
+@* @onclick="@(() => NavigationManager.NavigateTo("/stats"))" *@
 
-<div @onclick="@(() => NavigationManager.NavigateTo("/stats"))"
-     class="group flex flex-col col-span-12 lg:col-span-3 rounded-[5px]
+<div class="group max-w-[300px] min-w-[260px] flex flex-col rounded-[5px]
+            select-none
             bg-party-card @Party.GetBgClass()
             border-2 border-gray-600 hover:border-white
             transition-[colors,transform] duration-300 ease-sweet
@@ -32,8 +33,9 @@
              src="@Party.LeaderGoldenPortraitPath" alt="@Party.GetLeaderName()"/>
     </div>
 
-    <div class="py-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-[5px] text-center
+    <div class="p-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-[5px] text-center
                 border-t-2 border-gray-600 group-hover:border-white
+                text-2xl text-nowrap truncate
                 transition duration-200 ease-sweet">
         @Party.GetName()
     </div>
