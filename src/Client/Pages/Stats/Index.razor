@@ -2,14 +2,17 @@
 
 <PageTitle>Stats</PageTitle>
 
-<div class="container h-full flex flex-row justify-stretch items-stretch gap-10 px-5 lg:px-0">
-    <div class="max-w-[60%] flex-grow">
-        <div class="backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card overflow-visible py-10 px-2 cursor-crosshair select-none">
-            <DailyStackedBarChart/>
-        </div>
-    </div>
 
-    <div class="rounded-[5px] backdrop-blur-[3.5px] max-w-[40%] flex-grow border-2 border-gray-400 shadow-party-card overflow-hidden py-10 cursor-crosshair select-none">
-        <PieChartSection/>
+<div class="container flex h-full justify-center items-center px-5 lg:px-0">
+    <div class="flex flex-col lg:flex-row gap-10">
+        <div class="flex [&>canvas]:w-[200px] [&>canvas]:h-[100px] sm:[&>canvas]:w-[800px]
+                    backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card py-10 cursor-crosshair select-none">
+            <DailyStackedBarChartSection/>
+        </div>
+
+        <div class="flex [&>canvas]:w-[100px] [&>canvas]:h-[100px] sm:[&>canvas]:w-[400px]
+                    backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card py-10 cursor-crosshair select-none">
+            <PieChartSection/>
+        </div>
     </div>
 </div>

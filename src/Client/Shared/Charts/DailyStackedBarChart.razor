@@ -6,29 +6,14 @@
 @using Domain.Common
 @using ChartJs.Blazor;
 
-<Chart Config="_config"/>
+<Chart Config="_config" Height="400"/>
 
 @code
 {
     private BarConfig? _config;
 
-    private static Dictionary<DateOnly, int> RandomData(int days) => Enumerable
-        .Range(0, days)
-        .Select(i => new
-        {
-            Key = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-i),
-            Value = Random.Shared.Next(0, 100),
-        })
-        .Reverse()
-        .ToDictionary(kv => kv.Key, kv => kv.Value);
-
-    private Dictionary<Party, Dictionary<DateOnly, int>> _dailyVotes = new()
-    {
-        [new Party(42)] = RandomData(5),
-        [new Party(5)] = RandomData(5),
-        [new Party(9)] = RandomData(5),
-        [new Party(36)] = RandomData(5),
-    };
+    [Parameter, EditorRequired]
+    public Dictionary<Party, Dictionary<DateOnly, int>> DailyVotes { get; set; } = [];
 
     protected override void OnInitialized()
     {
@@ -88,12 +73,12 @@
             },
         };
 
-        foreach (var date in _dailyVotes.Values.First().Keys)
+        foreach (var date in DailyVotes.Values.First().Keys)
         {
             _config.Data.Labels.Add(date.ToDateTime().DaysAgoGe());
         }
 
-        foreach (var (party, votes) in _dailyVotes)
+        foreach (var (party, votes) in DailyVotes)
         {
             var (r, g, b) = party.GetColorRgb();
 
