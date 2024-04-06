@@ -1,0 +1,37 @@
+﻿<div class="flex flex-col justify-start overflow-y-scroll h-[80%] p-5 gap-3
+            backdrop-blur-[3.5px] rounded-[5px] border-2 border-gray-400 shadow-party-card">
+    <h2 class="text-3xl">Latest Blocks</h2>
+
+    <button class="p-4 bg-gray-300 rounded-[5px] uppercase" @onclick="@(() => AddBlock(NextBlock))">
+        add block
+    </button>
+
+    @foreach (var block in _blocks)
+    {
+        <LatestBlockEntry @key="@block.Index" Block="@block"/>
+    }
+</div>
+
+@code
+{
+    private List<LatestBlockEntry.MinimalBlock> _blocks =
+    [
+        new LatestBlockEntry.MinimalBlock(2, DateTime.Now, Random.Shared.Next(0, 256)),
+        new LatestBlockEntry.MinimalBlock(1, DateTime.Now.AddDays(-1), Random.Shared.Next(0, 256)),
+        new LatestBlockEntry.MinimalBlock(0, DateTime.Now.AddDays(-2), Random.Shared.Next(0, 256)),
+    ];
+
+    private LatestBlockEntry.MinimalBlock NextBlock => new(
+        _blocks.OrderBy(x => x.Index).Last().Index + 1,
+        DateTime.Now,
+        Random.Shared.Next(0, 256)
+    );
+
+    private void AddBlock(LatestBlockEntry.MinimalBlock block)
+    {
+        _blocks.Insert(0, block);
+
+        if (_blocks.Count > 20)
+            _blocks = _blocks[..^1];
+    }
+}
