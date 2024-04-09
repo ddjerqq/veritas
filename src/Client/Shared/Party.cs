@@ -71,6 +71,17 @@ public static class PartyExt
         };
     }
 
+    public static string GetBorderClass(this Party party)
+    {
+        // for tailwind class discovery
+        _ = "border-unm border-lelo border-girchi border-gd";
+        return party.Id switch
+        {
+            5 or 9 or 36 or 42 => $"border-{party.GetShortName()}",
+            _ => throw new ArgumentOutOfRangeException(nameof(party)),
+        };
+    }
+
     public static string GetBgClass(this Party party)
     {
         // for tailwind class discovery
