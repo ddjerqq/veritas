@@ -6,7 +6,7 @@
 
 @* @onclick="@(() => NavigationManager.NavigateTo("/stats"))" *@
 
-<div class="group max-w-[300px] min-w-[260px] flex flex-col rounded-[5px]
+<div class="group max-w-[300px] min-w-[260px] flex flex-col rounded-md
             select-none
             bg-party-card @Party.GetBgClass()
             border-2 border-gray-600 hover:border-white
@@ -33,7 +33,7 @@
              src="@Party.LeaderGoldenPortraitPath" alt="@Party.GetLeaderName()"/>
     </div>
 
-    <div class="p-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-[5px] text-center
+    <div class="p-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-md text-center
                 border-t-2 border-gray-600 group-hover:border-white
                 text-2xl text-nowrap truncate
                 transition duration-200 ease-sweet">

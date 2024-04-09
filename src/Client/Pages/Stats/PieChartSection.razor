@@ -4,7 +4,7 @@
 <div class="flex flex-col gap-10">
     <PieChart Parties="@_votes"/>
 
-    <ol class="text-xl text-nowrap">
+    <ol class="text-xl text-nowrap text-white">
         @foreach (var (party, voteCount) in _votes)
         {
             <li @key="@party.Id" class="flex flex-row justify-between gap-3 px-5">

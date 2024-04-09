@@ -13,7 +13,7 @@
            ItemsProvider="DataProvider"
            ItemKey="@(x => x.Index)"
            Class="table-auto font-normal overflow-y-scroll
-                  [&_tbody>tr]:border-2 [&_tbody>tr]:border-red-500 [&_tbody>tr]:rounded-[5px]
+                  [&_tbody>tr]:border-2 [&_tbody>tr]:border-red-500 [&_tbody>tr]:rounded-md
                   [&_.col-title-text]:font-archyedt"
            Pagination="_paginationState">
 
@@ -21,7 +21,7 @@
                     Class="name-column"
                     Align="Align.Left">
         <div class="flex my-2 text-start text-nowrap truncate align-middle">
-            <div class="flex justify-center items-center w-16 h-16 rounded-[5px]"
+            <div class="flex justify-center items-center w-16 h-16 rounded-md"
                  style="background-image: linear-gradient(@Random.Shared.Next(0, 360)deg, #fea488, #f8c7b8);">
                 <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
             </div>

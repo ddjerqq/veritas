@@ -1,0 +1,30 @@
+﻿@page "/vote"
+
+<PageTitle>Home</PageTitle>
+
+@* <h1 class="text-3xl lg:text-7xl w-full self-center"> *@
+@*     2024 არჩევნები! *@
+@* </h1> *@
+
+<div class="container flex flex-row flex-wrap justify-center align-middle gap-10 px-5 lg:px-0">
+    @foreach (var (partyId, party) in Parties)
+    {
+        <PartyCard @key="partyId" Party="@party"/>
+    }
+
+    @foreach (var (partyId, party) in Parties)
+    {
+        <PartyCard @key="@(partyId + 1)" Party="@party"/>
+    }
+</div>
+
+@code
+{
+    private static readonly Dictionary<int, Party> Parties = new()
+    {
+        [5] = new Party(5),
+        [9] = new Party(9),
+        [36] = new Party(36),
+        [42] = new Party(42),
+    };
+}

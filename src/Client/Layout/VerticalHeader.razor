@@ -1,0 +1,60 @@
+﻿@implements IDisposable
+
+<header class="w-full border-b border-gray-300 bg-background text-white">
+    <nav class="flex flex-col sm:flex-row container flex-wrap justify-between items-center mx-auto">
+        <a href="/" class="hidden sm:flex items-center gap-3 p-4 px-4">
+            <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
+            <span class="self-center text-3xl whitespace-nowrap">მიეცი.ჯი</span>
+        </a>
+
+        <div class="w-full flex sm:hidden flex-row justify-between border-b border-gray-500 p-4 px-4">
+            <a href="/" class="flex items-center gap-3">
+                <span class="self-center text-3xl whitespace-nowrap">Mieci.ge</span>
+            </a>
+
+            <button class="p-2 bg-gray-600 rounded-md" @onclick="@(() => Expanded = !Expanded)">
+                <Heroicon Name="@HeroiconName.Bars3" class="w-8 h-8"/>
+            </button>
+        </div>
+
+        <div class="@NavbarClass sm:flex justify-between w-auto items-center my-4">
+            <ul class="flex flex-col sm:flex-row text-lg sm:text-2xl text-nowrap truncate gap-3 font-medium lg:mt-0">
+                <li>
+                    <NavLink href="vote" class="block p-0 sm:p-4 text-gray-300" ActiveClass="!text-white">
+                        ხმის მიცემა
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="stats" class="block p-0 sm:p-4 text-gray-300" ActiveClass="!text-white">
+                        სტატისტიკა
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink href="blockchain" class="block p-0 sm:p-4 text-gray-300" ActiveClass="!text-white">
+                        ბლოკჩეინი
+                    </NavLink>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
+
+@code
+{
+    private bool Expanded { get; set; } = false;
+
+    private string NavbarClass => Expanded ? "flex" : "hidden";
+
+    private void SetExpandedToFalse(object? _, LocationChangedEventArgs args) => Expanded = false;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.LocationChanged += SetExpandedToFalse;
+    }
+
+    void IDisposable.Dispose()
+    {
+        NavigationManager.LocationChanged -= SetExpandedToFalse;
+    }
+}

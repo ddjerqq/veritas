@@ -11,17 +11,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        bg: "#252525",
-
-        "party-card": "#505050",
+        background: "#252525",
         "party-card-name": "#303030",
+        "party-card": "#505050",
 
         unm: "#ce2121",
         lelo: "#d4a700",
         girchi: "#317e38",
         gd: "#0b6abe",
 
-        ...colors,
+        // ...colors,
       },
       keyframes: {
         "slideDown": {
