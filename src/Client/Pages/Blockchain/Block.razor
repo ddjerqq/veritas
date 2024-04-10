@@ -1,0 +1,13 @@
+﻿@page "/blockchain/blocks/{Index:long}"
+@page "/blockchain/blocks/{Hash}"
+
+<h3>Block: @Hash @Index</h3>
+
+@code
+{
+    [Parameter]
+    public string Hash { get; set; } = string.Empty;
+
+    [Parameter]
+    public long Index { get; set; }
+}

@@ -1,0 +1,9 @@
+﻿@page "/blockchain/transactions/{VoterAddress:string}"
+
+<h3>Voter: @VoterAddress</h3>
+
+@code
+{
+    [Parameter]
+    public string VoterAddress { get; set; } = string.Empty;
+}

@@ -1,0 +1,9 @@
+﻿@page "/blockchain/votes/{Hash:string}"
+
+<h3>Vote: @Hash</h3>
+
+@code
+{
+    [Parameter]
+    public string Hash { get; set; } = string.Empty;
+}
