@@ -1,0 +1,24 @@
+﻿@using System.Diagnostics.CodeAnalysis
+
+<section
+    @attributes="@AdditionalAttributes"
+    class="h-full w-full flex @Flex.GetClass() justify-evenly lg:max-w-screen-xl gap-4 rounded-md
+           sm:bg-glass sm:border border-dashed border-gray-300 backdrop-blur-[3.5px] @Class">
+    @ChildContent
+</section>
+
+@code
+{
+    [Parameter]
+    [StringSyntax("css")]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    public FlexDirection Flex { get; set; } = FlexDirection.Col;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = [];
+}

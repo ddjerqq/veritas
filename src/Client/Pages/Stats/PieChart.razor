@@ -1,58 +1,63 @@
 ﻿@using ChartJs.Blazor.PieChart
-@using ChartJs.Blazor.Common
 @using ChartJs.Blazor.Util
-@using ChartJs.Blazor.Common.Enums
+@using Humanizer
 @using ChartJs.Blazor;
 
-<Chart Config="_config"/>
+<div class="flex flex-col gap-10">
+    <Chart Config="_config"/>
+
+    <ol class="text-xl text-nowrap text-white">
+        @foreach (var (party, voteCount) in Votes)
+        {
+            <li @key="@party.Id" class="flex flex-row justify-between gap-3 px-5">
+                <span class="@party.GetTextClass() truncate">@party.GetName()</span>
+                <span>@voteCount.ToMetric()</span>
+            </li>
+        }
+    </ol>
+</div>
 
 @code
 {
     private PieConfig? _config;
 
-    [Parameter, EditorRequired]
-    public Dictionary<Party, int> Parties { get; set; } = [];
+    private Dictionary<Party, int> Votes { get; set; } = null!;
 
     protected override void OnInitialized()
     {
+        Votes = new()
+        {
+            [new Party(42)] = Random.Shared.Next(0, 1_000_000),
+            [new Party(5)] = Random.Shared.Next(0, 1_000_000),
+            [new Party(9)] = Random.Shared.Next(0, 1_000_000),
+            [new Party(36)] = Random.Shared.Next(0, 1_000_000),
+        };
+        // for debug only
+        Votes = Votes
+            .OrderBy(kv => kv.Value)
+            .Reverse()
+            .ToDictionary();
+
         _config = new PieConfig
         {
             Options = new PieOptions
             {
                 Responsive = true,
-                // Animation = new ArcAnimation
-                // {
-                //     Easing = Easing.EaseInOutQuint,
-                //     Duration = 300,
-                // },
-                Legend = new Legend
-                {
-                    Display = false,
-                },
                 CutoutPercentage = 60,
-                Tooltips = new Tooltips
-                {
-                    Mode = InteractionMode.Index,
-                    Intersect = true,
-                    BackgroundColor = "#000000",
-                    DisplayColors = true,
-                    BodyFontFamily = "archyedt",
-                    BodyFontSize = 18,
-                    BodySpacing = 10,
-                    XPadding = 10,
-                    YPadding = 10,
-                },
+                Legend = ChartConfig.Legend,
+                Tooltips = ChartConfig.Tooltips,
+                Animation = ChartConfig.Animation,
             },
         };
 
-        foreach (var party in Parties.Keys)
+        foreach (var party in Votes.Keys)
         {
             _config.Data.Labels.Add($" {party.GetName()}");
         }
 
-        var dataset = new PieDataset<int>(Parties.Values)
+        var dataset = new PieDataset<int>(Votes.Values)
         {
-            BackgroundColor = Parties.Keys.Select(party =>
+            BackgroundColor = Votes.Keys.Select(party =>
             {
                 var (r, g, b) = party.GetColorRgb();
                 return ColorUtil.ColorHexString(r, g, b);

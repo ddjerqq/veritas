@@ -12,6 +12,7 @@ export default {
     extend: {
       colors: {
         background: "#252525",
+        glass: "#ffffff07",
         "party-card-name": "#303030",
         "party-card": "#505050",
 
@@ -20,7 +21,7 @@ export default {
         girchi: "#317e38",
         gd: "#0b6abe",
 
-        // ...colors,
+        ...colors,
       },
       keyframes: {
         "slideDown": {

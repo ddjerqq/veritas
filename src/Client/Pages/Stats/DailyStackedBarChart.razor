@@ -12,8 +12,23 @@
 {
     private BarConfig? _config;
 
-    [Parameter, EditorRequired]
-    public Dictionary<Party, Dictionary<DateOnly, int>> DailyVotes { get; set; } = [];
+    private static Dictionary<DateOnly, int> RandomData(int days) => Enumerable
+        .Range(0, days)
+        .Select(i => new
+        {
+            Key = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-i),
+            Value = Random.Shared.Next(0, 100),
+        })
+        .Reverse()
+        .ToDictionary(kv => kv.Key, kv => kv.Value);
+
+    private Dictionary<Party, Dictionary<DateOnly, int>> DailyVotes { get; set; } = new()
+    {
+        [new Party(42)] = RandomData(5),
+        [new Party(5)] = RandomData(5),
+        [new Party(9)] = RandomData(5),
+        [new Party(36)] = RandomData(5),
+    };
 
     protected override void OnInitialized()
     {
@@ -22,54 +37,10 @@
             Options = new BarOptions
             {
                 Responsive = true,
-                Legend = new Legend
-                {
-                    Display = false,
-                },
-                // Animation = new ArcAnimation
-                // {
-                //     Easing = Easing.EaseInOutQuint,
-                //     Duration = 300,
-                // },
-                Tooltips = new Tooltips
-                {
-                    Mode = InteractionMode.Index,
-                    Intersect = true,
-                    BackgroundColor = "#000000",
-                    DisplayColors = true,
-                    BodyFontFamily = "archyedt",
-                    BodyFontSize = 18,
-                    BodySpacing = 10,
-                    XPadding = 10,
-                    YPadding = 10,
-                },
-                Scales = new BarScales
-                {
-                    XAxes =
-                    [
-                        new BarCategoryAxis
-                        {
-                            Stacked = true,
-                            GridLines = new GridLines
-                            {
-                                Color = ColorUtil.ColorString(50, 50, 50),
-                                ZeroLineColor = ColorUtil.ColorString(50, 50, 50),
-                            },
-                        },
-                    ],
-                    YAxes =
-                    [
-                        new BarLinearCartesianAxis
-                        {
-                            Stacked = true,
-                            GridLines = new GridLines
-                            {
-                                Color = ColorUtil.ColorString(50, 50, 50),
-                                ZeroLineColor = ColorUtil.ColorString(50, 50, 50),
-                            },
-                        },
-                    ],
-                },
+                Legend = ChartConfig.Legend,
+                Tooltips = ChartConfig.Tooltips,
+                Animation = ChartConfig.Animation,
+                Scales = ChartConfig.BarScales,
             },
         };
 
