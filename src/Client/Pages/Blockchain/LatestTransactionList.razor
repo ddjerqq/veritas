@@ -1,15 +1,10 @@
 ﻿@using System.Security.Cryptography
 @using Domain.Common
 
-<div class="flex flex-col justify-start overflow-y-scroll h-[80%] p-5 gap-3
-            hover:bg-[#303030] backdrop-blur-[3.5px] rounded-md border-2 border-gray-400 shadow-party-card">
-    <h2 class="text-3xl">Latest Transactions</h2>
+<div class="flex flex-col justify-between gap-3">
+    <h2 class="hidden md:block text-3xl" @onclick="@(() => AddTransaction(NextTransaction))">Latest Votes</h2>
 
-    <button class="p-4 bg-gray-500 rounded-md uppercase" @onclick="@(() => AddTransaction(NextTransaction))">
-        add transactions
-    </button>
-
-    @foreach (var transactions in _transactionss)
+    @foreach (var transactions in _transactions)
     {
         <LatestTransactionEntry @key="@transactions.Hash" Transaction="@transactions"/>
     }
@@ -24,7 +19,7 @@
         return SHA256.HashData(buffer).ToHexString();
     }
 
-    private List<LatestTransactionEntry.MinimalTransaction> _transactionss =
+    private List<LatestTransactionEntry.MinimalTransaction> _transactions =
     [
         new LatestTransactionEntry.MinimalTransaction(RandomString(), DateTime.Now, new Party(Random.Shared.GetItems([5, 9, 36, 42], 1)[0]), "0x" + RandomString()[22..]),
         new LatestTransactionEntry.MinimalTransaction(RandomString(), DateTime.Now.AddDays(-1), new Party(Random.Shared.GetItems([5, 9, 36, 42], 1)[0]), "0x" + RandomString()[22..]),
@@ -32,16 +27,16 @@
     ];
 
     private LatestTransactionEntry.MinimalTransaction NextTransaction => new(
-            RandomString(),
-            DateTime.Now,
-            new Party(Random.Shared.GetItems([5, 9, 36, 42], 1)[0]),
-            "0x" + RandomString()[22..]);
+        RandomString(),
+        DateTime.Now,
+        new Party(Random.Shared.GetItems([5, 9, 36, 42], 1)[0]),
+        "0x" + RandomString()[22..]);
 
     private void AddTransaction(LatestTransactionEntry.MinimalTransaction transactions)
     {
-        _transactionss.Insert(0, transactions);
+        _transactions.Insert(0, transactions);
 
-        if (_transactionss.Count > 20)
-            _transactionss = _transactionss[..^1];
+        if (_transactions.Count > 10)
+            _transactions = _transactions[..^1];
     }
 }

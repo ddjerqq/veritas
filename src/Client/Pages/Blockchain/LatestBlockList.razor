@@ -1,10 +1,7 @@
-﻿<div class="flex flex-col justify-start overflow-y-scroll h-[80%] p-5 gap-3
-            hover:bg-[#303030] backdrop-blur-[3.5px] rounded-md border-2 border-gray-400 shadow-party-card">
-    <h2 class="text-3xl">Latest Blocks</h2>
+﻿<div class="relative flex flex-row-reverse w-full md:flex-col justify-between gap-3">
+    <div class="block md:hidden absolute w-full border border-neutral-500 top-6"></div>
 
-    <button class="p-4 bg-gray-500 rounded-md uppercase" @onclick="@(() => AddBlock(NextBlock))">
-        add block
-    </button>
+    <h2 class="hidden md:block text-3xl" @onclick="@(() => AddBlock(NextBlock))">Latest Blocks</h2>
 
     @foreach (var block in _blocks)
     {
@@ -31,7 +28,7 @@
     {
         _blocks.Insert(0, block);
 
-        if (_blocks.Count > 20)
+        if (_blocks.Count > 5)
             _blocks = _blocks[..^1];
     }
 }

@@ -1,16 +1,17 @@
 ﻿<a href="blockchain/blocks/@Block.Index"
-   class="flex flex-row items-center gap-3 p-4 cursor-pointer
-          bg-[#50505050] hover:bg-[#606060] font-mono border border-party-card rounded-md
+   class="flex flex-row items-center gap-3 p-0 md:p-4 cursor-pointer
+          bg-[#50505050] hover:bg-[#606060] font-mono text-nowrap truncate border border-party-card rounded-md
           transition-transform animate-[slideDown_0.5s_ease_forwards]">
-    <div class="flex justify-center items-center w-16 h-16 rounded-md"
+    <div class="flex justify-center items-center w-12 h-12 md:w-16 md:h-16 rounded-md"
          style="background-image: linear-gradient(@Random.Shared.Next(0, 360)deg,
              #6b6dc8,
              #6b81c8,
              #9194d1);">
-        <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
+        <Heroicon Name="@HeroiconName.Link" class="hidden md:block w-8 h-8"/>
+        <span class="block md:hidden">@(Block.Index.ToString("N0"))</span>
     </div>
 
-    <div class="flex flex-col items-start text-sm">
+    <div class="hidden md:flex flex-col items-start text-md">
         <span>@(Block.Index.ToString("N0"))</span>
         <span class="text-xs text-gray-400">
             @(Block.Mined.ToString("dd MMM yyyy • HH:mm:ss • UTCzz"))

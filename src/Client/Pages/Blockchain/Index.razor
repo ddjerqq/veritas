@@ -1,8 +1,14 @@
 ﻿@page "/blockchain"
 
+<AppSection Class="h-full flex flex-col md:flex-row items-start cursor-crosshair select-none p-5">
+    <LatestBlockList/>
 
-<div class="container h-full flex flex-row justify-center align-middle items-center gap-10 px-5 lg:px-0">
-    <LatestBlockList />
+    <hr class="hidden md:block border-s h-full"/>
+    <hr class="md:hidden block border-s w-full"/>
 
-    <LatestTransactionList />
-</div>
+    <LatestTransactionList/>
+
+    @* <hr class="border-s border-dashed h-full"/> *@
+    @* *@
+    @* <GoogleAd /> *@
+</AppSection>

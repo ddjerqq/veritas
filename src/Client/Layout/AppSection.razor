@@ -2,8 +2,8 @@
 
 <section
     @attributes="@AdditionalAttributes"
-    class="h-full w-full flex @Flex.GetClass() justify-evenly lg:max-w-screen-xl gap-4 rounded-md
-           sm:bg-glass sm:border border-dashed border-gray-300 backdrop-blur-[3.5px] @Class">
+    class="@Class lg:max-w-screen-xl gap-4 rounded-md overflow-hidden
+           backdrop-blur-[3.5px] bg-glass md:border border-dashed border-gray-300">
     @ChildContent
 </section>
 
@@ -12,9 +12,6 @@
     [Parameter]
     [StringSyntax("css")]
     public string Class { get; set; } = string.Empty;
-
-    [Parameter]
-    public FlexDirection Flex { get; set; } = FlexDirection.Col;
 
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;

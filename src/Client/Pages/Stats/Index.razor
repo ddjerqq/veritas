@@ -2,8 +2,10 @@
 
 <PageTitle>Stats</PageTitle>
 
-<AppSection Flex="@FlexDirection.Row" Class="cursor-crosshair select-none items-center">
+<AppSection Class="w-full h-full flex flex-row cursor-crosshair select-none items-center">
     <PieChart/>
+
+    <hr class="hidden md:block border-s border-dashed h-full"/>
 
     <div class="hidden lg:flex lg:[&>canvas]:w-[800px]">
         <DailyStackedBarChart/>

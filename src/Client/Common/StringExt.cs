@@ -1,4 +1,6 @@
-﻿namespace Client.Common;
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Client.Common;
 
 public static class StringExt
 {
@@ -6,7 +8,7 @@ public static class StringExt
     /// Left joins all classes with the `other` class list,
     /// and favors ones from self
     /// </summary>
-    public static string Join(this string classes, string other)
+    public static string Join(this string classes, [StringSyntax("html")] string other)
     {
         var selfClasses = classes.Split(' ');
         var otherClasses = other.Split(' ');

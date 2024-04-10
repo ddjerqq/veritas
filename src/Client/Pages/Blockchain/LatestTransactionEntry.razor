@@ -1,6 +1,6 @@
 ﻿<a href="blockchain/transactions/@Transaction.Hash"
    class="flex flex-row items-center gap-3 p-4 cursor-pointer rounded-md
-          bg-[#50505050] hover:bg-[#606060] font-mono border @Transaction.Party.GetBorderClass()
+          bg-[#50505050] hover:bg-[#606060] font-mono text-nowrap truncate border @Transaction.Party.GetBorderClass()
           transition-transform animate-[slideDown_0.5s_ease_forwards]">
     <span class="hover:underline">@Transaction.ShortHash</span>
 
@@ -23,7 +23,7 @@
     {
         public string ShortHash => $"{Hash[..4]}-{Hash[^4..]}";
 
-        public string ShortVoter => $"{VoterAddress[..8]}";
+        public string ShortVoter => $"{VoterAddress[..16]}";
     }
 
     [Parameter, EditorRequired]

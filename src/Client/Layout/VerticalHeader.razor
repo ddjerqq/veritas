@@ -1,13 +1,13 @@
 ﻿@implements IDisposable
 
 <header class="w-full border-b border-gray-300 bg-background text-white">
-    <nav class="flex flex-col sm:flex-row container flex-wrap justify-between items-center mx-auto">
-        <a href="/" class="hidden sm:flex items-center gap-3 p-4 px-4">
+    <nav class="flex flex-col md:flex-row container flex-wrap justify-between items-center mx-auto">
+        <a href="/" class="hidden md:flex items-center gap-3 p-4 px-4">
             <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
             <span class="self-center text-3xl whitespace-nowrap">მიეცი.ჯი</span>
         </a>
 
-        <div class="w-full flex sm:hidden flex-row justify-between border-b border-gray-500 p-4 px-4">
+        <div class="w-full flex md:hidden flex-row justify-between border-b border-gray-500 p-4 px-4">
             <a href="/" class="flex items-center gap-3">
                 <span class="self-center text-3xl whitespace-nowrap">Mieci.ge</span>
             </a>
@@ -17,20 +17,20 @@
             </button>
         </div>
 
-        <div class="@NavbarClass sm:flex justify-between w-auto items-center my-4">
-            <ul class="flex flex-col sm:flex-row text-lg sm:text-2xl text-nowrap truncate gap-3 font-medium lg:mt-0">
+        <div class="@NavbarClass md:flex justify-between w-auto items-center my-4">
+            <ul class="flex flex-col md:flex-row text-lg md:text-2xl text-nowrap truncate gap-3 font-medium lg:mt-0">
                 <li>
-                    <NavLink href="vote" class="block p-0 sm:p-4 text-gray-300" ActiveClass="!text-white">
+                    <NavLink href="vote" class="block p-0 md:p-4 text-gray-300" ActiveClass="!text-white">
                         ხმის მიცემა
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink href="stats" class="block p-0 sm:p-4 text-gray-300" ActiveClass="!text-white">
+                    <NavLink href="stats" class="block p-0 md:p-4 text-gray-300" ActiveClass="!text-white">
                         სტატისტიკა
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink href="blockchain" class="block p-0 sm:p-4 text-gray-300" ActiveClass="!text-white">
+                    <NavLink href="blockchain" class="block p-0 md:p-4 text-gray-300" ActiveClass="!text-white">
                         ბლოკჩეინი
                     </NavLink>
                 </li>
