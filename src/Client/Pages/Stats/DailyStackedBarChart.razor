@@ -1,8 +1,5 @@
-﻿@using ChartJs.Blazor.Common
-@using ChartJs.Blazor.Util
+﻿@using ChartJs.Blazor.Util
 @using ChartJs.Blazor.BarChart
-@using ChartJs.Blazor.Common.Enums
-@using ChartJs.Blazor.BarChart.Axes
 @using Domain.Common
 @using ChartJs.Blazor;
 
@@ -17,7 +14,7 @@
         .Select(i => new
         {
             Key = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-i),
-            Value = Random.Shared.Next(0, 100),
+            Value = Random.Shared.Next(0, 1_000_000),
         })
         .Reverse()
         .ToDictionary(kv => kv.Key, kv => kv.Value);
