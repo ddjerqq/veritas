@@ -1,4 +1,5 @@
-﻿@using ChartJs.Blazor.Util
+﻿@using Application.ValueObjects
+@using ChartJs.Blazor.Util
 @using ChartJs.Blazor.BarChart
 @using Domain.Common
 @using ChartJs.Blazor;
@@ -21,10 +22,10 @@
 
     private Dictionary<Party, Dictionary<DateOnly, int>> DailyVotes { get; set; } = new()
     {
-        [new Party(42)] = RandomData(5),
-        [new Party(5)] = RandomData(5),
-        [new Party(9)] = RandomData(5),
-        [new Party(36)] = RandomData(5),
+        [42] = RandomData(5),
+        [5] = RandomData(5),
+        [9] = RandomData(5),
+        [36] = RandomData(5),
     };
 
     protected override void OnInitialized()
@@ -52,7 +53,7 @@
 
             var dataset = new BarDataset<int>(votes.Values.ToArray())
             {
-                Label = party.GetName(),
+                Label = party.Name,
                 BackgroundColor = ColorUtil.ColorHexString(r, g, b),
             };
 

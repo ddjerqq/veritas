@@ -1,4 +1,5 @@
-﻿@using ChartJs.Blazor.PieChart
+﻿@using Application.ValueObjects
+@using ChartJs.Blazor.PieChart
 @using ChartJs.Blazor.Util
 @using Humanizer
 @using ChartJs.Blazor;
@@ -10,7 +11,7 @@
         @foreach (var (party, voteCount) in Votes)
         {
             <li @key="@party.Id" class="flex flex-row justify-between gap-3 px-5">
-                <span class="@party.GetTextClass() truncate">@party.GetName()</span>
+                <span class="@party.GetTextClass() truncate">@party.Name</span>
                 <span>@voteCount.ToMetric()</span>
             </li>
         }
@@ -27,10 +28,10 @@
     {
         Votes = new()
         {
-            [new Party(42)] = Random.Shared.Next(0, 1_000_000),
-            [new Party(5)] = Random.Shared.Next(0, 1_000_000),
-            [new Party(9)] = Random.Shared.Next(0, 1_000_000),
-            [new Party(36)] = Random.Shared.Next(0, 1_000_000),
+            [42] = Random.Shared.Next(0, 1_000_000),
+            [5] = Random.Shared.Next(0, 1_000_000),
+            [9] = Random.Shared.Next(0, 1_000_000),
+            [36] = Random.Shared.Next(0, 1_000_000),
         };
         // for debug only
         Votes = Votes
@@ -52,7 +53,7 @@
 
         foreach (var party in Votes.Keys)
         {
-            _config.Data.Labels.Add($" {party.GetName()}");
+            _config.Data.Labels.Add($" {party.Name}");
         }
 
         var dataset = new PieDataset<int>(Votes.Values)
