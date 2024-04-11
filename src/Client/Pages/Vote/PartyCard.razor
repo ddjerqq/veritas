@@ -1,5 +1,4 @@
-﻿@inject NavigationManager NavigationManager
-
+﻿@using Application.ValueObjects
 
 @* TODO add parameter shown, which will controll if the card is shown or not. also have a transition *@
 @* TODO have a callback named Choose which when called the parent will hide all other cards, and give some effects to the clicked one. *@
@@ -17,32 +16,32 @@
 
     <div class="relative overflow-hidden">
         <img class="object-cover z-10 transition grayscale group-hover:grayscale-0 blur-[1px]"
-             src="@Party.LogoPath"
-             alt="@Party.GetName()'s logo"/>
+             src="@Party.GetLogoPath()"
+             alt="@Party.Name's logo"/>
 
         <img class="absolute top-5 inset-0 origin-bottom
                     transition-[opacity,transform] duration-[400ms] ease-sweet
                     group-hover:-translate-y-1
                     group-hover:scale-[102%] group-hover:opacity-100 object-cover z-20"
-             src="@Party.LeaderPortraitPath" alt="@Party.GetLeaderName()"/>
+             src="@Party.GetLeaderPortraitPath()" alt="@Party.LeaderName"/>
 
         <img class="absolute top-5 inset-0 origin-bottom
                     transition-[opacity,transform] duration-[400ms] ease-sweet
                     group-hover:-translate-y-1 blur-[1px]
                     group-hover:scale-[102%] group-hover:opacity-0 object-cover z-20"
-             src="@Party.LeaderGoldenPortraitPath" alt="@Party.GetLeaderName()"/>
+             src="@Party.GetLeaderGoldenPortraitPath()" alt="@Party.LeaderName"/>
     </div>
 
     <div class="p-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-md text-center
                 border-t-2 border-gray-600 group-hover:border-white
                 text-2xl text-nowrap truncate
                 transition duration-200 ease-sweet">
-        @Party.GetName()
+        @Party.Name
     </div>
 </div>
 
 @code
 {
     [Parameter, EditorRequired]
-    public Party Party { get; set; } = default!;
+    public Party Party { get; set; }
 }

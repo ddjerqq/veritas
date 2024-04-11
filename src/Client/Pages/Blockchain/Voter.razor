@@ -1,9 +1,55 @@
 ﻿@page "/blockchain/voters/{VoterAddress}"
+@using Application.Dto
 
-<h3>Voter: @VoterAddress</h3>
+<AppSection Class="h-full flex flex-col items-start cursor-crosshair select-none p-5">
+    <div class="flex flex-row w-full gap-3 text-nowrap">
+        <div class="flex justify-center items-center w-14 md:h-14 rounded-full"
+             style="background-image: linear-gradient(@Random.Shared.Next(0, 360)deg,#6b6dc8,#6b81c8,#9194d1);">
+            <Heroicon Name="@HeroiconName.Wallet" class="block w-8 h-8"/>
+        </div>
+
+        <div class="flex flex-col items-start justify-center h-full text-lg">
+            <span class="text-gray-400">ამომრჩეველი</span>
+            <span class="truncate">@Model.ShortAddress</span>
+        </div>
+    </div>
+
+    <hr class="border-s border-gray-400 w-full"/>
+
+    <section class="text-start text-lg leading-6 text-gray-400 max-w-md">
+        ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ<br/>
+
+        @if (Model.FavoriteParty is { } favoriteParty)
+        {
+            <span>
+                მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/>
+            </span>
+        }
+        else
+        {
+            @:მას არ ჰყავს ფავორიტი პარტია.<br/>
+        }
+
+        @if (Model.LastVoteTime is { } lastVoteTime)
+        {
+            <span class="[&>b]:text-white">
+                ბოლოს ხმა მიცემული აქვს
+                <b>@lastVoteTime.ToString("d")</b>-ში
+                <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე
+                <b>@((DateTime.Now - lastVoteTime).ToString("g"))</b>-ის წინ
+            </span>
+        }
+    </section>
+
+    <hr class="border-s border-gray-400 w-full"/>
+
+    <VoteList Votes="@Model.Votes" Max="100"/>
+</AppSection>
 
 @code
 {
     [Parameter]
     public string VoterAddress { get; set; } = string.Empty;
+
+    private VoterDto Model { get; set; } = VoterDto.RandomVoterDto(Random.Shared.Next(0, 50));
 }
