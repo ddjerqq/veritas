@@ -16,19 +16,22 @@
 </main>
 
 
-<BlazoredToasts Position="ToastPosition.TopRight"
+<BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="10"
                 ShowProgressBar="false"
                 ShowCloseButton="true"
                 PauseProgressOnHover="true"
                 RemoveToastsOnNavigation="true"
 
-                InfoClass="!border !rounded-md !border-cyan-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-cyan-300"
-                SuccessClass="!border !rounded-md !border-green-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-green-300"
-                WarningClass="!border !rounded-md !border-yellow-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-yellow-300"
-                ErrorClass="!border !rounded-md !border-red-300 !text-base !font-semibold !bg-gray-600 !text-white !backdrop-blur-[2px] !shadow-lg !shadow-red-300"/>
+                InfoClass="@("!border-cyan-500 !shadow-cyan-500 " + Class)"
+                SuccessClass="@("!border-green-500 !shadow-green-500 " + Class)"
+                WarningClass="@("!border-yellow-500 !shadow-yellow-500 " + Class)"
+                ErrorClass="@("!border-red-500 !shadow-red-500 " + Class)"
+                />
 
 @code
 {
+    private string Class = "!rounded-md !border-2 !text-base !font-archyedt !bg-background !text-white !shadow-lg";
+
     private ErrorBoundary ErrorBoundary { get; set; } = default!;
 }

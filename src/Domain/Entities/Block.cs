@@ -10,7 +10,7 @@ namespace Domain.Entities;
 
 public class Block
 {
-    private const int Difficulty = 6;
+    public const int Difficulty = 6;
 
     private readonly List<Vote> _votes = [];
 

@@ -20,29 +20,57 @@
 
     <hr class="border-s border-gray-400 w-full"/>
 
-    <section class="text-start text-lg leading-6 text-gray-400 max-w-md">
-        ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ<br/>
+    <section class="text-start text-lg leading-6 text-gray-400 max-w-md [&>b]:text-white">
+        ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა<br/>
+        და პირველ ადგილას არის:
+        <span class="@Model.TopParty.GetTextClass()">
+            @Model.TopParty.Name.
+        </span>
+    </section>
 
-        @* @if (Model.FavoriteParty is { } favoriteParty) *@
-        @* { *@
-        @*     <span> *@
-        @*         მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/> *@
-        @*     </span> *@
-        @* } *@
-        @* else *@
-        @* { *@
-        @*     @:მას არ ჰყავს ფავორიტი პარტია.<br/> *@
-        @* } *@
-        @* *@
-        @* @if (Model.LastVoteTime is { } lastVoteTime) *@
-        @* { *@
-        @*     <span class="[&>b]:text-white"> *@
-        @*         ბოლოს ხმა მიცემული აქვს *@
-        @*         <b>@lastVoteTime.ToString("d")</b>-ში *@
-        @*         <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე *@
-        @*         <b>@((DateTime.Now - lastVoteTime).ToString("g"))</b>-ის წინ *@
-        @*     </span> *@
-        @* } *@
+    <hr class="border-s border-gray-400 w-full"/>
+
+    <section class="flex w-full flex-shrink-0 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ჰეში</property>
+            <value>@Model.ShortHash</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ნონსი</property>
+            <value>@Model.Nonce.ToString("N0")</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ხმების რაოდენობა</property>
+            <value>@Model.Votes.Count.ToString("N0")</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ტევადობა</property>
+            <value>@(((float)Model.Votes.Count / 128).ToString("P2"))</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>მაინინგ დრო</property>
+            <TimeTracker For="@Model.Mined" class="text-gray-400"/>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>Mrkl root</property>
+            <value>@Model.ShortMerkleRoot</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>წინა ბლოკის ჰეში</property>
+            <value>@Model.ShortPreviousHash</value>
+        </div>
+
+        <div class="w-full">
+            <button class="w-full mt-2 border border-green-600 text-2xl rounded-md" @onclick="Verify">
+                ვერიფიკაცია
+            </button>
+        </div>
     </section>
 
     <hr class="border-s border-gray-400 w-full"/>
@@ -59,4 +87,14 @@
     public long? Index { get; set; }
 
     private BlockDto Model { get; set; } = BlockDto.RandomBlockDto();
+
+    private void Verify()
+    {
+        var hashValid = Model.Hash.StartsWith(new string('0', Domain.Entities.Block.Difficulty));
+
+        if (hashValid)
+            Toast.ShowSuccess("ბლოკი არის ვალიდური");
+        else
+            Toast.ShowError("ბლოკი არ არის ვალიდური");
+    }
 }
