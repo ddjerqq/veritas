@@ -28,13 +28,13 @@ public class ApiController(
     [HttpPost("votes")]
     public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
     {
-        // if (processedVotesCache.Contains(command.Hash))
-        // {
-        //     logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
-        //     return BadRequest($"Tried processing the same vote twice: {command.Hash}");
-        // }
-        //
-        // processedVotesCache.Add(command.Hash);
+        if (processedVotesCache.Contains(command.Hash))
+        {
+            logger.LogWarning("Tried processing the same vote twice: {Hash}", command.Hash);
+            return BadRequest("The vote has already been processed");
+        }
+
+        processedVotesCache.Add(command.Hash);
         await mediator.Send(command, ct);
         return Created();
     }

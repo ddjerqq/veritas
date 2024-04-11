@@ -1,5 +1,5 @@
-﻿@page "/blockchain/blocks/{Index:long}"
-@page "/blockchain/blocks/{Hash}"
+﻿@page "/blockchain/blocks/{Hash}"
+@page "/blockchain/blocks/{Index:long}"
 
 <h3>Block: @Hash @Index</h3>
 
@@ -9,5 +9,5 @@
     public string Hash { get; set; } = string.Empty;
 
     [Parameter]
-    public long Index { get; set; }
+    public long? Index { get; set; }
 }

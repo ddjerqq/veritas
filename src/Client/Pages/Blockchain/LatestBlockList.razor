@@ -1,7 +1,7 @@
 ﻿<div class="relative flex flex-row-reverse w-full md:flex-col justify-between gap-3">
     <div class="block md:hidden absolute w-full border border-neutral-500 top-6"></div>
 
-    <h2 class="hidden md:block text-3xl" @onclick="@(() => AddBlock(NextBlock))">Latest Blocks</h2>
+    <h2 class="hidden md:block font-archyedt text-3xl" @onclick="@(() => AddBlock(NextBlock))">უახლესი ბლოკები</h2>
 
     @foreach (var block in _blocks)
     {
@@ -16,11 +16,23 @@
             </div>
 
             <div class="hidden md:flex flex-col items-start text-md">
-                <span>@(block.Index.ToString("N0"))</span>
+                <span>
+                    @(block.Index.ToString("N0"))
+                </span>
+
                 <span class="text-xs text-gray-400">
                     @(block.Mined.ToString("dd MMM yyyy • HH:mm:ss • UTCzz"))
                 </span>
-                <span>@(block.VoteCount) Votes • @(block.SizeBits.ToString("F2")) Mb</span>
+
+                <div class="flex w-full justify-between">
+                    <span class="font-archyedt">
+                        @(block.VoteCount) ხმა
+                    </span>
+                    •
+                    <span class="text-gray-400">
+                        @(block.SizeBits.ToString("F2")) Mb
+                    </span>
+                </div>
             </div>
         </a>
     }

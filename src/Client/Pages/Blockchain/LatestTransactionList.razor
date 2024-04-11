@@ -2,16 +2,18 @@
 @using Domain.Common
 
 <div class="flex flex-col justify-between gap-3">
-    <h2 class="hidden md:block text-3xl" @onclick="@(() => AddTransaction(NextTransaction))">Latest Votes</h2>
+    <h2 class="hidden md:block font-archyedt text-3xl" @onclick="@(() => AddTransaction(NextTransaction))">უახლესი ხმები</h2>
 
     @foreach (var transaction in _transactions)
     {
         <a @key="@transaction.Hash"
-           href="blockchain/transactions/@transaction.Hash"
-           class="flex flex-row items-center gap-3 p-4 cursor-pointer rounded-md
+           href="blockchain/votes/@transaction.Hash"
+           class="flex flex-row items-center gap-3 p-4 justify-between cursor-pointer rounded-md
                   bg-[#50505050] hover:bg-[#606060] font-mono text-nowrap truncate border @transaction.Party.GetBorderClass()
                   transition-transform animate-[slideDown_0.5s_ease_forwards]">
-            <span class="hover:underline">@transaction.ShortHash</span>
+            <span>
+                @transaction.ShortHash
+            </span>
 
             <span class="text-gray-400">
                 @(transaction.Added.ToString("HH:mm:ss"))
@@ -21,7 +23,7 @@
                 @transaction.Party.Id
             </span>
 
-            <a href="blockchain/voters/@transaction.VoterAddress" class="hover:underline">
+            <a href="blockchain/voters/@transaction.VoterAddress" class="text-gray-400 hover:underline">
                 @transaction.ShortVoter
             </a>
         </a>
