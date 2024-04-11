@@ -11,7 +11,7 @@
                   border border-party-card rounded-md transition-transform
                   animate-[slideDown_0.5s_ease_forwards]">
             <div class="flex justify-center items-center w-20 h-14 md:w-16 md:h-16 rounded-md"
-                 style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(block.Index)deg,#6b6dc8,#6b81c8,#9194d1);">
+                 style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(block.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
                 <Heroicon Name="@HeroiconName.Link" class="hidden md:block w-8 h-8"/>
                 <span class="block text-sm md:hidden">@(block.Index.ToString("N0"))</span>
             </div>
@@ -26,8 +26,8 @@
                 </span>
 
                 <div>
-                    <span class="font-archyedt">@(block.VoteCount) ხმა</span>
-                    <span class="text-gray-400">@((int)(block.SizeBytes / 1024))Mb</span>
+                    <span class="font-archyedt">@(block.Votes.Count) ხმა</span>
+                    <span class="text-gray-400">@(block.SizeMegaBytes)Mb</span>
                 </div>
             </div>
         </a>

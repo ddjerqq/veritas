@@ -17,12 +17,12 @@
     <hr class="border-s border-gray-400 w-full"/>
 
     <section class="text-start text-lg leading-6 text-gray-400 max-w-md">
-        ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ<br/>
+        ამ ამომრჩეველს ხმა მიცემული აქვს <span class="text-white">@Model.Votes.Count</span> ჯერ<br/>
 
         @if (Model.FavoriteParty is { } favoriteParty)
         {
             <span>
-                მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/>
+                მისი ფავორიტი პარტია არის <span class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</span><br/>
             </span>
         }
         else
@@ -32,11 +32,11 @@
 
         @if (Model.LastVoteTime is { } lastVoteTime)
         {
-            <span class="[&>b]:text-white">
+            <span class="[&>span]:text-white">
                 ბოლოს ხმა მიცემული აქვს
-                <b>@lastVoteTime.ToString("d")</b>-ში
-                <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე
-                <b>@((DateTime.Now - lastVoteTime).ToString("g"))</b>-ის წინ
+                <span>@lastVoteTime.ToString("d")</span>-ში
+                <span>@lastVoteTime.ToString("HH:mm:ss")</span>-ზე<br/>
+                <TimeTracker For="@lastVoteTime"/>-ის წინ
             </span>
         }
     </section>

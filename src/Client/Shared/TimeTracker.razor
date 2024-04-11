@@ -1,0 +1,36 @@
+﻿@implements IDisposable
+
+<span @attributes="@AdditionalAttributes">
+    @if (Difference.Hours > 0)
+    {
+        @(Difference.Hours) @:საათის,
+    }
+
+    @if (Difference.Minutes > 0)
+    {
+        @(Difference.Minutes) @:წუთი,
+    }
+
+    @(Difference.Seconds) წამის წინ
+</span>
+
+@code
+{
+    [Parameter, EditorRequired]
+    public DateTime For { get; set; }
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = [];
+
+    private TimeSpan Difference => DateTime.Now - For;
+
+    private Timer Timer { get; set; } = default!;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        Timer = new Timer(_ => InvokeAsync(StateHasChanged), new object(), TimeSpan.Zero, TimeSpan.FromSeconds(1));
+    }
+
+    void IDisposable.Dispose() => Timer.Dispose();
+}

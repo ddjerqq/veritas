@@ -1,5 +1,5 @@
 ﻿using Application.Dto;
-using Application.ValueObjects;
+using Domain.ValueObjects;
 
 namespace Test.Application.Dto;
 

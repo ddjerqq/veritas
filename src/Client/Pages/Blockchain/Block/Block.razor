@@ -1,7 +1,54 @@
 ﻿@page "/blockchain/blocks/{Hash}"
 @page "/blockchain/blocks/{Index:long}"
+@using Application.Dto
 
-<h3>Block: @Hash @Index</h3>
+
+<AppSection Class="h-full flex flex-col items-start cursor-crosshair select-none p-5">
+    <div class="flex flex-row w-full gap-3 text-nowrap">
+        <div class="flex justify-center items-center w-14 md:h-14 rounded-md"
+             style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
+            <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
+        </div>
+
+        <div class="flex flex-col items-start justify-center h-full text-lg">
+            <span class="text-gray-400">ბლოკი</span>
+            <span class="truncate">
+                @Model.Index.ToString("N0")
+            </span>
+        </div>
+    </div>
+
+    <hr class="border-s border-gray-400 w-full"/>
+
+    <section class="text-start text-lg leading-6 text-gray-400 max-w-md">
+        ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ<br/>
+
+        @* @if (Model.FavoriteParty is { } favoriteParty) *@
+        @* { *@
+        @*     <span> *@
+        @*         მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/> *@
+        @*     </span> *@
+        @* } *@
+        @* else *@
+        @* { *@
+        @*     @:მას არ ჰყავს ფავორიტი პარტია.<br/> *@
+        @* } *@
+        @* *@
+        @* @if (Model.LastVoteTime is { } lastVoteTime) *@
+        @* { *@
+        @*     <span class="[&>b]:text-white"> *@
+        @*         ბოლოს ხმა მიცემული აქვს *@
+        @*         <b>@lastVoteTime.ToString("d")</b>-ში *@
+        @*         <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე *@
+        @*         <b>@((DateTime.Now - lastVoteTime).ToString("g"))</b>-ის წინ *@
+        @*     </span> *@
+        @* } *@
+    </section>
+
+    <hr class="border-s border-gray-400 w-full"/>
+
+    <VoteList Votes="@Model.Votes" Max="100"/>
+</AppSection>
 
 @code
 {
@@ -10,4 +57,6 @@
 
     [Parameter]
     public long? Index { get; set; }
+
+    private BlockDto Model { get; set; } = BlockDto.RandomBlockDto();
 }
