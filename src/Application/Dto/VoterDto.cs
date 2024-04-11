@@ -1,6 +1,5 @@
-﻿using System.Security.Cryptography;
-using Application.ValueObjects;
-using Domain.Common;
+﻿using Domain.Common;
+using Domain.ValueObjects;
 
 namespace Application.Dto;
 
@@ -22,19 +21,12 @@ public record VoterDto(string Address, List<VoteDto> Votes)
 
     public static VoterDto RandomVoterDto(int voteCount)
     {
-        var addr = "0x" + RandomString()[22..];
+        var addr = "0x" + StringExt.RandomHexString(42);
 
         var votes = Enumerable.Range(0, voteCount)
             .Select(_ => VoteDto.RandomVoteDto(addr))
             .ToList();
 
         return new VoterDto(addr, votes);
-
-        static string RandomString()
-        {
-            var buffer = new byte[16];
-            Random.Shared.NextBytes(buffer);
-            return SHA256.HashData(buffer).ToHexString();
-        }
     }
 }

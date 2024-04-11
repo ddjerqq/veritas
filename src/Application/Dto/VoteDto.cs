@@ -1,6 +1,5 @@
-﻿using System.Security.Cryptography;
-using Application.ValueObjects;
-using Domain.Common;
+﻿using Domain.Common;
+using Domain.ValueObjects;
 
 namespace Application.Dto;
 
@@ -16,16 +15,9 @@ public record VoteDto(string Hash, DateTime Added, Party Party, string VoterAddr
         var party = new Party(Random.Shared.GetItems([5, 9, 36, 42], 1)[0]);
 
         return new VoteDto(
-            RandomString(),
+            StringExt.RandomHexString(64),
             DateTime.Now,
             party,
-            voterAddress ?? "0x" + RandomString()[22..]);
-
-        static string RandomString()
-        {
-            var buffer = new byte[16];
-            Random.Shared.NextBytes(buffer);
-            return SHA256.HashData(buffer).ToHexString();
-        }
+            voterAddress ?? "0x" + StringExt.RandomHexString(42));
     }
 }

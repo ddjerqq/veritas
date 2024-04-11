@@ -1,17 +1,29 @@
-﻿namespace Application.Dto;
+﻿using Domain.Common;
 
-public record BlockDto(long Index, DateTime Mined, IEnumerable<VoteDto> Votes)
+namespace Application.Dto;
+
+public record BlockDto(
+    long Index,
+    long Nonce,
+    string Hash,
+    string MerkleRoot,
+    string PreviousHash,
+    List<VoteDto> Votes,
+    DateTime Mined)
 {
-    public int VoteCount => Votes.Count();
+    public int SizeMegaBytes => Votes.Count * 208 / 1024;
 
-    public double SizeBytes => (double)VoteCount * 208;
-
-    public static BlockDto RandomBlockDto(long? index = null)
+    public static BlockDto RandomBlockDto(long? index = null, int? votes = null)
     {
         return new BlockDto(
             index ?? Random.Shared.Next(0, 10_000_000),
-            DateTime.Now,
-            Enumerable.Range(0, Random.Shared.Next(1, 100))
-                .Select(_ => VoteDto.RandomVoteDto()));
+            Random.Shared.NextInt64(0, 10_000_000),
+            StringExt.RandomHexString(64),
+            StringExt.RandomHexString(64),
+            StringExt.RandomHexString(64),
+            Enumerable.Range(0, Random.Shared.Next(1, votes ?? 100))
+                .Select(_ => VoteDto.RandomVoteDto())
+                .ToList(),
+            DateTime.Now);
     }
 }
