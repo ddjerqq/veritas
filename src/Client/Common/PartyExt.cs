@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using Application.ValueObjects;
+using Domain.ValueObjects;
 
 namespace Client.Common;
 

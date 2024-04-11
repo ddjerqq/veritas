@@ -1,9 +1,14 @@
-﻿using System.Text;
+﻿using System.Security.Cryptography;
+using System.Text;
 
 namespace Domain.Common;
 
 public static class StringExt
 {
+    private static readonly char[] Chars = "abcdef0123456789".ToArray();
+
+    public static string RandomHexString(int length) => new(Random.Shared.GetItems(Chars, length));
+
     private static int GetHexVal(char hex) => hex - (hex < 58 ? 48 : hex < 97 ? 55 : 87);
 
     public static byte[] ToBytesFromHex(this string hex)
@@ -46,4 +51,6 @@ public static class StringExt
 
         return sb.ToString();
     }
+
+    public static string Sha256(this string input) => SHA256.HashData(Encoding.UTF8.GetBytes(input)).ToHexString();
 }

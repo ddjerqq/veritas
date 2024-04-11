@@ -1,4 +1,4 @@
-﻿namespace Application.ValueObjects;
+﻿namespace Domain.ValueObjects;
 
 public readonly record struct Party(int Id)
 {
