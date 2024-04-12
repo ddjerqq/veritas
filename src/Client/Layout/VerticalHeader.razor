@@ -1,6 +1,6 @@
 ﻿@implements IDisposable
 
-<header class="w-full border-b border-gray-300 bg-background text-white">
+<header class="w-full border-b border-gray-300 bg-background text-white z-50">
     <nav class="flex flex-col md:flex-row container flex-wrap justify-between items-center mx-auto">
         <a href="/" class="hidden md:flex items-center gap-3 p-4 px-4">
             <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
@@ -45,7 +45,10 @@
 
     private string NavbarClass => Expanded ? "flex" : "hidden";
 
-    private void SetExpandedToFalse(object? _, LocationChangedEventArgs args) => Expanded = false;
+    private void SetExpandedToFalse(object? _, LocationChangedEventArgs args)
+    {
+        Expanded = false;
+    }
 
     protected override void OnInitialized()
     {

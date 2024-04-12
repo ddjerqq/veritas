@@ -19,8 +19,14 @@ public sealed class Voter : IDisposable
 
     public string PublicKey { get; init; } = default!;
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public string? PrivateKey { get; init; }
+
+    public void Dispose()
+    {
+        Dsa.Dispose();
+    }
 
     public static Voter NewVoter()
     {
@@ -67,10 +73,5 @@ public sealed class Voter : IDisposable
     {
         Dsa.ImportSubjectPublicKeyInfo(PublicKey.ToBytesFromHex(), out _);
         return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
-    }
-
-    public void Dispose()
-    {
-        Dsa.Dispose();
     }
 }

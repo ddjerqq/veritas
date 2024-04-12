@@ -1,0 +1,74 @@
+﻿@page "/blockchain/votes/{Hash}"
+@using Application.Dto
+
+
+<AppSection Class="flex flex-col items-start cursor-crosshair select-none p-5">
+    <div class="flex flex-row w-full gap-3 text-nowrap">
+        <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
+             style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Hash)deg,#cc6bc0,#91a0d1);">
+            <Heroicon Name="@HeroiconName.Megaphone" class="block w-8 h-8"/>
+        </div>
+
+        <div class="flex flex-col items-start justify-center h-full text-lg max-w-sm">
+            <span class="text-white">ხმა</span>
+            <span class="text-wrap text-start break-all text-gray-400 leading-4">
+                @Model.Hash
+            </span>
+        </div>
+    </div>
+
+    <hr class="border-s border-gray-400 w-full"/>
+
+    <section class="flex w-full flex-shrink-0 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
+        <div class="flex flex-row justify-between [&>property]:text-white">
+            <property>პარტია</property>
+            <value class="@Model.Party.GetTextClass()">@Model.Party.Name</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ნონსი</property>
+            <value>@Model.Nonce.ToString("N0")</value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ბროდკასტი</property>
+            <TimeTracker For="@Model.Added" class="text-gray-400"/>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            <property>ამომრჩეველი</property>
+            <value>
+                <a href="blockchain/voters/@Model.Voter.Address" class="truncate hover:underline">
+                    @Model.Voter.ShortAddress
+                </a>
+            </value>
+        </div>
+
+        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+            @if (Model.BlockIndex is { } idx)
+            {
+                <property>ხმის ID</property>
+                <value>
+                    <a href="blockchain/blocks/@idx" class="truncate hover:underline">
+                        @idx.ToString("N0")
+                    </a>
+                </value>
+            }
+            else
+            {
+                <property>ხმა ჯერ არ არის დავერიფაიებული</property>
+            }
+        </div>
+    </section>
+</AppSection>
+
+@code
+{
+    [Parameter]
+    public string Hash { get; set; } = string.Empty;
+
+    [Parameter]
+    public long? Index { get; set; }
+
+    private VoteDto Model { get; } = VoteDto.RandomVoteDto();
+}

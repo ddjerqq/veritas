@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel;
 using System.Reflection;
 using Domain.Common;
-using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Client.Common;
 
@@ -48,7 +48,6 @@ public abstract class QueryParameterBinderComponentBase : ComponentBase
         var queryParameters = QueryHelpers.ParseQuery(queryString);
 
         foreach (var prop in QueryProperties)
-        {
             if (queryParameters.TryGetValue(prop.Key, out var value))
             {
                 var propType = prop.Value.PropertyType;
@@ -62,7 +61,6 @@ public abstract class QueryParameterBinderComponentBase : ComponentBase
                     Logger.LogError(ex, "failed converting value from query parameter: {}", prop);
                 }
             }
-        }
 
         StateHasChanged();
     }

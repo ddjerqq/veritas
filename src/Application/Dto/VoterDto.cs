@@ -24,7 +24,7 @@ public record VoterDto(string Address, List<VoteDto> Votes)
         var addr = "0x" + StringExt.RandomHexString(42);
 
         var votes = Enumerable.Range(0, voteCount)
-            .Select(_ => VoteDto.RandomVoteDto(addr))
+            .Select(_ => VoteDto.RandomVoteDto())
             .ToList();
 
         return new VoterDto(addr, votes);

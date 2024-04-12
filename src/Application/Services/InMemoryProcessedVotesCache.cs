@@ -6,9 +6,15 @@ namespace Application.Services;
 
 public sealed class InMemoryProcessedVotesCache(HashSet<string> hashes) : IProcessedVotesCache
 {
-    public bool Contains(string hash) => hashes.Contains(hash);
+    public bool Contains(string hash)
+    {
+        return hashes.Contains(hash);
+    }
 
-    public void Add(string hash) => hashes.Add(hash);
+    public void Add(string hash)
+    {
+        hashes.Add(hash);
+    }
 }
 
 public static class InMemoryProcessedVotesCacheExt

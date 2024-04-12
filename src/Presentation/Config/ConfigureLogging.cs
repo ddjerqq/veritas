@@ -30,7 +30,8 @@ public class ConfigureLogging : IHostingStartup
 
 public static class WebAppExtensions
 {
-    private const string OutputFormat = "[{Timestamp:dd-MM-yyyy HH:mm:ss.fff} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}";
+    private const string OutputFormat =
+        "[{Timestamp:dd-MM-yyyy HH:mm:ss.fff} {Level:u3}] {SourceContext}{NewLine}{Message:lj}{NewLine}{Exception}";
 
     public static LoggerConfiguration Configure(this LoggerConfiguration config)
     {

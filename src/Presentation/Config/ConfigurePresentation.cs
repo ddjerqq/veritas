@@ -49,8 +49,8 @@ public class ConfigurePresentation : IHostingStartup
                     options.JsonSerializerOptions.AllowTrailingCommas = true;
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                 });
-                // this is bad, because we want to use ProblemDetails for status code errors.
-                // .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
+            // this is bad, because we want to use ProblemDetails for status code errors.
+            // .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
             // TODO SignalR
             // services.AddSignalR(o => { o.EnableDetailedErrors = env.IsDevelopment(); });

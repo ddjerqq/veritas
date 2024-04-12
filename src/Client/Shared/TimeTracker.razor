@@ -3,12 +3,14 @@
 <span @attributes="@AdditionalAttributes">
     @if (Difference.Hours > 0)
     {
-        @(Difference.Hours) @:საათის,
+        @(Difference.Hours)
+        @:საათის,
     }
 
     @if (Difference.Minutes > 0)
     {
-        @(Difference.Minutes) @:წუთი,
+        @(Difference.Minutes)
+        @:წუთი,
     }
 
     @(Difference.Seconds) წამის წინ
@@ -16,7 +18,8 @@
 
 @code
 {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public DateTime For { get; set; }
 
     [Parameter(CaptureUnmatchedValues = true)]
@@ -32,5 +35,8 @@
         Timer = new Timer(_ => InvokeAsync(StateHasChanged), new object(), TimeSpan.Zero, TimeSpan.FromSeconds(1));
     }
 
-    void IDisposable.Dispose() => Timer.Dispose();
+    void IDisposable.Dispose()
+    {
+        Timer.Dispose();
+    }
 }

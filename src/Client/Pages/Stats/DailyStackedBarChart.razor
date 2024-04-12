@@ -1,24 +1,26 @@
-﻿@using ChartJs.Blazor.Util
+﻿@using ChartJs.Blazor
 @using ChartJs.Blazor.BarChart
+@using ChartJs.Blazor.Util
 @using Domain.Common
 @using Domain.ValueObjects
-@using ChartJs.Blazor;
-
 <Chart Config="_config" Height="400"/>
 
 @code
 {
     private BarConfig? _config;
 
-    private static Dictionary<DateOnly, int> RandomData(int days) => Enumerable
-        .Range(0, days)
-        .Select(i => new
-        {
-            Key = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-i),
-            Value = Random.Shared.Next(0, 1_000_000),
-        })
-        .Reverse()
-        .ToDictionary(kv => kv.Key, kv => kv.Value);
+    private static Dictionary<DateOnly, int> RandomData(int days)
+    {
+        return Enumerable
+            .Range(0, days)
+            .Select(i => new
+            {
+                Key = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-i),
+                Value = Random.Shared.Next(0, 1_000_000),
+            })
+            .Reverse()
+            .ToDictionary(kv => kv.Key, kv => kv.Value);
+    }
 
     private Dictionary<Party, Dictionary<DateOnly, int>> DailyVotes { get; set; } = new()
     {

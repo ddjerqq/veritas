@@ -2,12 +2,18 @@
 
 public static class ByteArrayExt
 {
-    public static string ToHexString(this byte[] bytes) => BitConverter
-        .ToString(bytes)
-        .Replace("-", "")
-        .ToLower();
+    public static string ToHexString(this byte[] bytes)
+    {
+        return BitConverter
+            .ToString(bytes)
+            .Replace("-", "")
+            .ToLower();
+    }
 
-    public static string ToBase64String(this byte[] bytes) => Convert.ToBase64String(bytes);
+    public static string ToBase64String(this byte[] bytes)
+    {
+        return Convert.ToBase64String(bytes);
+    }
 
     public static bool ArrayEquals(this byte[]? a, byte[]? b)
     {

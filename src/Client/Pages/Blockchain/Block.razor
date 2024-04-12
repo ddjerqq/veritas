@@ -5,14 +5,14 @@
 
 <AppSection Class="h-full flex flex-col items-start cursor-crosshair select-none p-5">
     <div class="flex flex-row w-full gap-3 text-nowrap">
-        <div class="flex justify-center items-center w-14 md:h-14 rounded-md"
+        <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
              style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
             <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
         </div>
 
-        <div class="flex flex-col items-start justify-center h-full text-lg">
-            <span class="text-gray-400">ბლოკი</span>
-            <span class="truncate">
+        <div class="flex flex-col items-start justify-center h-full text-lg max-w-sm">
+            <span class="text-white">ბლოკი</span>
+            <span class="text-gray-400 text-start leading-4 break-all">
                 @Model.Index.ToString("N0")
             </span>
         </div>
@@ -21,8 +21,8 @@
     <hr class="border-s border-gray-400 w-full"/>
 
     <section class="text-start text-lg leading-6 text-gray-400 max-w-md [&>b]:text-white">
-        ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა<br/>
-        და პირველ ადგილას არის:
+        ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
+        პირველ ადგილას არის:
         <span class="@Model.TopParty.GetTextClass()">
             @Model.TopParty.Name.
         </span>
@@ -65,12 +65,6 @@
             <property>წინა ბლოკის ჰეში</property>
             <value>@Model.ShortPreviousHash</value>
         </div>
-
-        <div class="w-full">
-            <button class="w-full mt-2 border border-green-600 text-2xl rounded-md" @onclick="Verify">
-                ვერიფიკაცია
-            </button>
-        </div>
     </section>
 
     <hr class="border-s border-gray-400 w-full"/>
@@ -86,15 +80,5 @@
     [Parameter]
     public long? Index { get; set; }
 
-    private BlockDto Model { get; set; } = BlockDto.RandomBlockDto();
-
-    private void Verify()
-    {
-        var hashValid = Model.Hash.StartsWith(new string('0', Domain.Entities.Block.Difficulty));
-
-        if (hashValid)
-            Toast.ShowSuccess("ბლოკი არის ვალიდური");
-        else
-            Toast.ShowError("ბლოკი არ არის ვალიდური");
-    }
+    private BlockDto Model { get; } = BlockDto.RandomBlockDto();
 }

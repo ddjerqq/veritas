@@ -12,7 +12,8 @@ public sealed class Vote
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local for EF Core
     public required string Hash { get; set; }
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public string VoterAddress { get; init; } = default!;
 
     public Voter Voter { get; init; } = default!;
@@ -21,23 +22,28 @@ public sealed class Vote
 
     public DateTime Timestamp { get; init; }
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public long UnixTimestampMs => Timestamp.ToUnixMs();
 
     public string Signature { get; init; } = default!;
 
     public long Nonce { get; set; }
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public long? BlockIndex { get; set; }
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public Block? Block { get; set; }
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public bool IsHashValid => Hash.StartsWith(new string('0', Difficulty));
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public bool IsSignatureValid => Voter.Verify(this.GetSignaturePayload(), Signature.ToBytesFromHex());
 
     public static Vote NewVote(Voter voter, int partyId, DateTime timestamp)
@@ -56,7 +62,10 @@ public sealed class Vote
         };
     }
 
-    public bool VerifySignature(byte[] sig) => Voter.Verify(this.GetSignaturePayload(), sig);
+    public bool VerifySignature(byte[] sig)
+    {
+        return Voter.Verify(this.GetSignaturePayload(), sig);
+    }
 
     public void Mine()
     {
@@ -78,7 +87,10 @@ public static class VoteExt
         return buffer.ToArray();
     }
 
-    public static byte[] GetSignaturePayload(this Vote vote) => GetSignaturePayload(vote.PartyId, vote.UnixTimestampMs);
+    public static byte[] GetSignaturePayload(this Vote vote)
+    {
+        return GetSignaturePayload(vote.PartyId, vote.UnixTimestampMs);
+    }
 
     public static byte[] GetHashPayload(string address, string signature, int partyId, long timestamp, long nonce)
     {
@@ -92,6 +104,8 @@ public static class VoteExt
         return buffer.ToArray();
     }
 
-    public static byte[] GetHashPayload(this Vote vote) =>
-        GetHashPayload(vote.Voter?.Address ?? "", vote.Signature, vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
+    public static byte[] GetHashPayload(this Vote vote)
+    {
+        return GetHashPayload(vote.Voter?.Address ?? "", vote.Signature, vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
+    }
 }

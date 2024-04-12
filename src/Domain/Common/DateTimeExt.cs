@@ -2,11 +2,20 @@
 
 public static class DateTimeExt
 {
-    public static long ToUnixMs(this DateTime dateTime) => new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+    public static long ToUnixMs(this DateTime dateTime)
+    {
+        return new DateTimeOffset(dateTime).ToUnixTimeMilliseconds();
+    }
 
-    public static DateTime ToUtcDateTime(this long timestamp) => DateTimeOffset.FromUnixTimeMilliseconds(timestamp).UtcDateTime;
+    public static DateTime ToUtcDateTime(this long timestamp)
+    {
+        return DateTimeOffset.FromUnixTimeMilliseconds(timestamp).UtcDateTime;
+    }
 
-    public static DateTime ToDateTime(this DateOnly dateOnly) => new(dateOnly, default, DateTimeKind.Utc);
+    public static DateTime ToDateTime(this DateOnly dateOnly)
+    {
+        return new DateTime(dateOnly, default, DateTimeKind.Utc);
+    }
 
     public static string DaysAgoGe(this DateTime date)
     {

@@ -13,12 +13,10 @@ public class VoterDtoTest
         var counts = new Dictionary<int, int>();
 
         foreach (var vote in voterDto.Votes)
-        {
             if (!counts.TryAdd(vote.Party.Id, 1))
                 counts[vote.Party.Id]++;
-        }
 
-        Party partyA = voterDto.FavoriteParty!.Value;
+        var partyA = voterDto.FavoriteParty!.Value;
         Party partyB = counts.MaxBy(pair => pair.Value).Key;
 
         Assert.That(partyA.Id, Is.EqualTo(partyB.Id));

@@ -1,5 +1,4 @@
 ﻿@using Application.Dto
-
 <div class="relative flex flex-row-reverse overflow-x-hidden w-full md:flex-col justify-between gap-3">
     <div class="block md:hidden absolute w-full border border-neutral-500 top-6"></div>
 
@@ -36,7 +35,8 @@
 
 @code
 {
-    [Parameter, EditorRequired]
+    [Parameter]
+    [EditorRequired]
     public List<BlockDto> Blocks { get; set; } = [];
 
     public void AddBlock(BlockDto block)

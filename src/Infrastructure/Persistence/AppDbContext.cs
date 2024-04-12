@@ -74,7 +74,8 @@ public sealed class AppDbContext(
 
             var previous = i == 0 ? null : blocks[i - 1];
             if (previous is not null && block.PreviousHash != previous.Hash)
-                throw new ValidationException($"Block hash does not equal the previous hash. expected: {previous.Hash} but was: {block.Hash}");
+                throw new ValidationException(
+                    $"Block hash does not equal the previous hash. expected: {previous.Hash} but was: {block.Hash}");
         }
     }
 

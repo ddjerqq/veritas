@@ -1,16 +1,19 @@
 ﻿@page "/blockchain/voters/{VoterAddress}"
 @using Application.Dto
 
+
 <AppSection Class="h-full flex flex-col items-start cursor-crosshair select-none p-5">
     <div class="flex flex-row w-full gap-3 text-nowrap">
-        <div class="flex justify-center items-center w-14 md:h-14 rounded-full"
+        <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
              style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.ShortAddress)deg,#6b6dc8,#6b81c8,#9194d1);">
             <Heroicon Name="@HeroiconName.Wallet" class="block w-8 h-8"/>
         </div>
 
-        <div class="flex flex-col items-start justify-center h-full text-lg">
-            <span class="text-gray-400">ამომრჩეველი</span>
-            <span class="truncate">@Model.ShortAddress</span>
+        <div class="flex flex-col items-start justify-center h-full text-lg max-w-sm">
+            <span class="text-white">ამომრჩეველი</span>
+            <span class="text-wrap text-start break-all text-gray-400 leading-4">
+                @Model.Address
+            </span>
         </div>
     </div>
 
@@ -51,5 +54,5 @@
     [Parameter]
     public string VoterAddress { get; set; } = string.Empty;
 
-    private VoterDto Model { get; set; } = VoterDto.RandomVoterDto(Random.Shared.Next(0, 50));
+    private VoterDto Model { get; } = VoterDto.RandomVoterDto(Random.Shared.Next(0, 50));
 }

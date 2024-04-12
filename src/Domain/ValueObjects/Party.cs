@@ -35,8 +35,18 @@ public readonly record struct Party(int Id)
         _ => throw new ArgumentOutOfRangeException(nameof(Id)),
     };
 
-    public static implicit operator int(Party party) => party.Id;
-    public static implicit operator Party(int id) => new(id);
+    public static implicit operator int(Party party)
+    {
+        return party.Id;
+    }
 
-    public override int GetHashCode() => Id.GetHashCode();
+    public static implicit operator Party(int id)
+    {
+        return new Party(id);
+    }
+
+    public override int GetHashCode()
+    {
+        return Id.GetHashCode();
+    }
 }

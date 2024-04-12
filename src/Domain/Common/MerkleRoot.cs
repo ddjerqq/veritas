@@ -8,7 +8,7 @@ public static class MerkleRoot
 
     public static byte[] BuildMerkleRoot(IEnumerable<byte[]> data)
     {
-        List<byte[]> merkelLeaves = data.ToList();
+        var merkelLeaves = data.ToList();
 
         if (merkelLeaves.Count == 0)
             return Empty;
@@ -30,7 +30,7 @@ public static class MerkleRoot
 
     private static byte[] HashPair(byte[] left, byte[] right)
     {
-        byte[] buffer = new byte[left.Length + right.Length];
+        var buffer = new byte[left.Length + right.Length];
         left.CopyTo(buffer, 0);
         right.CopyTo(buffer, left.Length);
         return SHA256.HashData(buffer);

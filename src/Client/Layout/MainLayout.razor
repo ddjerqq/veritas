@@ -1,12 +1,14 @@
 ﻿@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
 
-<main class="w-full h-full flex flex-col md:gap-10 md:pb-10 justify-start text-center items-center bg-background bg-topo overflow-x-hidden text-white font-archyedt">
+<main class="w-full h-full flex flex-col justify-start gap-10 pb-10 bg-background bg-topo overflow-y-scroll overflow-x-hidden font-archyedt scrollbar-none">
     <VerticalHeader/>
 
     <ErrorBoundary @ref="@ErrorBoundary" Context="Exception">
         <ChildContent>
-            @Body
+            <article class="w-full h-full flex text-center justify-center align-middle items-center">
+                @Body
+            </article>
         </ChildContent>
 
         <ErrorContent>
@@ -26,12 +28,11 @@
                 InfoClass="@("!border-cyan-500 !shadow-cyan-500 " + Class)"
                 SuccessClass="@("!border-green-500 !shadow-green-500 " + Class)"
                 WarningClass="@("!border-yellow-500 !shadow-yellow-500 " + Class)"
-                ErrorClass="@("!border-red-500 !shadow-red-500 " + Class)"
-                />
+                ErrorClass="@("!border-red-500 !shadow-red-500 " + Class)"/>
 
 @code
 {
-    private string Class = "!rounded-md !border-2 !text-base !font-archyedt !bg-background !text-white !shadow-lg";
+    private const string Class = "!rounded-md !border-2 !text-base !font-archyedt !bg-background !text-white !shadow-lg";
 
     private ErrorBoundary ErrorBoundary { get; set; } = default!;
 }

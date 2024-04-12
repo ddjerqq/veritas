@@ -18,6 +18,30 @@ public class ConfigureInfrastructure : IHostingStartup
 {
     private static bool _configured;
 
+    private static readonly PartitionedRateLimiter<HttpContext> GlobalRateLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
+        context =>
+        {
+            string key;
+
+            if (context.Items.TryGetValue(nameof(Voter), out var value) && value is Voter voter)
+                key = voter.Address;
+            else
+                key = context.Connection.RemoteIpAddress?.ToString() ?? context.Connection.Id;
+
+            return RateLimitPartition.GetTokenBucketLimiter(key, _ => GlobalPolicy);
+        });
+
+    private static TokenBucketRateLimiterOptions GlobalPolicy => new()
+    {
+        AutoReplenishment = true,
+        QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "0"),
+        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+        ReplenishmentPeriod =
+            TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__REPLENISHMENT_PERIOD") ?? "1")),
+        TokenLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKEN_LIMIT") ?? "10"),
+        TokensPerPeriod = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKENS_PER_PERIOD") ?? "1"),
+    };
+
     public void Configure(IWebHostBuilder builder)
     {
         if (_configured) return;
@@ -39,33 +63,6 @@ public class ConfigureInfrastructure : IHostingStartup
             });
         });
     }
-
-    private static TokenBucketRateLimiterOptions GlobalPolicy => new()
-    {
-        AutoReplenishment = true,
-        QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "0"),
-        QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-        ReplenishmentPeriod = TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__REPLENISHMENT_PERIOD") ?? "1")),
-        TokenLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKEN_LIMIT") ?? "10"),
-        TokensPerPeriod = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKENS_PER_PERIOD") ?? "1"),
-    };
-
-    private static readonly PartitionedRateLimiter<HttpContext> GlobalRateLimiter = PartitionedRateLimiter.Create<HttpContext, string>(
-        context =>
-        {
-            string key;
-
-            if (context.Items.TryGetValue(nameof(Voter), out var value) && value is Voter voter)
-            {
-                key = voter.Address;
-            }
-            else
-            {
-                key = context.Connection.RemoteIpAddress?.ToString() ?? context.Connection.Id;
-            }
-
-            return RateLimitPartition.GetTokenBucketLimiter(key, _ => GlobalPolicy);
-        });
 
     private static ValueTask OnRejected(OnRejectedContext ctx, CancellationToken ct)
     {

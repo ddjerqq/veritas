@@ -36,7 +36,8 @@ public class Block
 
     public IReadOnlyCollection<Vote> Votes => _votes.AsReadOnly();
 
-    [NJsonIgnore, SJsonIgnore]
+    [NJsonIgnore]
+    [SJsonIgnore]
     public bool IsHashValid => Hash.StartsWith(new string('0', Difficulty));
 
     public void AddVote(Vote vote)
@@ -76,18 +77,24 @@ public class Block
     }
 
     [Pure]
-    public Block NextBlock() => new()
+    public Block NextBlock()
     {
-        Index = Index + 1,
-        PreviousHash = Hash,
-    };
+        return new Block
+        {
+            Index = Index + 1,
+            PreviousHash = Hash,
+        };
+    }
 
-    public static Block GenesisBlock() => new()
+    public static Block GenesisBlock()
     {
-        Index = 0,
-        Nonce = 14261917,
-        PreviousHash = new string('0', 64),
-    };
+        return new Block
+        {
+            Index = 0,
+            Nonce = 14261917,
+            PreviousHash = new string('0', 64),
+        };
+    }
 }
 
 public static class BlockExt

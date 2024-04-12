@@ -7,7 +7,10 @@ public sealed class IdempotencyService : IIdempotencyService
     private static readonly TimeSpan InvalidationTime = TimeSpan.FromMinutes(10);
     private readonly HashSet<Guid> _keys = [];
 
-    public bool ContainsKey(Guid key) => _keys.Contains(key);
+    public bool ContainsKey(Guid key)
+    {
+        return _keys.Contains(key);
+    }
 
     public void AddKey(Guid key)
     {

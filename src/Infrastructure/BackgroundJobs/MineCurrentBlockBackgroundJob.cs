@@ -9,7 +9,10 @@ using Quartz;
 namespace Infrastructure.BackgroundJobs;
 
 [DisallowConcurrentExecution]
-public sealed class MineCurrentBlockBackgroundJob(IAppDbContext dbContext, IMediator mediator, ILogger<MineCurrentBlockBackgroundJob> logger) : IJob
+public sealed class MineCurrentBlockBackgroundJob(
+    IAppDbContext dbContext,
+    IMediator mediator,
+    ILogger<MineCurrentBlockBackgroundJob> logger) : IJob
 {
     public static readonly JobKey Key = new("mine_current_block");
 

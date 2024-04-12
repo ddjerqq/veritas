@@ -5,20 +5,32 @@ namespace Client.Common;
 
 public static class PartyExt
 {
-    public static string GetLogoPath(this Party party) => $"/assets/{party.ShortName}-logo.webp";
-
-    public static string GetLeaderPortraitPath(this Party party) => $"/assets/{party.ShortName}-leader.webp";
-
-    public static string GetLeaderGoldenPortraitPath(this Party party) => $"/assets/{party.ShortName}-leader-gold.webp";
-
-    public static string GetColor(this Party party) => party.Id switch
+    public static string GetLogoPath(this Party party)
     {
-        5 => "#ce2121",
-        9 => "#d4a700",
-        36 => "#317e38",
-        42 => "#0b6abe",
-        _ => throw new ArgumentOutOfRangeException(nameof(party)),
-    };
+        return $"/assets/{party.ShortName}-logo.webp";
+    }
+
+    public static string GetLeaderPortraitPath(this Party party)
+    {
+        return $"/assets/{party.ShortName}-leader.webp";
+    }
+
+    public static string GetLeaderGoldenPortraitPath(this Party party)
+    {
+        return $"/assets/{party.ShortName}-leader-gold.webp";
+    }
+
+    public static string GetColor(this Party party)
+    {
+        return party.Id switch
+        {
+            5 => "#ce2121",
+            9 => "#d4a700",
+            36 => "#317e38",
+            42 => "#0b6abe",
+            _ => throw new ArgumentOutOfRangeException(nameof(party)),
+        };
+    }
 
     public static (byte r, byte g, byte b) GetColorRgb(this Party party)
     {

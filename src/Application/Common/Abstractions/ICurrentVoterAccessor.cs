@@ -10,5 +10,8 @@ public interface ICurrentVoterAccessor
     public Voter? TryGetCurrentVoter();
 
     [Pure]
-    public Voter GetCurrentVoter() => TryGetCurrentVoter() ?? throw new InvalidOperationException("No voter is currently logged in");
+    public Voter GetCurrentVoter()
+    {
+        return TryGetCurrentVoter() ?? throw new InvalidOperationException("No voter is currently logged in");
+    }
 }

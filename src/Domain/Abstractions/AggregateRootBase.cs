@@ -7,7 +7,13 @@ public abstract class AggregateRootBase<TId>(TId id) : EntityBase<TId>(id), IAgg
 
     public IEnumerable<IDomainEvent> DomainEvents => _domainEvents;
 
-    public void AddDomainEvent(IDomainEvent domainEvent) => _domainEvents.Add(domainEvent);
+    public void AddDomainEvent(IDomainEvent domainEvent)
+    {
+        _domainEvents.Add(domainEvent);
+    }
 
-    public void ClearDomainEvents() => _domainEvents.Clear();
+    public void ClearDomainEvents()
+    {
+        _domainEvents.Clear();
+    }
 }

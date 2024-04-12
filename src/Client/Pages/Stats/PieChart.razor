@@ -1,9 +1,8 @@
-﻿@using ChartJs.Blazor.PieChart
+﻿@using ChartJs.Blazor
+@using ChartJs.Blazor.PieChart
 @using ChartJs.Blazor.Util
-@using Humanizer
 @using Domain.ValueObjects
-@using ChartJs.Blazor;
-
+@using Humanizer
 <div class="flex flex-col gap-10">
     <Chart Config="_config"/>
 
@@ -26,7 +25,7 @@
 
     protected override void OnInitialized()
     {
-        Votes = new()
+        Votes = new Dictionary<Party, int>
         {
             [42] = Random.Shared.Next(0, 1_000_000),
             [5] = Random.Shared.Next(0, 1_000_000),

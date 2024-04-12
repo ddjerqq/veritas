@@ -9,7 +9,8 @@ internal class TestMerkleRoot
     [Parallelizable]
     public void TestMerkleRootOnPredeterminedHashes()
     {
-        List<byte[]> txHashes = [
+        List<byte[]> txHashes =
+        [
             SHA256.HashData("aaa"u8.ToArray()).ToArray(),
             SHA256.HashData("bbb"u8.ToArray()).ToArray(),
             SHA256.HashData("ccc"u8.ToArray()).ToArray(),
@@ -32,7 +33,7 @@ internal class TestMerkleRoot
     {
         var txHashes = new List<byte[]>();
 
-        for (int i = 0; i < 100; i++)
+        for (var i = 0; i < 100; i++)
         {
             var txHash = new byte[32];
             RandomNumberGenerator.Fill(txHash);

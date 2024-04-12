@@ -63,8 +63,10 @@ public class PublicKeyBearerAuthHandler(
         return ValidateHexString(sig) ? sig : null;
     }
 
-    private bool ValidateHexString(string? hexString) =>
-        !string.IsNullOrWhiteSpace(hexString)
-        && hexString.Length < 512
-        && hexString.All(char.IsAsciiHexDigit);
+    private bool ValidateHexString(string? hexString)
+    {
+        return !string.IsNullOrWhiteSpace(hexString)
+               && hexString.Length < 512
+               && hexString.All(char.IsAsciiHexDigit);
+    }
 }

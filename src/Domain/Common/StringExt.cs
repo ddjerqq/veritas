@@ -7,9 +7,15 @@ public static class StringExt
 {
     private static readonly char[] Chars = "abcdef0123456789".ToArray();
 
-    public static string RandomHexString(int length) => new(Random.Shared.GetItems(Chars, length));
+    public static string RandomHexString(int length)
+    {
+        return new string(Random.Shared.GetItems(Chars, length));
+    }
 
-    private static int GetHexVal(char hex) => hex - (hex < 58 ? 48 : hex < 97 ? 55 : 87);
+    private static int GetHexVal(char hex)
+    {
+        return hex - (hex < 58 ? 48 : hex < 97 ? 55 : 87);
+    }
 
     public static byte[] ToBytesFromHex(this string hex)
     {
@@ -17,9 +23,9 @@ public static class StringExt
         if (hex.Length % 2 == 1)
             hex = hex.Insert(hex.Length - 1, "0");
 
-        byte[] arr = new byte[hex.Length >> 1];
+        var arr = new byte[hex.Length >> 1];
 
-        for (int i = 0; i < hex.Length >> 1; ++i)
+        for (var i = 0; i < hex.Length >> 1; ++i)
             arr[i] = (byte)((GetHexVal(hex[i << 1]) << 4) + GetHexVal(hex[(i << 1) + 1]));
 
         return arr;
@@ -52,5 +58,8 @@ public static class StringExt
         return sb.ToString();
     }
 
-    public static string Sha256(this string input) => SHA256.HashData(Encoding.UTF8.GetBytes(input)).ToHexString();
+    public static string Sha256(this string input)
+    {
+        return SHA256.HashData(Encoding.UTF8.GetBytes(input)).ToHexString();
+    }
 }
