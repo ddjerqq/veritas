@@ -1,9 +1,8 @@
 using Presentation.Auth;
-using Presentation.Config;
 
 [assembly: HostingStartup(typeof(ConfigureAuth))]
 
-namespace Presentation.Config;
+namespace Presentation.Auth;
 
 public class ConfigureAuth : IHostingStartup
 {

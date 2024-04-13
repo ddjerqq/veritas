@@ -20,6 +20,7 @@ public class PublicKeyBearerAuthHandler(
     public const string PubKeyHeaderName = "X-Public-Key";
     public const string SignatureHeaderName = "X-Signature";
 
+    // TODO is this good? or should we assign a new identity to new users?
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
         var pKey = ExtractPublicKey();
