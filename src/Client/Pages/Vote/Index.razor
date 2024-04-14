@@ -3,7 +3,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="h-full container flex flex-row flex-wrap justify-center align-middle gap-10 px-5 lg:px-0">
+<div class="container h-full flex flex-row flex-wrap justify-center items-center gap-10 p-5">
     @foreach (var (partyId, party) in Parties)
     {
         <PartyCard @key="partyId" Party="@party"/>

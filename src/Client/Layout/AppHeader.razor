@@ -1,7 +1,7 @@
 ﻿@implements IDisposable
 
-<header class="w-full border-b border-gray-300 bg-background text-white z-50">
-    <nav class="flex flex-col md:flex-row container flex-wrap justify-between items-center mx-auto">
+<header class="@HeaderClass shrink-0 w-full border-b border-gray-300 bg-background text-white z-50">
+    <nav class="h-full flex flex-col md:flex-row container flex-wrap justify-start md:justify-between items-center mx-auto">
         <a href="/" class="hidden md:flex items-center gap-3 p-4 px-4">
             <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
             <span class="self-center text-3xl whitespace-nowrap">მიეცი.ჯი</span>
@@ -17,8 +17,8 @@
             </button>
         </div>
 
-        <div class="@NavbarClass md:flex justify-between w-auto items-center my-4">
-            <ul class="flex flex-col md:flex-row text-lg md:text-2xl text-nowrap truncate gap-3 font-medium lg:mt-0">
+        <div class="@NavbarClass md:flex justify-center text-center w-full md:w-auto px-4 items-center my-4">
+            <ul class="flex flex-col md:flex-row text-2xl text-nowrap truncate gap-3 font-medium lg:mt-0">
                 <li>
                     <NavLink href="vote" class="block p-0 md:p-4 text-gray-300" ActiveClass="!text-white">
                         ხმის მიცემა
@@ -43,6 +43,7 @@
 {
     private bool Expanded { get; set; } = false;
 
+    private string HeaderClass => Expanded ? "h-full" : "h-20";
     private string NavbarClass => Expanded ? "flex" : "hidden";
 
     private void SetExpandedToFalse(object? _, LocationChangedEventArgs args)

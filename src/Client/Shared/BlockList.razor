@@ -1,8 +1,9 @@
 ﻿@using Application.Dto
+
 <div class="relative flex flex-row-reverse overflow-x-hidden w-full md:flex-col justify-between gap-3">
     <div class="block md:hidden absolute w-full border border-neutral-500 top-6"></div>
 
-    @foreach (var block in Blocks.Take(5))
+    @foreach (var block in Blocks.Take(10))
     {
         <a @key="@block.Index" href="blockchain/blocks/@block.Index"
            class="flex flex-row flex-shrink-0 justify-start items-center w-auto md:w-full gap-3 p-0 md:p-4 cursor-pointer
