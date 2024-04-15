@@ -16,39 +16,21 @@
     </div>
 
     <div class="@(Expanded ? "flex" : "hidden") md:flex flex-col flex-grow gap-3 pb-2 md:pb-0">
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="vote" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.Megaphone" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            ხმის მიცემა
-        </NavLink>
+        @foreach (var (href, iconName, name) in Links)
+        {
+            <NavLink href="@href"
+                     class="flex flex-row gap-2 p-3 rounded-md drop-shadow-md shadow-gray-200 text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200"
+                     ActiveClass="!text-black !bg-gray-200">
+                <Heroicon Name="@iconName" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+                @name
+            </NavLink>
+        }
 
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="stats" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.ChartPie" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            სტატისტიკის ნახვა
-        </NavLink>
-
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="me" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.Briefcase" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            თქვენი ხმების ნახვა
-        </NavLink>
-
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="blockchain" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.ShieldCheck" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            ბლოკჩეინი
-        </NavLink>
-
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="blog" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.DocumentText" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            ბლოგი
-        </NavLink>
-
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="about" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.Link" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            როგორ მუშაობს
-        </NavLink>
-
-        <NavLink ActiveClass="!text-black !bg-gray-200" href="faq" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
-            <Heroicon Name="@HeroiconName.QuestionMarkCircle" Type="@HeroiconType.Outline" class="w-6 h-6"/>
-            ხშირად დასმული კითხვები
+        <NavLink
+            @onclick="@(() => throw new Exception("controlled exception"))"
+            class="flex flex-row gap-2 p-3 rounded-md drop-shadow-md shadow-gray-200 text-red-200 hover:text-black bg-red-700 hover:bg-red-200">
+            <Heroicon Name="@HeroiconName.ExclamationTriangle" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            Error
         </NavLink>
     </div>
 </nav>
@@ -56,5 +38,16 @@
 
 @code
 {
+    private static readonly List<(string href, string iconName, string name)> Links =
+    [
+        ("vote", HeroiconName.Megaphone, "ხმის მიცემა"),
+        ("stats", HeroiconName.ChartPie, "სტატისტიკის ნახვა"),
+        ("me", HeroiconName.Briefcase, "თქვენი ხმების ნახვა"),
+        ("blockchain", HeroiconName.ShieldCheck, "ბლოკჩეინი"),
+        ("blog", HeroiconName.DocumentText, "ბლოგი"),
+        ("about", HeroiconName.Link, "როგორ მუშაობს"),
+        ("faq", HeroiconName.QuestionMarkCircle, "ხშირად დასმული კითხვები"),
+    ];
+
     private bool Expanded { get; set; }
 }
