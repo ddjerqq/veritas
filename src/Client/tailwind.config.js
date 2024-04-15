@@ -12,6 +12,7 @@ export default {
     extend: {
       colors: {
         background: "#252525",
+        sidebar: "#202020",
         glass: "#ffffff07",
         "party-card-name": "#303030",
         "party-card": "#505050",
@@ -22,6 +23,8 @@ export default {
         gd: "#0b6abe",
 
         ...colors,
+
+        gray: colors.neutral,
       },
       keyframes: {
         "slideDown": {

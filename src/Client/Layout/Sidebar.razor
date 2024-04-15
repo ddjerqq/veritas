@@ -1,0 +1,60 @@
+<nav class="flex flex-col flex-shrink-0 h-auto md:h-full justify-between md:overflow-y-scroll
+            bg-gray-800 border-b-2 md:border-b-0 border-r-0 md:border-r-2 border-gray-600
+            p-4 gap-3 scrollbar-none text-white">
+    <div class="flex flex-row">
+        <a href="/" class="hidden md:block">
+            <h1 class="text-3xl">მიეცი.ჯი</h1>
+        </a>
+
+        <div class="flex md:hidden flex-row justify-between items-center flex-grow">
+            <a href="/" class="text-3xl">მიეცი.ჯი</a>
+
+            <button @onclick="@(() => Expanded = !Expanded)">
+                <Heroicon Name="@HeroiconName.Bars3" type="@HeroiconType.Outline" class="w-8 h-8"/>
+            </button>
+        </div>
+    </div>
+
+    <div class="@(Expanded ? "flex" : "hidden") md:flex flex-col flex-grow gap-3 pb-2 md:pb-0">
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="vote" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.Megaphone" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            ხმის მიცემა
+        </NavLink>
+
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="stats" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.ChartPie" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            სტატისტიკის ნახვა
+        </NavLink>
+
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="me" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.Briefcase" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            თქვენი ხმების ნახვა
+        </NavLink>
+
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="blockchain" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.ShieldCheck" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            ბლოკჩეინი
+        </NavLink>
+
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="blog" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.DocumentText" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            ბლოგი
+        </NavLink>
+
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="about" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.Link" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            როგორ მუშაობს
+        </NavLink>
+
+        <NavLink ActiveClass="!text-black !bg-gray-200" href="faq" class="flex flex-row gap-3 rounded-md text-gray-200 hover:text-black bg-gray-600 hover:bg-gray-200 p-3">
+            <Heroicon Name="@HeroiconName.QuestionMarkCircle" Type="@HeroiconType.Outline" class="w-6 h-6"/>
+            ხშირად დასმული კითხვები
+        </NavLink>
+    </div>
+</nav>
+
+
+@code
+{
+    private bool Expanded { get; set; }
+}

@@ -63,7 +63,7 @@ public static class PartyExt
         };
     }
 
-    public static string GetBgClass(this Party party)
+    public static string GetHoverBgClass(this Party party)
     {
         // for tailwind class discovery
         _ = "hover:bg-unm hover:bg-lelo hover:bg-girchi hover:bg-gd";

@@ -1,12 +1,12 @@
 ﻿@using Blazored.Toast.Configuration
 @inherits LayoutComponentBase
 
-<main class="w-full h-screen flex flex-col bg-background bg-topo font-archyedt overflow-x-hidden -z-50">
-    <AppHeader/>
+<main class="w-full h-screen flex flex-col md:flex-row bg-background bg-topo font-archyedt overflow-x-hidden -z-50">
+    <Sidebar />
 
     <ErrorBoundary @ref="@ErrorBoundary" Context="Exception">
         <ChildContent>
-            <article class="flex flex-row w-full h-[calc(100vh-5rem)] overflow-y-scroll text-center items-center justify-center scrollbar-none p-0 sm:p-5">
+            <article class="flex flex-row w-full h-full overflow-y-scroll text-center align-middle items-center justify-center scrollbar-none p-5">
                 @Body
             </article>
         </ChildContent>
