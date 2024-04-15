@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="@(Expanded ? "flex" : "hidden") md:flex flex-col flex-grow gap-3 pb-2 md:pb-0">
+    <div class="@(Expanded ? "flex" : "hidden") md:flex text-lg flex-col flex-grow gap-3 pb-2 md:pb-0">
         @foreach (var (href, iconName, name) in Links)
         {
             <NavLink href="@href"
