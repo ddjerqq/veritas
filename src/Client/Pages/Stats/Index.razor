@@ -2,12 +2,41 @@
 
 <PageTitle>Stats</PageTitle>
 
-<AppSection Class="h-full flex flex-row justify-evenly cursor-crosshair select-none items-center">
-    <PieChart/>
+<div class="w-full h-full grid grid-cols-12 justify-start content-start gap-3">
+    <Card Class="h-[300px] col-span-12">
+        <div class="block sm:hidden">
+            <DailyStackedBarChart Height="250" Days="3"/>
+        </div>
 
-    <hr class="hidden md:block border-s border-dashed h-full"/>
+        <div class="hidden sm:block lg:hidden">
+            <DailyStackedBarChart Height="300" Days="7"/>
+        </div>
 
-    <div class="hidden lg:flex lg:[&>canvas]:w-[800px]">
-        <DailyStackedBarChart/>
-    </div>
-</AppSection>
+        <div class="hidden lg:block">
+            <DailyStackedBarChart Height="300" Days="10"/>
+        </div>
+    </Card>
+
+    <Card class="col-span-12 bg-red-100">
+        <div class="flex flex-row p-1">
+            hello
+            hello
+            hello
+        </div>
+    </Card>
+
+    @for (var i = 0; i < 12; i++)
+    {
+        <div class="h-full col-span-1 bg-red-500 opacity-5"></div>
+    }
+</div>
+
+@* <AppSection Class="h-full flex flex-row justify-evenly cursor-crosshair select-none items-center"> *@
+@*     <PieChart/> *@
+@* *@
+@*     <hr class="hidden md:block border-s border-dashed h-full"/> *@
+@* *@
+@*     <div class="hidden lg:flex lg:[&>canvas]:w-[800px]"> *@
+@*         <DailyStackedBarChart/> *@
+@*     </div> *@
+@* </AppSection> *@

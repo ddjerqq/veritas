@@ -13,7 +13,6 @@ export default {
       colors: {
         background: "#252525",
         sidebar: "#202020",
-        glass: "#ffffff07",
         "party-card-name": "#303030",
         "party-card": "#505050",
 

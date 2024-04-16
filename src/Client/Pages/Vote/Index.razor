@@ -3,7 +3,7 @@
 
 <PageTitle>Home</PageTitle>
 
-<div class="h-full grid grid-cols-12 justify-center items-center gap-10 p-5">
+<div class="h-full grid grid-cols-12 justify-center items-center gap-3 p-5">
     @foreach (var (partyId, party) in Parties)
     {
         <PartyCard @key="partyId" Party="@party"/>

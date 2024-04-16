@@ -3,63 +3,19 @@
 @using ChartJs.Blazor.Util
 @using Domain.Common
 @using Domain.ValueObjects
-<Chart Config="_config" Height="400"/>
+
+<div class="w-full mx-auto [&>canvas]:w-full">
+    <Chart Config="_config" Height="@Height" Width="@Width"/>
+</div>
 
 @code
 {
-    private BarConfig? _config;
+    [Parameter]
+    public int Days { get; set; } = 5;
 
-    private static Dictionary<DateOnly, int> RandomData(int days)
-    {
-        return Enumerable
-            .Range(0, days)
-            .Select(i => new
-            {
-                Key = DateOnly.FromDateTime(DateTime.UtcNow).AddDays(-i),
-                Value = Random.Shared.Next(0, 1_000_000),
-            })
-            .Reverse()
-            .ToDictionary(kv => kv.Key, kv => kv.Value);
-    }
+    [Parameter]
+    public int? Height { get; set; }
 
-    private Dictionary<Party, Dictionary<DateOnly, int>> DailyVotes { get; set; } = new()
-    {
-        [42] = RandomData(5),
-        [5] = RandomData(5),
-        [9] = RandomData(5),
-        [36] = RandomData(5),
-    };
-
-    protected override void OnInitialized()
-    {
-        _config = new BarConfig
-        {
-            Options = new BarOptions
-            {
-                Responsive = true,
-                Legend = ChartConfig.Legend,
-                Tooltips = ChartConfig.Tooltips,
-                Animation = ChartConfig.Animation,
-                Scales = ChartConfig.BarScales,
-            },
-        };
-
-        foreach (var date in DailyVotes.Values.First().Keys)
-        {
-            _config.Data.Labels.Add(date.ToDateTime().DaysAgoGe());
-        }
-
-        foreach (var (party, votes) in DailyVotes)
-        {
-            var (r, g, b) = party.GetColorRgb();
-
-            var dataset = new BarDataset<int>(votes.Values.ToArray())
-            {
-                Label = party.Name,
-                BackgroundColor = ColorUtil.ColorHexString(r, g, b),
-            };
-
-            _config.Data.Datasets.Add(dataset);
-        }
-    }
+    [Parameter]
+    public int? Width { get; set; }
 }

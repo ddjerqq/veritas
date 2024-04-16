@@ -2,7 +2,7 @@
 @using Application.Dto
 
 
-<AppSection Class="flex flex-col items-start cursor-crosshair select-none p-0 md:p-5">
+<Card Class="flex flex-col items-start cursor-crosshair select-none p-0 md:p-5">
     <div class="flex flex-row w-full gap-3 text-nowrap">
         <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
              style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.ShortAddress)deg,#6b6dc8,#6b81c8,#9194d1);">
@@ -47,7 +47,7 @@
     <hr class="border-s border-gray-400 w-full"/>
 
     <VoteList Votes="@Model.Votes" Max="100"/>
-</AppSection>
+</Card>
 
 @code
 {

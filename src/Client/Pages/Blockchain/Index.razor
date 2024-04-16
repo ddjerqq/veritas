@@ -1,7 +1,7 @@
 ﻿@page "/blockchain"
 @using Application.Dto
 
-<AppSection Class="h-full w-full flex flex-col md:flex-row-reverse items-start cursor-crosshair select-none p-3 md:p-5">
+<Card Class="h-full w-full flex flex-col md:flex-row-reverse items-start cursor-crosshair select-none p-3 md:p-5">
     <div class="w-full text-start md:text-center space-y-2">
         <h2 class="hidden md:block font-archyedt text-3xl" @onclick="@(() => BlockList.AddBlock(BlockDto.RandomBlockDto()))">
             უახლესი ბლოკები
@@ -18,7 +18,7 @@
         </h2>
         <VoteList @ref="@VoteList" Votes="@Votes"/>
     </div>
-</AppSection>
+</Card>
 
 
 @code

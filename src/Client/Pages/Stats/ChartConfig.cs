@@ -1,6 +1,7 @@
 ﻿using ChartJs.Blazor.BarChart;
 using ChartJs.Blazor.BarChart.Axes;
 using ChartJs.Blazor.Common;
+using ChartJs.Blazor.Common.Axes;
 using ChartJs.Blazor.Common.Enums;
 using ChartJs.Blazor.Util;
 
@@ -21,7 +22,7 @@ public static class ChartConfig
         YPadding = 10,
     };
 
-    public static readonly ArcAnimation Animation = new()
+    public static readonly ArcAnimation EaseInOneSecAnimation = new()
     {
         Easing = Easing.EaseInOutQuint,
         Duration = 1000,
@@ -55,7 +56,7 @@ public static class ChartConfig
         ],
     };
 
-    public static readonly Legend Legend = new()
+    public static readonly Legend NoLegend = new()
     {
         Display = false,
     };
