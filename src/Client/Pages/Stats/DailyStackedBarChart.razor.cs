@@ -27,6 +27,14 @@ public partial class DailyStackedBarChart
 
     protected override void OnInitialized()
     {
+        DailyVotes = new Dictionary<Party, Dictionary<DateOnly, int>>
+        {
+            [42] = RandomData(Days),
+            [5] = RandomData(Days),
+            [9] = RandomData(Days),
+            [36] = RandomData(Days),
+        };
+
         _config = new BarConfig
         {
             Options = new BarOptions
@@ -37,14 +45,6 @@ public partial class DailyStackedBarChart
                 Animation = ChartConfig.EaseInOneSecAnimation,
                 Scales = ChartConfig.BarScales,
             },
-        };
-
-        DailyVotes = new Dictionary<Party, Dictionary<DateOnly, int>>
-        {
-            [42] = RandomData(Days),
-            [5] = RandomData(Days),
-            [9] = RandomData(Days),
-            [36] = RandomData(Days),
         };
 
         foreach (var date in DailyVotes.Values.First().Keys)

@@ -3,7 +3,7 @@
 <PageTitle>Stats</PageTitle>
 
 <div class="w-full h-full grid grid-cols-12 justify-start content-start gap-3">
-    <Card Class="h-[300px] col-span-12">
+    <Card Class="h-[350px] col-span-12 overflow-hidden">
         <div class="block sm:hidden">
             <DailyStackedBarChart Height="250" Days="3"/>
         </div>
@@ -17,26 +17,28 @@
         </div>
     </Card>
 
-    <Card class="col-span-12 bg-red-100">
-        <div class="flex flex-row p-1">
-            hello
-            hello
-            hello
-        </div>
+    <Card class="col-span-12">
+        <PieChart Radius="200"/>
     </Card>
 
-    @for (var i = 0; i < 12; i++)
-    {
-        <div class="h-full col-span-1 bg-red-500 opacity-5"></div>
-    }
-</div>
+    <Card Class="col-span-12">
+        <div class="flex w-full text-white">
+            @for (var i = 0; i < 10; i++)
+            {
+                <a @key="@i" href="blockchain/blocks/@i"
+                   class="flex flex-col flex-shrink-0 gap-1 p-4 cursor-pointer text-nowrap truncate
+                          border border-party-card rounded-md transition-transform animate-[slideDown_0.5s_ease_forwards]">
+                    <div class="p-3 rounded-md"
+                         style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(i)deg,#c8956b,#c8ab6b,#d1ce91);">
+                        <Heroicon Name="@HeroiconName.Link" class="hidden md:block w-8 h-8"/>
+                        <span class="block text-sm md:hidden">@(i.ToString("N0"))</span>
+                    </div>
 
-@* <AppSection Class="h-full flex flex-row justify-evenly cursor-crosshair select-none items-center"> *@
-@*     <PieChart/> *@
-@* *@
-@*     <hr class="hidden md:block border-s border-dashed h-full"/> *@
-@* *@
-@*     <div class="hidden lg:flex lg:[&>canvas]:w-[800px]"> *@
-@*         <DailyStackedBarChart/> *@
-@*     </div> *@
-@* </AppSection> *@
+                    <span>
+                        @(i.ToString("N0"))
+                    </span>
+                </a>
+            }
+        </div>
+    </Card>
+</div>

@@ -3,13 +3,32 @@
 @using ChartJs.Blazor.Util
 @using Domain.ValueObjects
 @using Humanizer
-<div class="flex flex-col gap-10">
-    <Chart Config="_config"/>
 
-    <ol class="text-xl text-nowrap text-white">
+<div class="h-full flex flex-col md:flex-row justify-center items-center gap-6 p-3 py-6">
+    <div class="h-auto w-full mb-auto max-w-[300px] px-3">
+        <Chart Config="_config" Width="Radius" Height="Radius"/>
+    </div>
+
+    <ol class="w-full md:w-auto text-xl flex-1 text-nowrap text-white max-w-sm">
         @foreach (var (party, voteCount) in Votes)
         {
-            <li @key="@party.Id" class="flex flex-row justify-between gap-3 px-5">
+            <li @key="@party.Id" class="flex flex-row justify-between gap-1">
+                <span class="@party.GetTextClass() truncate">@party.Name</span>
+                <span>@voteCount.ToMetric()</span>
+            </li>
+        }
+
+        @foreach (var (party, voteCount) in Votes)
+        {
+            <li @key="@(party.Id + 1)" class="flex flex-row justify-between gap-1">
+                <span class="@party.GetTextClass() truncate">@party.Name</span>
+                <span>@voteCount.ToMetric()</span>
+            </li>
+        }
+
+        @foreach (var (party, voteCount) in Votes)
+        {
+            <li @key="@(party.Id + 2)" class="flex flex-row justify-between gap-1">
                 <span class="@party.GetTextClass() truncate">@party.Name</span>
                 <span>@voteCount.ToMetric()</span>
             </li>
@@ -19,51 +38,8 @@
 
 @code
 {
-    private PieConfig? _config;
+    [Parameter]
+    public int? Radius { get; set; }
 
     private Dictionary<Party, int> Votes { get; set; } = null!;
-
-    protected override void OnInitialized()
-    {
-        Votes = new Dictionary<Party, int>
-        {
-            [42] = Random.Shared.Next(0, 1_000_000),
-            [5] = Random.Shared.Next(0, 1_000_000),
-            [9] = Random.Shared.Next(0, 1_000_000),
-            [36] = Random.Shared.Next(0, 1_000_000),
-        };
-        // for debug only
-        Votes = Votes
-            .OrderBy(kv => kv.Value)
-            .Reverse()
-            .ToDictionary();
-
-        _config = new PieConfig
-        {
-            Options = new PieOptions
-            {
-                Responsive = true,
-                CutoutPercentage = 60,
-                Legend = ChartConfig.NoLegend,
-                Tooltips = ChartConfig.Tooltips,
-                Animation = ChartConfig.EaseInOneSecAnimation,
-            },
-        };
-
-        foreach (var party in Votes.Keys)
-        {
-            _config.Data.Labels.Add($" {party.Name}");
-        }
-
-        var dataset = new PieDataset<int>(Votes.Values)
-        {
-            BackgroundColor = Votes.Keys.Select(party =>
-            {
-                var (r, g, b) = party.GetColorRgb();
-                return ColorUtil.ColorHexString(r, g, b);
-            }).ToArray(),
-        };
-
-        _config.Data.Datasets.Add(dataset);
-    }
 }
