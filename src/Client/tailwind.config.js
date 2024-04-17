@@ -35,6 +35,16 @@ export default {
             transform: "translateY(0)",
             opacity: "1"
           }
+        },
+        "slideLeft": {
+          "0%": {
+            transform: "translateX(200%)",
+            opacity: "0"
+          },
+          "100%": {
+            transform: "translateX(0)",
+            opacity: "1"
+          }
         }
       },
       transitionTimingFunction: {

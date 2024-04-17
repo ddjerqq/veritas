@@ -1,0 +1,48 @@
+﻿@using Application.Dto
+
+<div class="relative flex w-full text-white overflow-hidden justify-end">
+    <div class="absolute border-b-2 border-gray-500 w-full top-9 -z-50"></div>
+
+    @foreach (var block in Blocks)
+    {
+        <a @key="@block.Index" href="blockchain/blocks/@block.Index"
+           class="flex flex-col flex-shrink-0 p-2 text-sm text-nowrap truncate
+                  transition-transform animate-[slideLeft_0.5s_ease_forwards]">
+
+            <span class="flex justify-center align-middle p-4 rounded-md"
+                  style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(block.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
+                <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
+            </span>
+
+            <span class="mt-1">
+                @(block.Index.ToString("N0"))
+            </span>
+        </a>
+    }
+</div>
+
+@code
+{
+    private List<BlockDto> Blocks { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        Blocks = Enumerable.Range(0, 30)
+            .Select(i => BlockDto.RandomBlockDto(i))
+            .ToList();
+    }
+
+    public void AddBlock(BlockDto block)
+    {
+        Console.WriteLine($"adding block: {block.Index}");
+
+        Blocks.Add(block);
+
+        if (Blocks.Count > 30)
+            Blocks = Blocks[1..];
+
+        StateHasChanged();
+    }
+}

@@ -1,9 +1,14 @@
 ﻿@page "/stats"
+@using Application.Dto
 
 <PageTitle>Stats</PageTitle>
 
 <div class="w-full h-full grid grid-cols-12 justify-start content-start gap-3">
-    <Card Class="h-[350px] col-span-12 overflow-hidden">
+    <Card class="col-span-12">
+        <PieChart/>
+    </Card>
+
+    <Card Class="h-[270px] sm:h-[320px] col-span-12 overflow-hidden">
         <div class="block sm:hidden">
             <DailyStackedBarChart Height="250" Days="3"/>
         </div>
@@ -17,28 +22,16 @@
         </div>
     </Card>
 
-    <Card class="col-span-12">
-        <PieChart Radius="200"/>
-    </Card>
+    <button @onclick="@(() => BlockList.AddBlock(BlockDto.RandomBlockDto()))">
+        add block
+    </button>
 
     <Card Class="col-span-12">
-        <div class="flex w-full text-white">
-            @for (var i = 0; i < 10; i++)
-            {
-                <a @key="@i" href="blockchain/blocks/@i"
-                   class="flex flex-col flex-shrink-0 gap-1 p-4 cursor-pointer text-nowrap truncate
-                          border border-party-card rounded-md transition-transform animate-[slideDown_0.5s_ease_forwards]">
-                    <div class="p-3 rounded-md"
-                         style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(i)deg,#c8956b,#c8ab6b,#d1ce91);">
-                        <Heroicon Name="@HeroiconName.Link" class="hidden md:block w-8 h-8"/>
-                        <span class="block text-sm md:hidden">@(i.ToString("N0"))</span>
-                    </div>
-
-                    <span>
-                        @(i.ToString("N0"))
-                    </span>
-                </a>
-            }
-        </div>
+        <BlockList @ref="BlockList"/>
     </Card>
 </div>
+
+@code
+{
+    public BlockList BlockList { get; set; } = default!;
+}

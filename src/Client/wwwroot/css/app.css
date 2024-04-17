@@ -22,7 +22,6 @@ h1:focus {
     src: url('../font/archyedt-bold-webfont.eot'); /* IE9 Compat Modes */
     src: url('../font/archyedt-bold-webfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */ url('../font/archyedt-bold-webfont.woff2') format('woff2'), /* Super Modern Browsers */ url('../font/archyedt-bold-webfont.woff') format('woff'), /* Pretty Modern Browsers */ url('../font/archyedt-bold-webfont.ttf') format('truetype'), /* Safari, Android, iOS */ url('../font/archyedt-bold-webfont.svg#archyedt-bold') format('svg'); /* Legacy iOS */
   }
-
 }
 
 #blazor-error-ui {
