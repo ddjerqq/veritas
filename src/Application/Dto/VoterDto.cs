@@ -5,7 +5,7 @@ namespace Application.Dto;
 
 public record VoterDto(string Address, List<VoteDto> Votes)
 {
-    public string ShortAddress => Address[..16];
+    public string ShortAddress => Address[..8];
 
     public Party? FavoriteParty => Votes
         .GroupBy(vote => vote.Party.Id)

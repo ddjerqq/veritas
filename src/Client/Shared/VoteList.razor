@@ -1,26 +1,28 @@
 ﻿@using Application.Dto
 
-<div class="flex flex-col w-full overflow-y-scroll justify-between gap-3 scrollbar-none">
+<div class="flex w-full flex-col gap-3">
     @foreach (var vote in Votes)
     {
         <a @key="@vote.Hash"
            href="blockchain/votes/@vote.Hash"
-           class="flex flex-row items-center h-12 gap-3 p-4 justify-between cursor-pointer rounded-md
-                  bg-[#50505050] hover:bg-[#606060] font-mono text-nowrap border @vote.Party.GetBorderClass()
+           class="group flex flex-row justify-between items-center h-12 gap-3 p-4 rounded-md
+                  bg-gray-700 hover:bg-gray-600 opacity-5
+                  font-mono text-nowrap border-2 @vote.Party.GetBorderClass()
                   transition-transform animate-[slideDown_0.5s_ease_forwards]">
-            <span>
+            <span class="text-white">
                 @vote.ShortHash
             </span>
 
-            <span class="text-gray-400">
+            <span class="text-gray-400 group-hover:text-white">
                 @(vote.Added.ToString("HH:mm:ss"))
             </span>
 
             <span class="@vote.Party.GetTextClass() font-extrabold font-2xl">
-                @vote.Party.Id
+                @vote.Party.Id.ToString("00")
             </span>
 
-            <a href="blockchain/voters/@vote.Voter.Address" class="text-gray-400 truncate hover:underline">
+            <a href="blockchain/voters/@vote.Voter.Address"
+               class="text-gray-400 group-hover:text-white truncate underline">
                 @vote.Voter.ShortAddress
             </a>
         </a>

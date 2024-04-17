@@ -22,7 +22,7 @@
         </div>
     </Card>
 
-    <button @onclick="@(() => BlockList.AddBlock(BlockDto.RandomBlockDto()))">
+    <button class="text-white" @onclick="@(() => BlockList.AddBlock(BlockDto.RandomBlockDto()))">
         add block
     </button>
 
@@ -33,5 +33,5 @@
 
 @code
 {
-    public BlockList BlockList { get; set; } = default!;
+    private BlockList BlockList { get; set; } = default!;
 }
