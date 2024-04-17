@@ -37,7 +37,6 @@
         <PackageReference Include="Serilog.Sinks.Console" Version="5.0.1"/>
         <PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0"/>
-        <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="0.0.1"/>
         <PackageReference Include="ZymLabs.NSwag.FluentValidation.AspNetCore" Version="0.6.2"/>
     </ItemGroup>
 
@@ -45,22 +44,6 @@
         <ProjectReference Include="..\Application\Application.csproj"/>
         <ProjectReference Include="..\Domain\Domain.csproj"/>
         <ProjectReference Include="..\Infrastructure\Infrastructure.csproj"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="obj\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <EmbeddedResource Remove="obj\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Content Remove="obj\**"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="obj\**"/>
     </ItemGroup>
 
 </Project>

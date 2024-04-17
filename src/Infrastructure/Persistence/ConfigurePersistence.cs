@@ -31,7 +31,8 @@ public class ConfigurePersistence : IHostingStartup
                     options.EnableSensitiveDataLogging();
                 }
 
-                var dbPath = Environment.GetEnvironmentVariable("DB__PATH") ?? "C:/work/veritas/app.db";
+                var dbPath = Environment.GetEnvironmentVariable("DB__PATH")
+                             ?? throw new Exception("DB__PATH is not set");
 
                 options.UseSqlite($"Data Source={dbPath}");
             });

@@ -7,8 +7,7 @@
       "executablePath": "dotnet",
       "commandLineArgs": "watch run dev --non-interactive",
       "environmentVariables": {
-        "DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "1",
-        "SERVE_FRONTEND": "true"
+        "DOTNET_WATCH_RESTART_ON_RUDE_EDIT": "1"
       }
     },
     "dev": {
@@ -19,6 +18,7 @@
       "#inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "applicationUrl": "http://localhost:80;https://localhost:443",
       "environmentVariables": {
+        "DB__PATH": "C:/work/veritas/.data/app.db",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"
       }
@@ -30,6 +30,7 @@
       "launchBrowser": false,
       "applicationUrl": "http://0.0.0.0:80;https://0.0.0.0:443",
       "environmentVariables": {
+        "DB__PATH": "C:/work/veritas/.data/app.db",
         "ASPNETCORE_ENVIRONMENT": "Production",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"
       }

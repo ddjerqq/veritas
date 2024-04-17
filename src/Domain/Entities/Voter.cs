@@ -74,4 +74,9 @@ public sealed class Voter : IDisposable
         Dsa.ImportSubjectPublicKeyInfo(PublicKey.ToBytesFromHex(), out _);
         return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
     }
+
+    /// <summary>
+    /// Generates the signature of the address which is used when verifying the voter's identity
+    /// </summary>
+    public string GenerateAddressSignature() => Sign(Address.ToBytesFromHex()).ToHexString();
 }

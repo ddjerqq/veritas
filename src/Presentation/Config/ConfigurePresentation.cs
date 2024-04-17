@@ -25,7 +25,7 @@ public class ConfigurePresentation : IHostingStartup
             services.AddAntiforgery();
 
             services.AddHealthChecks()
-                .AddDbContextCheck<AppDbContext>("/db");
+                .AddDbContextCheck<AppDbContext>("db");
 
             services.Configure<RouteOptions>(options =>
             {

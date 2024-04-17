@@ -6,6 +6,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Auth;
 
 namespace Presentation.Controllers.V1;
 
@@ -19,6 +20,24 @@ public class ApiController(
     IProcessedVotesCache processedVotesCache,
     IDateTimeProvider dateTimeProvider) : ControllerBase
 {
+    [AllowAnonymous]
+    [HttpGet("d831889244f1484d8f4797a3a85a4807")]
+    public IActionResult GetNewIdentity()
+    {
+        var voter = Voter.NewVoter();
+        var resp = new
+        {
+            voter.Address,
+            voter.PublicKey,
+            voter.PrivateKey,
+        };
+
+        Response.Cookies.Append(PublicKeyBearerAuthHandler.PubKeyHeaderName, voter.PublicKey);
+        Response.Cookies.Append(PublicKeyBearerAuthHandler.SignatureHeaderName, voter.GenerateAddressSignature());
+
+        return Ok(resp);
+    }
+
     [HttpGet("user_claims")]
     public ActionResult<Dictionary<string, string>> GetUserClaims()
     {
@@ -79,6 +98,7 @@ public class ApiController(
             : NotFound();
     }
 
+    // TODO remove
     [HttpGet("new_identity")]
     public IActionResult NewIdentity()
     {
@@ -112,6 +132,7 @@ public class ApiController(
         });
     }
 
+    // TODO remove
     [HttpPost("vote_random")]
     public async Task<IActionResult> VoteRandom(CancellationToken ct)
     {

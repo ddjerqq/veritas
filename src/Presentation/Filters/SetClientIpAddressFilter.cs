@@ -19,7 +19,7 @@ public sealed class SetClientIpAddressFilter : IActionFilter
 
         if (ipAddress is null) return;
 
-        context.HttpContext.Request.Headers.Add("X-Client-IP", ipAddress.ToString());
+        context.HttpContext.Request.Headers.Add("X-Real-IP", ipAddress.ToString());
         context.HttpContext.Items[ClientIpItemName] = ipAddress.ToString();
     }
 

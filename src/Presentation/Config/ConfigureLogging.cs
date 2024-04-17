@@ -65,6 +65,7 @@ public static class WebAppExtensions
             options.MessageTemplate = "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms\n" +
                                       "Voter Address: {VoterAddress}\n" +
                                       "Host: {RequestHost}\n" +
+                                      "Client: {RequestClient}\n" +
                                       "UserAgent: {RequestUserAgent}";
 
             options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
@@ -73,8 +74,7 @@ public static class WebAppExtensions
                 if (httpContext.Items.TryGetValue(nameof(Voter), out var value) && value is Voter { Address: var address })
                     diagnosticContext.Set("VoterAddress", address);
 
-                diagnosticContext.Set("RequestHost", httpContext.Connection.RemoteIpAddress?.ToString());
-                diagnosticContext.Set("ClientIP", httpContext.Items[SetClientIpAddressFilter.ClientIpItemName]);
+                diagnosticContext.Set("RequestClient", httpContext.Items[SetClientIpAddressFilter.ClientIpItemName]);
                 diagnosticContext.Set("RequestHost", httpContext.Request.Host.Value);
                 diagnosticContext.Set("RequestUserAgent", (string?)httpContext.Request.Headers.UserAgent);
             };

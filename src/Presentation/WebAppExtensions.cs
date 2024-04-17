@@ -41,17 +41,14 @@ public static class WebAppExtensions
 
     public static void UseDevelopmentMiddleware(this WebApplication app)
     {
-        // app.UseDeveloperExceptionPage();
         app.UseMigrationsEndPoint();
         app.UseSwagger();
         app.UseSwaggerUI();
-        app.UseWebAssemblyDebugging();
     }
 
     public static void UseProductionMiddleware(this WebApplication app)
     {
         app.UseHsts();
-        // app.UseHttpsRedirection();
         app.UseIdempotency();
     }
 
@@ -65,21 +62,16 @@ public static class WebAppExtensions
 
         app.UseAntiforgery();
 
-        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SERVE_FRONTEND")))
-            app.UseBlazorFrameworkFiles();
-
         // compress and then cache static files
         app.UseResponseCompression();
         app.UseResponseCaching();
-
-        app.UseStaticFiles();
     }
 
     public static void MapEndpoints(this WebApplication app)
     {
         app.MapSwagger();
 
-        app.MapHealthChecks("/health", new HealthCheckOptions
+        app.MapHealthChecks("/api/v1/health", new HealthCheckOptions
         {
             Predicate = _ => true,
             AllowCachingResponses = false,
@@ -87,8 +79,5 @@ public static class WebAppExtensions
 
         app.MapControllers();
         app.MapDefaultControllerRoute();
-
-        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SERVE_FRONTEND")))
-            app.MapFallbackToFile("index.html");
     }
 }
