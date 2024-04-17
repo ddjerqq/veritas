@@ -22,13 +22,11 @@
         </div>
     </Card>
 
-    <button class="text-white" @onclick="@(() => BlockList.AddBlock(BlockDto.RandomBlockDto()))">
-        add block
-    </button>
-
     <Card Class="col-span-12">
         <BlockList @ref="BlockList"/>
     </Card>
+
+    <div class="p-1"></div>
 </div>
 
 @code

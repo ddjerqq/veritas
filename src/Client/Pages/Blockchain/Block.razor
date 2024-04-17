@@ -1,43 +1,49 @@
 ﻿@using Application.Dto
 
-@page "/blockchain/blocks/{Hash}"
-@page "/blockchain/blocks/{Index:long}"
+@page "/blocks/{Hash}"
+@page "/blocks/{Index:long}"
 
 <Card Class="h-full flex flex-col md:flex-row items-start p-5 gap-3">
     <div class="w-full md:w-auto flex flex-col gap-3">
-        <div class="flex flex-row w-full gap-3 text-nowrap">
-            <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
-                 style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
-                <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
+        <div class="flex flex-col gap-1">
+            <div class="flex flex-row w-full gap-3 text-nowrap">
+                <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
+                     style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
+                    <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
+                </div>
+
+                <div class="items-start h-full">
+                    <h2 class="text-6xl text-white">ბლოკი</h2>
+                </div>
             </div>
 
-            <div class="flex flex-col items-start h-full">
-                <h2 class="text-2xl text-white">ბლოკი</h2>
-
-                <span class="text-lg text-wrap text-start break-all text-gray-400 leading-4">
-                    @Model.Index.ToString("N0")
-                </span>
+            <div class="flex text-xl flex-row max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+                <Heroicon Name="@HeroiconName.Hashtag" class="size-4"/>
+                @Model.Index.ToString("N0")
             </div>
-        </div>
 
-        <div class="flex flex-col leading-4 font-mono text-start text-gray-400">
-            <span>@Model.Hash[..32]-</span>
-            <span>@Model.Hash[32..]</span>
+            <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-gray-400">
+                @Model.Hash
+            </div>
         </div>
 
         <hr class="border-s border-gray-500 w-full"/>
 
-        <section class="text-start text-lg leading-6 text-gray-400 max-w-md [&>b]:text-white">
-            ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
-            პირველ ადგილას არის:
-            <span class="@Model.TopParty.GetTextClass()">
-                @Model.TopParty.Name.
+        <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md [&_b]:text-white">
+            <span>
+                ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
+            </span>
+            <span>
+                პირველ ადგილას არის:<br/>
+                <span class="@Model.TopParty.GetTextClass()">
+                    @Model.TopParty.Name.
+                </span>
             </span>
         </section>
 
         <hr class="border-s border-gray-500 w-full"/>
 
-        <section class="flex w-full flex-shrink-0 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
+        <section class="flex w-full flex-shrink-0 leading-6 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
             <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
                 <property>ნონსი</property>
                 <value class="font-mono">@Model.Nonce.ToString("N0")</value>
@@ -50,12 +56,12 @@
 
             <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
                 <property>ტევადობა</property>
-                <value class="font-mono">@(((float)Model.Votes.Count / 128).ToString("P2"))</value>
+                <value class="font-mono">@(((float)Model.Votes.Count / 128 * 100).ToString("F2"))%</value>
             </div>
 
             <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
                 <property>მაინინგ დრო</property>
-                <TimeTracker For="@Model.Mined" class="text-gray-400"/>
+                <TimeTracker For="@Model.Mined" class="text-white"/>
             </div>
 
             <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">

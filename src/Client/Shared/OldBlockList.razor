@@ -5,7 +5,7 @@
 
     @foreach (var block in Blocks.Take(10))
     {
-        <a @key="@block.Index" href="blockchain/blocks/@block.Index"
+        <a @key="@block.Index" href="blocks/@block.Index"
            class="flex flex-row flex-shrink-0 justify-start items-center w-auto md:w-full gap-3 p-0 md:p-4 cursor-pointer
                   bg-[#50505050] hover:bg-[#606060] font-mono text-nowrap truncate
                   border border-party-card rounded-md transition-transform

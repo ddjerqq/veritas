@@ -5,16 +5,15 @@
 
     @foreach (var block in Blocks)
     {
-        <a @key="@block.Index" href="blockchain/blocks/@block.Index"
+        <a @key="@block.Index" href="blocks/@block.Index"
            class="flex flex-col flex-shrink-0 p-2 text-sm text-nowrap truncate
                   transition-transform animate-[slideLeft_0.5s_ease_forwards]">
-
             <span class="flex justify-center align-middle p-4 rounded-md"
                   style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(block.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
                 <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
             </span>
 
-            <span class="mt-1">
+            <span class="mt-1 leading-3">
                 @(block.Index.ToString("N0"))
             </span>
         </a>
@@ -23,7 +22,7 @@
 
 @code
 {
-    private List<BlockDto> Blocks { get; set; }
+    private List<BlockDto> Blocks { get; set; } = [];
 
     protected override void OnInitialized()
     {

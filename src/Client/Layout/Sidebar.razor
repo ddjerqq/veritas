@@ -1,3 +1,5 @@
+@implements IDisposable
+
 <nav class="flex flex-col flex-shrink-0 h-auto md:h-full justify-between md:overflow-y-scroll
             bg-gray-800 border-b-2 md:border-b-0 border-r-0 md:border-r-2 border-gray-600
             p-4 gap-3 scrollbar-none text-white">
@@ -35,19 +37,34 @@
     </div>
 </nav>
 
-
 @code
 {
     private static readonly List<(string href, string iconName, string name)> Links =
     [
         ("vote", HeroiconName.Megaphone, "ხმის მიცემა"),
         ("stats", HeroiconName.ChartPie, "სტატისტიკა"),
-        ("me", HeroiconName.Briefcase, "ჩემი ხმები"),
-        // ("blockchain", HeroiconName.ShieldCheck, "ბლოკჩეინი"),
+        // TODO replace with actual
+        ("voters/0x94a784c58608a74aedc09dbc47541ca971fa2cdaeb", HeroiconName.Briefcase, "ჩემი ხმები"),
         ("blog", HeroiconName.DocumentText, "ბლოგი"),
-        // ("about", HeroiconName.Link, "როგორ მუშაობს"),
+        // TODO this was moved to FAQ ("about", HeroiconName.Link, "როგორ მუშაობს"),
         ("faq", HeroiconName.QuestionMarkCircle, "ხშირად დასმული კითხვები"),
     ];
 
     private bool Expanded { get; set; }
+
+    private void SetExpandedToFalse(object? _, LocationChangedEventArgs args)
+    {
+        Expanded = false;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.LocationChanged += SetExpandedToFalse;
+    }
+
+    void IDisposable.Dispose()
+    {
+        NavigationManager.LocationChanged -= SetExpandedToFalse;
+    }
 }

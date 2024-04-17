@@ -4,7 +4,7 @@
     @foreach (var vote in Votes)
     {
         <a @key="@vote.Hash"
-           href="blockchain/votes/@vote.Hash"
+           href="votes/@vote.Hash"
            class="group flex flex-row justify-between items-center h-12 gap-3 p-4 rounded-md
                   bg-gray-700 hover:bg-gray-600 opacity-5
                   font-mono text-nowrap border-2 @vote.Party.GetBorderClass()
@@ -21,7 +21,7 @@
                 @vote.Party.Id.ToString("00")
             </span>
 
-            <a href="blockchain/voters/@vote.Voter.Address"
+            <a href="voters/@vote.Voter.Address"
                class="text-gray-400 group-hover:text-white truncate underline">
                 @vote.Voter.ShortAddress
             </a>
@@ -38,11 +38,11 @@
     [Parameter]
     public int Max { get; set; } = 10;
 
-    public void AddTransaction(VoteDto votes)
+    public void AddVote(VoteDto votes)
     {
         Votes.Insert(0, votes);
 
         if (Votes.Count > Max)
-            Votes = Votes[..^1];
+            Votes = Votes[1..];
     }
 }

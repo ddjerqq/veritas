@@ -1,4 +1,4 @@
-﻿@page "/blockchain/votes/{Hash}"
+﻿@page "/votes/{Hash}"
 @using Application.Dto
 
 <Card Class="flex flex-col text-white p-5 gap-3">
@@ -8,13 +8,13 @@
             <Heroicon Name="@HeroiconName.Megaphone" class="block w-8 h-8"/>
         </div>
 
-        <div class="flex flex-col items-start justify-center h-full text-lg max-w-sm">
-            <span class="text-white">ხმა</span>
-            <div class="flex flex-col leading-4 font-mono text-start text-gray-400">
-                <span>@Model.Hash[..32]-</span>
-                <span>@Model.Hash[32..]</span>
-            </div>
+        <div class="items-start justify-center h-full text-lg max-w-sm">
+            <h2 class="text-6xl text-white">ხმა</h2>
         </div>
+    </div>
+
+    <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+        @Model.Hash
     </div>
 
     <hr class="border-s border-gray-400 w-full"/>
@@ -38,7 +38,7 @@
         <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
             <property>ამომრჩეველი</property>
             <value>
-                <a href="blockchain/voters/@Model.Voter.Address" class="font-mono truncate hover:underline">
+                <a href="voters/@Model.Voter.Address" class="font-mono truncate hover:underline">
                     @Model.Voter.ShortAddress
                 </a>
             </value>
@@ -49,7 +49,7 @@
             {
                 <property>ხმის ID</property>
                 <value>
-                    <a href="blockchain/blocks/@idx" class="truncate hover:underline">
+                    <a href="blocks/@idx" class="truncate hover:underline">
                         @idx.ToString("N0")
                     </a>
                 </value>

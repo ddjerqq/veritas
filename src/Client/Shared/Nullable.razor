@@ -1,0 +1,19 @@
+﻿@typeparam T
+
+@if (Model is null)
+{
+    <NotFound />
+}
+else
+{
+    @ChildContent
+}
+
+@code
+{
+    [Parameter, EditorRequired]
+    public T Model { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+}
