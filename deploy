@@ -1,2 +1,0 @@
-﻿docker build -t registry.ddjerqq.xyz/veritas-api:latest . --no-cache
-docker push registry.ddjerqq.xyz/veritas-api:latest

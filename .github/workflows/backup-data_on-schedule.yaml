@@ -1,0 +1,34 @@
+﻿name: Docker Image CI
+
+on:
+  workflow_dispatch:
+
+  # at the end of every day
+  schedule:
+    - cron: "0 0 * * *"
+
+jobs:
+  backup-data:
+    concurrency: ci-${{ github.ref }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get Time ⌚
+        id: date
+        run: echo "date=$(date + '%d-%m-%Y')" >> $GITHUB_OUTPUT
+
+      - name: Zip .postgres 📦
+        uses: appleboy/ssh-action@master
+        env:
+          TIMESTAMP: ${{ steps.date.outputs.date }}
+        with:
+          envs: TIMESTAMP
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASS }}
+          script: |
+            cd .data
+            tar -czf "$TIMESTAMP.tgz" .data
+            mv "$TIMESTAMP.tgz" .backup
