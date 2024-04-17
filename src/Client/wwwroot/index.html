@@ -13,37 +13,30 @@
 
 <body>
 <div id="app">
-    <div class="absolute flex flex-col justify-center align-middle w-full h-full bg-topo bg-background text-center text-white gap-3">
-        <h1 class="text-4xl">Veritas - Mieci.ge</h1>
-        <h1 class="text-4xl">Exit polls</h1>
+    <div class="absolute flex flex-col font-archyedt justify-center align-middle w-full h-full bg-topo bg-background text-center text-white gap-3">
+        <span class="text-4xl">
+            ვერბსაიტი იტვირთება, გთხოვთ დაელოდოთ... <span class="loading-progress-text"></span>
+        </span>
 
         <div class="flex flex-col gap-3 justify-center items-center">
-
             <svg class="loading-progress">
                 <circle cx="50%" cy="50%" r="40%"/>
                 <circle cx="50%" cy="50%" r="40%"/>
             </svg>
-
-            <span>
-                The application is loading... <span class="loading-progress-text"></span>
-            </span>
         </div>
     </div>
 </div>
 
-<div id="blazor-error-ui">
-    An unhandled error has occurred.
-    <a class="reload" href="">Reload</a>
+<a id="blazor-error-ui" href="" class="font-archyedt text-center bg-gray-300 text-black w-full text-2xl p-3 z-50">
+    დაფიქსირდა შეცდომა, გთხოვთ გადატვირთოთ
     <a class="dismiss">🗙</a>
-</div>
+</a>
 
 <script src="/_framework/aspnetcore-browser-refresh.js"></script>
-
 <!-- This has to be *after* framework reference -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
 <script src="_content/ChartJs.Blazor.Fork/ChartJsBlazorInterop.js"></script>
-
 <script src="_framework/blazor.webassembly.js"></script>
 </body>
 
