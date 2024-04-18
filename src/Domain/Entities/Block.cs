@@ -8,7 +8,7 @@ using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
 
 namespace Domain.Entities;
 
-public class Block
+public sealed class Block
 {
     public const int Difficulty = 6;
 
