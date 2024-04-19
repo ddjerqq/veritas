@@ -1,6 +1,8 @@
 ﻿name: Build and Deploy
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [ "master" ]
 
@@ -18,6 +20,26 @@ jobs:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
+      - name: Setup dotnet 🏢
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
+
+      - name: Load cache 🔃
+        id: nuget-cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-client-${{ hashFiles('**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-client-
+
+      - name: Cache status ✅
+        run: |
+          echo "Cache hit: ${{ steps.nuget-cache.outputs.cache-hit }}"
+
+      - name: Restore packages 📦
+        run: dotnet restore --verbosity minimal
+
       - name: Setup Tailwind 🎨
         run: |
           wget https://github.com/tailwindlabs/tailwindcss/releases/latest/download/tailwindcss-linux-x64 -O /usr/local/bin/tailwindcss
@@ -29,12 +51,7 @@ jobs:
           tailwindcss --input ./wwwroot/css/app.css --output ./wwwroot/css/app.min.css --minify
 
       - name: Publish 📦
-        run: dotnet publish src/Client --configuration Release --output dist
-
-#      - name: Archive up the dist folder 📦
-#        run: |
-#          tar -cz -v -f dist.tgz /dist/
-#          tar -xz -v --overwrite -f dist.tgz -C /dist/
+        run: dotnet publish --no-restore src/Client --configuration Release --output dist
 
       - name: Copy dist content to server 🔁
         uses: appleboy/scp-action@v0.1.7
@@ -42,9 +59,15 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: dist/*
+          source: ./dist/wwwroot
           target: ~/dist
           overwrite: true
 
-
-#      - publish dist/wwwroot folder.
+      - name: Extract the dist files 📂
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            mv -v ~/dist/dist/wwwroot/* ~/dist

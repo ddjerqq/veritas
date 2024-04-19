@@ -10,7 +10,7 @@
       - "443:443"
     volumes:
       - ./.nginx/conf.d/:/etc/nginx/conf.d/:ro
-      - ./dist/wwwroot/:/dist/:ro
+      - ./dist/:/dist/:ro
     restart: unless-stopped
 
   api:

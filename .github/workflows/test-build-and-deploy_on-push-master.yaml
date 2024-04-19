@@ -29,10 +29,10 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
-          restore-keys: ${{ runner.os }}-nuget-
+          key: ${{ runner.os }}-nuget-api-${{ hashFiles('**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-api-
 
-      - name: Cache status
+      - name: Cache status ✅
         run: |
           echo "Cache hit: ${{ steps.nuget-cache.outputs.cache-hit }}"
 
@@ -45,6 +45,7 @@ jobs:
   docker-build-and-push:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout 🛎️
@@ -68,6 +69,7 @@ jobs:
         with:
           context: .
           push: true
+          platforms: linux/arm64/v8
           tags: "${{ secrets.REGISTRY }}/veritas-api:latest"
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -75,27 +77,41 @@ jobs:
   deploy:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-#    needs: docker-build-and-push
+    needs: docker-build-and-push
 
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      # TODO fix this, its not working.
       - name: Copy docker-compose to server 🔁
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: "docker-compose.yaml"
+          source: "./docker-compose.yaml"
           target: ~/
           overwrite: true
 
-#      - name: Pull the new image on the host 🔽
-#        run: |
-      # copy overwrite front end
-      # copy overwrite docker-compose
+      - name: Copy .nginx folder to server 🔁
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./.nginx/conf.d/*.conf"
+          target: ~/.nginx/conf.d/
+          overwrite: true
+
+      - name: Pull the new image on the host 🔽
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker login https://${{ secrets.REGISTRY }} --username ${{ secrets.REGISTRY_USER }} --password ${{ secrets.REGISTRY_PASS }}
+            docker pull registry.ddjerqq.xyz/veritas-api:latest
 
       - name: Restart docker-compose 🔁
         uses: appleboy/ssh-action@v1.0.3
@@ -104,8 +120,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
-            echo success
-            ls -alh -R
-#            docker compose down
-#            docker pull $REGISTRY/veritas-api:latest
-#            docker compose up -d
+            docker compose down
+            docker compose up -d
