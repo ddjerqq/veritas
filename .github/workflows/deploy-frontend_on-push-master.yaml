@@ -60,7 +60,7 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: ./dist/wwwroot
-          target: ~/dist
+          target: ~/dist_tmp
           overwrite: true
 
       - name: Extract the dist files 📂
@@ -71,4 +71,4 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           script: |
             rm -rf dist/*
-            mv -v ~/dist/dist/wwwroot/* ~/dist
+            mv -v -f ~/dist_tmp/dist/wwwroot/* ~/dist
