@@ -59,12 +59,15 @@ jobs:
       - name: Set up Docker Buildx ❎
         uses: docker/setup-buildx-action@v3
 
+#      - name: Docker login 🔑
+#        uses: docker/login-action@v3.1.0
+#        with:
+#          registry: "https://${{ secrets.REGISTRY }}/v2"
+#          username: ${{ secrets.REGISTRY_USER }}
+#          password: ${{ secrets.REGISTRY_PASS }}
       - name: Docker login 🔑
-        uses: docker/login-action@v3
-        with:
-          registry: "https://${{ secrets.REGISTRY }}/v2"
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_PASS }}
+        run: |
+          echo ${{ secrets.REGISTRY_PASS }} | docker login -u ${{ secrets.REGISTRY_USER }} --password-stdin https://${{ secrets.REGISTRY }}/v2
 
       - name: Build and push 🛠️
         uses: docker/build-push-action@v5
