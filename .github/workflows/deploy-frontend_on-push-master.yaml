@@ -70,4 +70,5 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           script: |
+            rm -rf dist/*
             mv -v ~/dist/dist/wwwroot/* ~/dist
