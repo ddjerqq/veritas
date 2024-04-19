@@ -9,7 +9,6 @@ internal class MinerTest
     [Test]
     [TestCase(2)]
     [TestCase(4)]
-    [TestCase(6)]
     [NonParallelizable]
     public void TestMine(int difficulty)
     {

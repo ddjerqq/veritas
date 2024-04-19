@@ -45,7 +45,6 @@ msbuild.wrn
 *.db
 *.sqlite
 
-
 # Logs
 .logs
 *.log
@@ -54,3 +53,11 @@ msbuild.wrn
 package-lock.json
 **/*.min.*
 node_modules/
+
+# Build artefacts
+dist
+
+# ssh keys
+.ssh
+*.secrets
+.github/workflows/

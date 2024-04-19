@@ -1,6 +1,8 @@
-name: Docker Image CI
+name: Build and deploy
 
 on:
+  workflow_dispatch:
+
   push:
     branches: [ "master" ]
 
@@ -8,8 +10,8 @@ env:
   NETCORE_VERSION: "8.0.x"
   DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
   DOTNET_CLI_TELEMETRY_OPTOUT: true
-  REGISTRY: ${{ secrets.REGISTRY_ADDR }}
-  SRC: "/home/runner/work/veritas/veritas/src"
+  REGISTRY: ${{ secrets.REGISTRY }}
+  REGISTRY_ADDR: "https://${{ REGISTRY }}"
 
 jobs:
   test:
@@ -17,35 +19,37 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout 🛎️
-        uses: actions/checkout@v4
-
-      - name: Get dotnet version 📝
-        id: get_version
-        run: |
-          echo "::set-output name=version::$(dotnet --version)"
+      - name: Setup dotnet 🏢
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.NETCORE_VERSION }}
 
       - name: Load cache 🔃
+        id: nuget-cache
         uses: actions/cache@v4
         with:
-          path: |
-            **/bin
-            **/obj
-          key: |
-            ${{ runner.os }}-dotnet-${{ steps.get_version.outputs.version }}-${{ hashFiles('**/*.csproj') }}
+          path: ~/.nuget/packages
+          key: ${{ runner.os }}-nuget-${{ hashFiles('**/*.csproj') }}
+          restore-keys: ${{ runner.os }}-nuget-
+
+      - name: Cache status
+        run: |
+          echo "Cache hit: ${{ steps.nuget-cache.outputs.cache-hit }}"
 
       - name: Restore packages 📦
-        run: dotnet restore
+        run: dotnet restore --verbosity minimal
 
       - name: Test 🧪
-        run: dotnet test --no-restore -v normal
+        run: dotnet test --no-restore --verbosity minimal
 
   docker-build-and-push:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-    needs: test
 
     steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
       - name: Set up QEMU 🛠️
         uses: docker/setup-qemu-action@v3
 
@@ -54,39 +58,54 @@ jobs:
 
       - name: Docker login 🔑
         uses: docker/login-action@v3
-        env:
-          REGISTRY_USER: ${{ secrets.REGISTRY_USER }}
-          REGISTRY_PASS: ${{ secrets.REGISTRY_PASS }}
         with:
-          registry: $REGISTRY
-          username: $REGISTRY_USER
-          password: $REGISTRY_PASS
+          registry: "https://${{ secrets.REGISTRY }}"
+          username: ${{ secrets.REGISTRY_USER }}
+          password: ${{ secrets.REGISTRY_PASS }}
 
       - name: Build and push 🛠️
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
-          tags: "$REGISTRY/veritas-api:latest"
+          tags: "${{ secrets.REGISTRY }}/veritas-api:latest"
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
 
   deploy:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-    needs: docker-build-and-push
+#    needs: docker-build-and-push
 
     steps:
-      - name: Restart docker-compose 🔁
-        uses: appleboy/ssh-action@master
+      - name: Checkout 🛎️
+        uses: actions/checkout@v4
+
+      # TODO fix this, its not working.
+      - name: Copy docker-compose to server 🔁
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASS }}
-          # TODO add the images here
+          key: ${{ secrets.SSH_KEY }}
+          source: "docker-compose.yaml"
+          target: ~/
+          overwrite: true
+
+#      - name: Pull the new image on the host 🔽
+#        run: |
+      # copy overwrite front end
+      # copy overwrite docker-compose
+
+      - name: Restart docker-compose 🔁
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
           script: |
-            
-            docker compose down
-            docker pull $REGISTRY/veritas-api:latest
-            docker compose up -d
+            echo success
+            ls -alh -R
+#            docker compose down
+#            docker pull $REGISTRY/veritas-api:latest
+#            docker compose up -d

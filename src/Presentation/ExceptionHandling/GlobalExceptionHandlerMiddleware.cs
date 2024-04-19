@@ -6,6 +6,7 @@ namespace Presentation.ExceptionHandling;
 
 public sealed class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHandlerMiddleware> logger) : IMiddleware
 {
+    // TODO no problem's details in production
     public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
     {
         try

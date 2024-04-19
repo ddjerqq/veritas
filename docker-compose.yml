@@ -9,7 +9,8 @@
       - "80:80"
       - "443:443"
     volumes:
-      - ./.nginx/conf.d/:/etc/nginx/conf.d/
+      - ./.nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./dist/wwwroot/:/dist/:ro
     restart: unless-stopped
 
   api:
@@ -19,11 +20,6 @@
       - "8000:8000"
     env_file:
       - .env
-#    healthcheck:
-#      test: curl --fail http://api:8000/api/v1/health || exit 1
-#      interval: 30s
-#      timeout: 10s
-#      retries: 3
     environment:
       - LOG__PATH=/var/log/veritas/veritas-.logs
       - DB__PATH=/data/app.db
@@ -37,14 +33,3 @@
       - ./.temp-keys:/root/.aspnet/DataProtection-Keys
       - ./.aspnet/https:/https/:ro
     restart: unless-stopped
-
-#  autoheal:
-#    image: willfarrell/autoheal:latest
-#    tty: true
-#    restart: always
-#    environment:
-#      - AUTOHEAL_INTERVAL=60
-#      - AUTOHEAL_START_PERIOD=300
-#      - AUTOHEAL_DEFAULT_STOP_TIMEOUT=10
-#    volumes:
-#      - /var/run/docker.sock:/var/run/docker.sock

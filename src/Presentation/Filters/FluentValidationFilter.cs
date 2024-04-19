@@ -5,6 +5,7 @@ namespace Presentation.Filters;
 
 public sealed class FluentValidationFilter : IActionFilter
 {
+    // TODO no problem's details in production
     public void OnActionExecuting(ActionExecutingContext context)
     {
         if (!context.ModelState.IsValid)
