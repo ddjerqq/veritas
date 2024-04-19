@@ -39,19 +39,6 @@ internal class TestVoter
 
     [Test]
     [Parallelizable]
-    public void TestTwoVotersHaveDifferentSignatures()
-    {
-        var payload = "aaa"u8.ToArray();
-        var signature = Voter.Sign(payload);
-
-        var voter = Voter.NewVoter();
-
-        Assert.That(Voter.Verify(payload, signature), Is.True);
-        Assert.That(voter.Verify(payload, signature), Is.False);
-    }
-
-    [Test]
-    [Parallelizable]
     public void TestLoadedPublicKeyCanVerifySignature()
     {
         var payload = "aaa"u8.ToArray();

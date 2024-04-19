@@ -72,3 +72,4 @@ jobs:
           script: |
             rm -rf dist/*
             mv -v -f ~/dist_tmp/dist/wwwroot/* ~/dist
+            rm -rf dist_tmp
