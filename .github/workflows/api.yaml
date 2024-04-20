@@ -73,9 +73,27 @@ jobs:
           script: |
             cd src
             docker build -t veritas-api:latest --platform=arm64 .
-            cd ..
+
+      - name: Upload config files ⬆️
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
             mv -f ./src/docker-compose.yaml .
-            mv -f ./src/.nginx/conf.d/ .nginx/conf.d/
+            mv -f ./src/.nginx/conf.d/* ./nginx/conf.d/
+            rm -rf src
+
+      - name: Deploy 🟣
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            mv -f ./src/docker-compose.yaml .
+            mv -f ./src/nginx/conf.d/* nginx/conf.d/
             rm -rf src
             docker compose down
             docker compose up -d
