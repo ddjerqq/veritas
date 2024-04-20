@@ -25,6 +25,9 @@ jobs:
         with:
           dotnet-version: ${{ env.NETCORE_VERSION }}
 
+      - name: Setup wasm-tools ✂️
+        run: dotnet workload install wasm-tools
+
       - name: Load cache 🔃
         id: nuget-cache
         uses: actions/cache@v4
@@ -39,9 +42,6 @@ jobs:
 
       - name: Restore packages 📦
         run: dotnet restore --verbosity minimal
-
-      - name: Install wasm tools ✂️
-        run: dotnet workload install wasm-tools
 
       - name: Setup Tailwind 🎨
         run: |
