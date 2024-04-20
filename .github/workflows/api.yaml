@@ -1,4 +1,4 @@
-name: Build docker image, upload to server, restart server
+name: Build API image
 
 on:
   workflow_dispatch:
@@ -61,10 +61,10 @@ jobs:
 
       - name: Build 🛠️
         id: docker_build
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v5.3.0
         with:
           context: .
-          platforms: linux/arm64/v8
+          platforms: linux/arm64
           tags: "veritas-api:latest"
           outputs: type=docker,dest=./image.tar
           cache-from: type=gha

@@ -1,4 +1,4 @@
-﻿name: Build Frontend, upload to server
+﻿name: Build Client
 
 on:
   workflow_dispatch:

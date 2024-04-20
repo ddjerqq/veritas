@@ -1,4 +1,6 @@
 ﻿**/.dockerignore
+**/*.secrets
+**/*.conf
 **/.env
 **/.git
 **/.gitignore
