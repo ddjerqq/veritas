@@ -1,4 +1,4 @@
-﻿name: Build and Deploy
+﻿name: Build Frontend, upload to server
 
 on:
   workflow_dispatch:
@@ -29,9 +29,9 @@ jobs:
         id: nuget-cache
         uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-client-${{ hashFiles('**/*.csproj') }}
-          restore-keys: ${{ runner.os }}-nuget-client-
+          path: "~/.nuget/packages"
+          key: "${{ runner.os }}-nuget-client-${{ hashFiles('**/*.csproj') }}"
+          restore-keys: "${{ runner.os }}-nuget-client-"
 
       - name: Cache status ✅
         run: |
@@ -39,6 +39,9 @@ jobs:
 
       - name: Restore packages 📦
         run: dotnet restore --verbosity minimal
+
+      - name: Install wasm tools ✂️
+        run: dotnet workload install wasm-tools
 
       - name: Setup Tailwind 🎨
         run: |

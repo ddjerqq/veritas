@@ -1,4 +1,4 @@
-name: Build and deploy
+name: Build docker image, upload to server, restart server
 
 on:
   workflow_dispatch:
