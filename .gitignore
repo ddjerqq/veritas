@@ -61,3 +61,6 @@ dist
 .ssh
 *.secrets
 .github/workflows/act.secrets
+
+# ssl keys
+nginx/ssl/

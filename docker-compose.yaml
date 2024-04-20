@@ -10,6 +10,7 @@
       - "443:443"
     volumes:
       - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
+      - ./nginx/ssl/:/etc/nginx/ssl/:ro
       - ./dist/:/dist/:ro
     restart: unless-stopped
 
@@ -35,5 +36,4 @@
       - ./.logs:/var/log/veritas
       - ./.data:/data
       - ./.temp-keys:/root/.aspnet/DataProtection-Keys
-      - ./.aspnet/https:/https/:ro
     restart: unless-stopped

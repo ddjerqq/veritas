@@ -6,7 +6,7 @@ namespace Test.Application.Dto;
 public class VoterDtoTest
 {
     [Test]
-    [NonParallelizable]
+    [Parallelizable]
     public void TestFavoriteParty()
     {
         var voterDto = VoterDto.RandomVoterDto(100);

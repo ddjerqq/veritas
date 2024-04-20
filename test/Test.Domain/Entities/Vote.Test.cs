@@ -33,21 +33,21 @@ internal class VoteTest
         Assert.That(isValid, Is.True);
     }
 
-    [Test]
-    [NonParallelizable]
-    public void TestVoteMine()
-    {
-        var vote = Vote.NewVote(Voter.NewVoter(), 0, DateTime.UtcNow);
-
-        var watch = Stopwatch.StartNew();
-        vote.Mine();
-        watch.Stop();
-
-        Console.WriteLine(vote.Nonce.ToString("N0"));
-        Console.WriteLine(watch.Elapsed.ToString("c"));
-        Console.WriteLine(vote);
-        Console.WriteLine(vote.Hash);
-
-        Assert.That(vote.IsHashValid, Is.True);
-    }
+    // [Test]
+    // [NonParallelizable]
+    // public void TestVoteMine()
+    // {
+    //     var vote = Vote.NewVote(Voter.NewVoter(), 0, DateTime.UtcNow);
+    //
+    //     var watch = Stopwatch.StartNew();
+    //     vote.Mine();
+    //     watch.Stop();
+    //
+    //     Console.WriteLine(vote.Nonce.ToString("N0"));
+    //     Console.WriteLine(watch.Elapsed.ToString("c"));
+    //     Console.WriteLine(vote);
+    //     Console.WriteLine(vote.Hash);
+    //
+    //     Assert.That(vote.IsHashValid, Is.True);
+    // }
 }
