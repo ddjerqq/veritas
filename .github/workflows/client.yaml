@@ -12,7 +12,7 @@ env:
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 
 jobs:
-  build-and-deploy:
+  build-and-push:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
 
@@ -51,7 +51,8 @@ jobs:
           tailwindcss --input ./wwwroot/css/app.css --output ./wwwroot/css/app.min.css --minify
 
       - name: Publish 📦
-        run: dotnet publish --no-restore src/Client --configuration Release --output dist
+        run: |
+          dotnet publish --no-restore src/Client --configuration Release --output dist
 
       - name: Copy dist content to server 🔁
         uses: appleboy/scp-action@v0.1.7
@@ -59,17 +60,8 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
-          source: ./dist/wwwroot
-          target: ~/dist_tmp
+          source: "./dist/wwwroot/*"
+          target: "~/dist/"
+          rm: true
           overwrite: true
-
-      - name: Extract the dist files 📂
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            rm -rf dist/*
-            mv -v -f ~/dist_tmp/dist/wwwroot/* ~/dist
-            rm -rf dist_tmp
+          strip_components: 2

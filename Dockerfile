@@ -23,10 +23,10 @@ RUN dotnet restore "Presentation/Presentation.csproj"
 COPY /src .
 
 # build
-RUN dotnet build   -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Domain/Domain.csproj"
-RUN dotnet build   -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Application/Application.csproj"
-RUN dotnet build   -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Infrastructure/Infrastructure.csproj"
-RUN dotnet build   -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Presentation/Presentation.csproj"
+RUN dotnet build -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Domain/Domain.csproj"
+RUN dotnet build -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Application/Application.csproj"
+RUN dotnet build -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Infrastructure/Infrastructure.csproj"
+RUN dotnet build -c ${BUILD_CONFIGURATION} -o /app/build --no-restore "Presentation/Presentation.csproj"
 
 # publish
 RUN dotnet publish -c ${BUILD_CONFIGURATION} -o /app/publish --no-restore "Domain/Domain.csproj"

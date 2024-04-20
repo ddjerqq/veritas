@@ -14,12 +14,10 @@
     restart: unless-stopped
 
   api:
-    image: registry.ddjerqq.xyz/veritas-api:latest
+    image: veritas-api:latest
     container_name: api
     ports:
       - "8000:8000"
-    env_file:
-      - .env
     environment:
       - LOG__PATH=/var/log/veritas/veritas-.logs
       - DB__PATH=/data/app.db
@@ -27,6 +25,12 @@
       - ASPNETCORE_ENVIRONMENT=Production
       - HTTP_PORTS=8000
       - ASPNETCORE_URLS=http://0.0.0.0:8000;
+      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=Domain;Application;Infrastructure;Presentation
+      - RATE_LIMIT__QUEUE_LIMIT=0
+      - RATE_LIMIT__REPLENISHMENT_PERIOD=1
+      - RATE_LIMIT__TOKEN_LIMIT=10
+      - RATE_LIMIT__TOKENS_PER_PERIOD=1
+      - OUTBOX__MESSAGES_PER_BATCH=20
     volumes:
       - ./.logs:/var/log/veritas
       - ./.data:/data

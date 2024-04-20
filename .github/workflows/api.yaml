@@ -30,9 +30,9 @@ jobs:
         id: nuget-cache
         uses: actions/cache@v4
         with:
-          path: ~/.nuget/packages
-          key: ${{ runner.os }}-nuget-api-${{ hashFiles('**/*.csproj') }}
-          restore-keys: ${{ runner.os }}-nuget-api-
+          path: "~/.nuget/packages"
+          key: "${{ runner.os }}-nuget-api-${{ hashFiles('**/*.csproj') }}"
+          restore-keys: "${{ runner.os }}-nuget-api-"
 
       - name: Cache status ✅
         run: |
@@ -44,7 +44,7 @@ jobs:
       - name: Test 🧪
         run: dotnet test --no-restore --verbosity minimal
 
-  docker-build-and-push:
+  build-and-upload:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
     needs: test
@@ -59,43 +59,58 @@ jobs:
       - name: Set up Docker Buildx ❎
         uses: docker/setup-buildx-action@v3
 
-#      - name: Docker login 🔑
-#        uses: docker/login-action@v3.1.0
-#        with:
-#          registry: "https://${{ secrets.REGISTRY }}/v2"
-#          username: ${{ secrets.REGISTRY_USER }}
-#          password: ${{ secrets.REGISTRY_PASS }}
-      - name: Docker login 🔑
-        run: |
-          echo ${{ secrets.REGISTRY_PASS }} | docker login -u ${{ secrets.REGISTRY_USER }} --password-stdin https://${{ secrets.REGISTRY }}/v2
-
-      - name: Build and push 🛠️
+      - name: Build 🛠️
+        id: docker_build
         uses: docker/build-push-action@v5
         with:
           context: .
-          push: true
           platforms: linux/arm64/v8
-          tags: "${{ secrets.REGISTRY }}/veritas-api:latest"
+          tags: "veritas-api:latest"
+          outputs: type=docker,dest=./image.tar
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Image digest 💗
+        run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Copy the image to the server 🔁
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          source: "./image.tar"
+          target: "~/"
+          overwrite: true
+          strip_components: 1
+
+      - name: Load the image on the server ⬇️
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            docker load --input image.tar
+            rm image.tar
 
   deploy:
     concurrency: ci-${{ github.ref }}
     runs-on: ubuntu-latest
-    needs: docker-build-and-push
+    needs: build-and-upload
 
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v4
 
-      - name: Copy docker-compose to server 🔁
+      - name: Copy docker-compose to the server 🔁
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "./docker-compose.yaml"
-          target: ~/
+          target: "~/"
           overwrite: true
 
       - name: Copy .nginx folder to server 🔁
@@ -105,18 +120,8 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_KEY }}
           source: "./.nginx/conf.d/*.conf"
-          target: ~/.nginx/conf.d/
+          target: "~/.nginx/conf.d/"
           overwrite: true
-
-      - name: Pull the new image on the host 🔽
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_KEY }}
-          script: |
-            docker login https://${{ secrets.REGISTRY }}/v2 --username ${{ secrets.REGISTRY_USER }} --password ${{ secrets.REGISTRY_PASS }}
-            docker pull registry.ddjerqq.xyz/veritas-api:latest
 
       - name: Restart docker-compose 🔁
         uses: appleboy/ssh-action@v1.0.3

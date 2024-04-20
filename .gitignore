@@ -60,4 +60,4 @@ dist
 # ssh keys
 .ssh
 *.secrets
-.github/workflows/
+.github/workflows/act.secrets
