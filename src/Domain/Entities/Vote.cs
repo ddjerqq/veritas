@@ -7,7 +7,7 @@ namespace Domain.Entities;
 
 public sealed class Vote
 {
-    private const int Difficulty = 6;
+    public const int Difficulty = 6;
 
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local for EF Core
     public required string Hash { get; set; }
@@ -49,7 +49,7 @@ public sealed class Vote
     public static Vote NewVote(Voter voter, int partyId, DateTime timestamp)
     {
         var signature = voter.Sign(VoteExt.GetSignaturePayload(partyId, timestamp.ToUnixMs())).ToHexString();
-        var hashPayload = VoteExt.GetHashPayload(voter.Address, signature, partyId, timestamp.ToUnixMs(), 0);
+        var hashPayload = VoteExt.GetHashPayload(voter.Address, partyId, timestamp.ToUnixMs(), 0);
         var hash = SHA256.HashData(hashPayload).ToHexString();
 
         return new Vote
@@ -92,20 +92,19 @@ public static class VoteExt
         return GetSignaturePayload(vote.PartyId, vote.UnixTimestampMs);
     }
 
-    public static byte[] GetHashPayload(string address, string signature, int partyId, long timestamp, long nonce)
+    // we will not be including the signature in the hash payload because it is not possible
+    // to sign from the client side, as WASM does not support crypto libraries.
+    // in a perfect world we would tho
+    public static byte[] GetHashPayload(string address, int partyId, long timestamp, long nonce)
     {
         var buffer = new List<byte>();
         // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract for EF Core
         buffer.AddRange(address.ToBytesFromHex());
-        buffer.AddRange(signature.ToBytesFromHex());
         buffer.AddRange(BitConverter.GetBytes(partyId));
         buffer.AddRange(BitConverter.GetBytes(timestamp));
         buffer.AddRange(BitConverter.GetBytes(nonce));
         return buffer.ToArray();
     }
 
-    public static byte[] GetHashPayload(this Vote vote)
-    {
-        return GetHashPayload(vote.Voter?.Address ?? "", vote.Signature, vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
-    }
+    public static byte[] GetHashPayload(this Vote vote) => GetHashPayload(vote.Voter?.Address ?? "", vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
 }

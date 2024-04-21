@@ -1,9 +1,7 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
 using Application.Dto;
-using Domain.Common;
 using Domain.Entities;
-using FluentValidation.Validators;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
