@@ -1,9 +1,10 @@
 ﻿using Domain.Common;
+using Domain.Entities;
 using Domain.ValueObjects;
 
 namespace Application.Dto;
 
-public record VoterDto(string Address, List<VoteDto> Votes)
+public sealed record VoterDto(string Address, string PublicKey, IEnumerable<VoteDto> Votes)
 {
     public string ShortAddress => Address[..8];
 
@@ -17,7 +18,7 @@ public record VoterDto(string Address, List<VoteDto> Votes)
         .MaxBy(partyCounts => partyCounts.Count)?
         .Party;
 
-    public DateTime? LastVoteTime => Votes.MaxBy(vote => vote.Added)?.Added;
+    public DateTime? LastVoteTime => Votes.MaxBy(vote => vote.Timestamp)?.Timestamp;
 
     public static VoterDto RandomVoterDto(int voteCount)
     {
@@ -27,6 +28,6 @@ public record VoterDto(string Address, List<VoteDto> Votes)
             .Select(_ => VoteDto.RandomVoteDto())
             .ToList();
 
-        return new VoterDto(addr, votes);
+        return new VoterDto(addr, StringExt.RandomHexString(128), votes);
     }
 }

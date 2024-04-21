@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace Application.Blockchain.Events;
 
 // ReSharper disable once UnusedType.Global
-public sealed class BlockMinedEventHandler(ILogger<BlockMinedEventHandler> logger) : INotificationHandler<BlockMinedEvent>
+internal sealed class BlockMinedEventHandler(ILogger<BlockMinedEventHandler> logger) : INotificationHandler<BlockMinedEvent>
 {
     public Task Handle(BlockMinedEvent notification, CancellationToken ct)
     {

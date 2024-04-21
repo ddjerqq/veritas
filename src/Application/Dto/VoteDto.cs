@@ -3,9 +3,11 @@ using Domain.ValueObjects;
 
 namespace Application.Dto;
 
-public record VoteDto(string Hash, long Nonce, DateTime Added, Party Party, VoterDto Voter, long? BlockIndex)
+public record VoteDto(string Hash, long Nonce, DateTime Timestamp, Party Party, string VoterAddress, long? BlockIndex)
 {
     public string ShortHash => $"{Hash[..4]}-{Hash[^4..]}";
+
+    public string ShortVoterAddress => VoterAddress[..8];
 
     public static VoteDto RandomVoteDto()
     {
@@ -16,7 +18,7 @@ public record VoteDto(string Hash, long Nonce, DateTime Added, Party Party, Vote
             Random.Shared.Next(0, 10_000_000),
             DateTime.Now,
             party,
-            VoterDto.RandomVoterDto(0),
+            "0x" + StringExt.RandomHexString(42),
             null);
     }
 }

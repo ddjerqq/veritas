@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 namespace Application.Blockchain.Events;
 
 // ReSharper disable once UnusedType.Global
-public sealed class VoteAddedEventHandler(ILogger<VoteAddedEventHandler> logger) : INotificationHandler<VoteAddedEvent>
+internal sealed class VoteAddedEventHandler(ILogger<VoteAddedEventHandler> logger) : INotificationHandler<VoteAddedEvent>
 {
     public Task Handle(VoteAddedEvent notification, CancellationToken ct)
     {

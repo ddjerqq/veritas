@@ -13,7 +13,7 @@ public sealed record GetAllBlocksQuery(int Page) : IRequest<IEnumerable<Block>>
 // TODO REDIS - implement cache eventually.
 
 // ReSharper disable once UnusedType.Global
-public sealed class AllBlocksQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetAllBlocksQuery, IEnumerable<Block>>
+internal sealed class AllBlocksQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetAllBlocksQuery, IEnumerable<Block>>
 {
     public async Task<IEnumerable<Block>> Handle(GetAllBlocksQuery request, CancellationToken ct)
     {

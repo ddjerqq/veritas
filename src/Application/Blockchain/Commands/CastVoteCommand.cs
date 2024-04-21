@@ -8,17 +8,24 @@ using MediatR;
 
 namespace Application.Blockchain.Commands;
 
-public sealed record CastVoteCommand(string Hash, string Pkey, string Sig, int PartyId, long Timestamp, long Nonce) : IRequest
+public sealed record CastVoteCommand(string Hash, string PublicKey, string PrivateKey, int PartyId, long Timestamp, long Nonce) : IRequest
 {
+    private Voter? _voter;
+    private string? _sig;
+
     public Vote GetVote()
     {
+        // so that the signature does not change during access inside validation.
+        var voter = _voter ??= Voter.FromKeyPair(PublicKey, PrivateKey);
+        var signature = _sig ??= voter.Sign(VoteExt.GetSignaturePayload(PartyId, Timestamp)).ToHexString();
+
         return new Vote
         {
             Hash = Hash,
-            Voter = Voter.FromPublicKey(Pkey),
+            Voter = voter,
             PartyId = PartyId,
             Timestamp = Timestamp.ToUtcDateTime(),
-            Signature = Sig,
+            Signature = signature,
             Nonce = Nonce,
         };
     }
@@ -34,13 +41,8 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
             .Must(value => value.All(char.IsAsciiHexDigit))
             .WithMessage("Invalid {PropertyName}");
 
-        RuleFor(x => x.Pkey)
+        RuleFor(x => x.PublicKey)
             .Length(64, 256)
-            .Must(value => value.All(char.IsAsciiHexDigit))
-            .WithMessage("Invalid {PropertyName}");
-
-        RuleFor(x => x.Sig)
-            .Length(128)
             .Must(value => value.All(char.IsAsciiHexDigit))
             .WithMessage("Invalid {PropertyName}");
 
@@ -58,8 +60,7 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
             .WithMessage("The timestamp must be no more than five minutes old");
 
         RuleFor(x => x.Nonce)
-            .GreaterThan(0)
-            .LessThan(500_000_000);
+            .GreaterThan(0);
 
         RuleFor(x => x)
             .Must(command =>
@@ -79,16 +80,16 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
 }
 
 // ReSharper disable once UnusedType.Global
-public sealed class CastVoteCommandHandler(
+internal sealed class CastVoteCommandHandler(
     IAppDbContext dbContext,
-    IMediator mediator,
+    ISender mediator,
     ICurrentVoterAccessor currentVoterAccessor,
     IDateTimeProvider dateTimeProvider) : IRequestHandler<CastVoteCommand>
 {
     public async Task Handle(CastVoteCommand request, CancellationToken ct)
     {
         var voter = currentVoterAccessor.GetCurrentVoter();
-        var voterInfoQuery = new GetVoterInfoQuery(voter.Address);
+        var voterInfoQuery = new GetVoterByAddressQuery(voter.Address);
         var voterInfo = await mediator.Send(voterInfoQuery, ct);
 
         var lastVote = voterInfo?.Votes.LastOrDefault();

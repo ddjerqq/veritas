@@ -9,8 +9,8 @@ public record BlockDto(
     string Hash,
     string MerkleRoot,
     string PreviousHash,
-    List<VoteDto> Votes,
-    DateTime Mined)
+    DateTime Mined,
+    List<VoteDto> Votes)
 {
     public string ShortHash => $"{Hash[..4]}-{Hash[^4..]}";
 
@@ -38,9 +38,9 @@ public record BlockDto(
             StringExt.RandomHexString(64),
             StringExt.RandomHexString(64),
             StringExt.RandomHexString(64),
+            DateTime.Now,
             Enumerable.Range(0, Random.Shared.Next(1, votes ?? 100))
                 .Select(_ => VoteDto.RandomVoteDto())
-                .ToList(),
-            DateTime.Now);
+                .ToList());
     }
 }
