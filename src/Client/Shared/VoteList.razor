@@ -1,6 +1,4 @@
-﻿@using Application.Dto
-
-<div class="flex w-full flex-col gap-3">
+﻿<div class="flex w-full flex-col gap-3">
     @foreach (var vote in Votes)
     {
         <a @key="@vote.Hash"
@@ -14,16 +12,16 @@
             </span>
 
             <span class="text-gray-400 group-hover:text-white">
-                @(vote.Added.ToString("HH:mm:ss"))
+                @(vote.Timestamp.ToString("HH:mm:ss"))
             </span>
 
             <span class="@vote.Party.GetTextClass() font-extrabold font-2xl">
                 @vote.Party.Id.ToString("00")
             </span>
 
-            <a href="voters/@vote.Voter.Address"
+            <a href="voters/@vote.VoterAddress"
                class="text-gray-400 group-hover:text-white truncate underline">
-                @vote.Voter.ShortAddress
+                @vote.ShortVoterAddress
             </a>
         </a>
     }

@@ -1,5 +1,4 @@
 ﻿@page "/votes/{Hash}"
-@using Application.Dto
 
 <Card Class="flex flex-col text-white p-5 gap-3">
     <div class="flex flex-row w-full gap-3 text-nowrap">
@@ -32,14 +31,14 @@
 
         <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
             <property>ბროდკასტი</property>
-            <TimeTracker For="@Model.Added" class="text-gray-400"/>
+            <TimeTracker For="@Model.Timestamp" class="text-gray-400"/>
         </div>
 
         <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
             <property>ამომრჩეველი</property>
             <value>
-                <a href="voters/@Model.Voter.Address" class="font-mono truncate hover:underline">
-                    @Model.Voter.ShortAddress
+                <a href="voters/@Model.VoterAddress" class="font-mono truncate hover:underline">
+                    @Model.ShortVoterAddress
                 </a>
             </value>
         </div>
@@ -66,9 +65,6 @@
 {
     [Parameter]
     public string Hash { get; set; } = string.Empty;
-
-    [Parameter]
-    public long? Index { get; set; }
 
     private VoteDto Model { get; } = VoteDto.RandomVoteDto();
 }

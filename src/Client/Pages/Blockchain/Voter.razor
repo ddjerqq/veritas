@@ -1,5 +1,4 @@
 ﻿@page "/voters/{VoterAddress}"
-@using Application.Dto
 
 <Card Class="h-full flex flex-col md:flex-row items-start p-5 gap-3">
     <div class="w-full md:w-auto flex flex-col gap-3">
@@ -24,7 +23,7 @@
 
         <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md">
             <span>
-                ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ.<br/>
+                ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count()</b> ჯერ.<br/>
             </span>
 
             @if (Model.FavoriteParty is { } favoriteParty)
@@ -62,7 +61,7 @@
             ხმები
         </h2>
 
-        <VoteList @ref="VoteList" Votes="@Model.Votes" Max="100"/>
+        <VoteList @ref="VoteList" Votes="@Model.Votes.ToList()" Max="100"/>
     </div>
 </Card>
 

@@ -1,9 +1,6 @@
 ﻿using System.Net.Http.Json;
-using System.Text.Json;
 using Application.Dto;
 using Client.Common;
-using Newtonsoft.Json;
-using JsonSerializer = System.Text.Json.JsonSerializer;
 
 namespace Client.Services;
 
@@ -23,8 +20,10 @@ public class VoterAccessor(HttpClient http, CookieUtil cookies)
 
         FullVoterDto voter;
 
-        if (string.IsNullOrWhiteSpace(address) || string.IsNullOrWhiteSpace(publicKey) || string.IsNullOrWhiteSpace(privateKey) ||
-            string.IsNullOrWhiteSpace(signature))
+        if (string.IsNullOrWhiteSpace(address)
+            || string.IsNullOrWhiteSpace(publicKey)
+            || string.IsNullOrWhiteSpace(privateKey)
+            || string.IsNullOrWhiteSpace(signature))
         {
             voter = (await http.GetFromJsonAsync<FullVoterDto>("api/v1/new_identity", Json.SerializerOptions))!;
 
