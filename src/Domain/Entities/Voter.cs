@@ -76,7 +76,9 @@ public sealed class Voter : IDisposable
     /// <summary>
     /// Generates the signature of the address which is used when verifying the voter's identity
     /// </summary>
-    public string GenerateAddressSignature() => Sign(Address.ToBytesFromHex()).ToHexString();
+    public string SignAddress() => Sign(Address.ToBytesFromHex()).ToHexString();
+
+    public bool VerifyAddressSignature(string signature) => Verify(Address.ToBytesFromHex(), signature.ToBytesFromHex());
 
     private static ECParameters CreateParameters(string publicKey, string? privateKey) => new()
     {

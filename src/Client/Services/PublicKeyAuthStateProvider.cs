@@ -1,9 +1,10 @@
-﻿using System.Security.Claims;
+﻿using System.Net.Http.Json;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Client.Services;
 
-public class PublicKeyAuthStateProvider(HttpClient http) : AuthenticationStateProvider
+public class PublicKeyAuthStateProvider(VoterAccessor voterAccessor) : AuthenticationStateProvider
 {
     private static ClaimsPrincipal EmptyPrincipal => new(new ClaimsIdentity());
 
@@ -11,13 +12,15 @@ public class PublicKeyAuthStateProvider(HttpClient http) : AuthenticationStatePr
     {
         try
         {
-            // TODO this will be purely read from localstorage
+            var voter = await voterAccessor.GetVoterAsync();
+            List<Claim> claims =
+            [
+                new Claim("addr", voter.Address),
+                new Claim("pkey", voter.PublicKey),
+                new Claim("skey", voter.PrivateKey!),
+            ];
 
-            // var claims = body
-            //     .Select(kv => new Claim(kv.Key, kv.Value))
-            //     .ToList();
-
-            var claimsIdentity = new ClaimsIdentity([], "bearer");
+            var claimsIdentity = new ClaimsIdentity(claims, "public_key");
             var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
             return new AuthenticationState(claimsPrincipal);
         }

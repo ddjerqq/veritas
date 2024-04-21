@@ -55,6 +55,16 @@ public class ConfigurePresentation : IHostingStartup
             // TODO SignalR
             // services.AddSignalR(o => { o.EnableDetailedErrors = env.IsDevelopment(); });
 
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyMethod();
+                });
+            });
+
             services.AddResponseCaching();
             services.AddResponseCompression(options =>
             {

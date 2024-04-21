@@ -5,6 +5,23 @@
         მიეცი.ჯი
     </h1>
 
+    <AuthorizeView>
+        <Authorized>
+            <ul class="flex flex-col gap-3 text-white">
+                @foreach (var claim in context.User.Claims)
+                {
+                    <li class="flex flex-row gap-3">
+                        <span>@claim.Type</span>
+                        <span>@claim.Value</span>
+                    </li>
+                }
+            </ul>
+        </Authorized>
+        <NotAuthorized>
+            You not currently authenticated
+        </NotAuthorized>
+    </AuthorizeView>
+
     <p class="text-3xl text-gray-300 font-light mb-2">
         მიეცი ხმა და გაიგე რას ფიქრობს სხვა.
     </p>

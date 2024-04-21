@@ -1,7 +1,9 @@
 ﻿using System.Security.Claims;
 using System.Text.Encodings.Web;
+using Application.Dto;
 using Domain.Common;
 using Domain.Entities;
+using FluentValidation.Validators;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Options;
 
@@ -17,56 +19,49 @@ public class PublicKeyBearerAuthHandler(
 {
     public const string SchemaName = "public_key";
 
-    public const string PubKeyHeaderName = "X-Public-Key";
-    public const string SignatureHeaderName = "X-Signature";
-
     protected override Task<AuthenticateResult> HandleAuthenticateAsync()
     {
-        var pKey = ExtractPublicKey();
-        var sig = ExtractSignature();
+        var address = Extract(nameof(FullVoterDto.Address));
+        var publicKey = Extract(nameof(FullVoterDto.PublicKey));
+        var privateKey = Extract(nameof(FullVoterDto.PrivateKey));
+        var signature = Extract(nameof(FullVoterDto.Signature));
 
-        if (pKey is null || sig is null)
-            return Task.FromResult(AuthenticateResult.Fail("no public key or signature provided"));
+        if (address is null || publicKey is null || privateKey is null || signature is null)
+            return Task.FromResult(AuthenticateResult.Fail("no voter info provided"));
 
-        var voter = Voter.FromPublicKey(pKey);
-        var signatureValid = voter.Verify(voter.Address.ToBytesFromHex(), sig.ToBytesFromHex());
-        if (!signatureValid)
+        var voter = Voter.FromKeyPair(publicKey, privateKey);
+        if (!voter.VerifyAddressSignature(signature))
             return Task.FromResult(AuthenticateResult.Fail("invalid signature"));
+
+        Context.Items[nameof(Voter)] = voter;
 
         List<Claim> claims =
         [
             new Claim("addr", voter.Address),
-            new Claim("pkey", pKey),
+            new Claim("pkey", voter.PublicKey),
+            new Claim("skey", voter.PrivateKey!),
         ];
         var claimsIdentity = new ClaimsIdentity(claims, SchemaName);
-        var ticket = new AuthenticationTicket(new ClaimsPrincipal(claimsIdentity), SchemaName);
-
-        Context.Items[nameof(Voter)] = voter;
         Context.User = new ClaimsPrincipal(claimsIdentity);
 
-        return Task.FromResult(AuthenticateResult.Success(ticket));
+        return Task.FromResult(
+            AuthenticateResult.Success(
+                new AuthenticationTicket(Context.User, SchemaName)));
     }
 
-    private string? ExtractPublicKey()
+    private string? Extract(string key)
     {
-        Request.Headers.TryGetValue(PubKeyHeaderName, out var pKeyHeader);
-        Request.Cookies.TryGetValue(PubKeyHeaderName, out var pKeyCookie);
-        var pKey = (string?)pKeyHeader ?? pKeyCookie;
-        return ValidateHexString(pKey) ? pKey : null;
-    }
+        Request.Query.TryGetValue(key, out var query);
+        Request.Headers.TryGetValue(key, out var header);
+        Request.Cookies.TryGetValue(key, out var cookie);
 
-    private string? ExtractSignature()
-    {
-        Request.Headers.TryGetValue(SignatureHeaderName, out var sigHeader);
-        Request.Cookies.TryGetValue(SignatureHeaderName, out var sigCookie);
-        var sig = (string?)sigHeader ?? sigCookie;
-        return ValidateHexString(sig) ? sig : null;
-    }
+        var value = (string?)query ?? (string?)header ?? cookie;
 
-    private bool ValidateHexString(string? hexString)
-    {
-        return !string.IsNullOrWhiteSpace(hexString)
-               && hexString.Length < 512
-               && hexString.All(char.IsAsciiHexDigit);
+        var isValid =
+            !string.IsNullOrWhiteSpace(value)
+            && value.Length <= 128
+            && (value.All(char.IsAsciiHexDigit) || value.StartsWith("0x"));
+
+        return isValid ? value : null;
     }
 }

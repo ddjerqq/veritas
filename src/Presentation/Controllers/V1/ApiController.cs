@@ -1,6 +1,7 @@
 using Application.Blockchain.Commands;
 using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
+using Application.Dto;
 using Domain.Common;
 using Domain.Entities;
 using MediatR;
@@ -14,35 +15,31 @@ namespace Presentation.Controllers.V1;
 [ApiController]
 [Route("/api/v1/")]
 [Produces("application/json")]
-public class ApiController(
-    IMediator mediator,
-    ILogger<ApiController> logger,
-    IProcessedVotesCache processedVotesCache,
-    IDateTimeProvider dateTimeProvider) : ControllerBase
+public class ApiController(IMediator mediator, ILogger<ApiController> logger, IProcessedVotesCache processedVotesCache) : ControllerBase
 {
     [AllowAnonymous]
-    [HttpGet("d831889244f1484d8f4797a3a85a4807")]
-    public IActionResult GetNewIdentity()
+    [HttpGet("new_identity")]
+    public ActionResult<FullVoterDto> GetNewIdentity()
     {
+        if (HttpContext.User.Identity?.IsAuthenticated ?? false)
+            return Unauthorized();
+
         var voter = Voter.NewVoter();
-        var resp = new
-        {
-            voter.Address,
-            voter.PublicKey,
-            voter.PrivateKey,
-        };
+        var dto = new FullVoterDto(voter.Address, voter.PublicKey, voter.PrivateKey!, voter.SignAddress());
 
-        Response.Cookies.Append(PublicKeyBearerAuthHandler.PubKeyHeaderName, voter.PublicKey);
-        Response.Cookies.Append(PublicKeyBearerAuthHandler.SignatureHeaderName, voter.GenerateAddressSignature());
+        Response.Cookies.Append(nameof(FullVoterDto.Address), dto.Address);
+        Response.Cookies.Append(nameof(FullVoterDto.PublicKey), dto.PublicKey);
+        Response.Cookies.Append(nameof(FullVoterDto.PrivateKey), dto.PrivateKey);
+        Response.Cookies.Append(nameof(FullVoterDto.Signature), dto.Signature);
 
-        return Ok(resp);
+        return Ok(dto);
     }
 
-    [HttpGet("user_claims")]
-    public ActionResult<Dictionary<string, string>> GetUserClaims()
-    {
-        return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
-    }
+    // [HttpGet("user_claims")]
+    // public ActionResult<Dictionary<string, string>> GetUserClaims()
+    // {
+    //     return Ok(User.Claims.ToDictionary(x => x.Type, x => x.Value));
+    // }
 
     [HttpPost("votes")]
     public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
@@ -68,13 +65,13 @@ public class ApiController(
             : NotFound();
     }
 
-    [HttpGet("blocks/all")]
-    public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks([FromQuery] int page, CancellationToken ct)
-    {
-        var query = new GetAllBlocksQuery(page);
-        var blocks = await mediator.Send(query, ct);
-        return Ok(blocks);
-    }
+    // [HttpGet("blocks/all")]
+    // public async Task<ActionResult<IEnumerable<Block>>> GetAllBlocks([FromQuery] int page, CancellationToken ct)
+    // {
+    //     var query = new GetAllBlocksQuery(page);
+    //     var blocks = await mediator.Send(query, ct);
+    //     return Ok(blocks);
+    // }
 
     [HttpGet("blocks/{index:long}")]
     public async Task<ActionResult<IEnumerable<Block>>> GetBlockByIndex(long index, CancellationToken ct)
@@ -96,60 +93,5 @@ public class ApiController(
         return block is not null
             ? Ok(block)
             : NotFound();
-    }
-
-    // TODO remove
-    [HttpGet("new_identity")]
-    public IActionResult NewIdentity()
-    {
-        if (HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>() is var env && !env.IsDevelopment())
-            return NotFound();
-
-        var voter = Voter.NewVoter();
-
-        var votes = Enumerable.Range(5, 2)
-            .Select(i =>
-            {
-                var vote = Vote.NewVote(voter, i, dateTimeProvider.UtcNow);
-                vote.Mine();
-                return new
-                {
-                    hash = vote.Hash,
-                    pkey = voter.PublicKey,
-                    sig = vote.Signature,
-                    party_id = vote.PartyId,
-                    timestamp = vote.UnixTimestampMs,
-                    nonce = vote.Nonce,
-                };
-            });
-
-        return Ok(new
-        {
-            addr = voter.Address,
-            pkey = voter.PublicKey,
-            addr_signed = voter.Sign(voter.Address.ToBytesFromHex()).ToHexString(),
-            votes,
-        });
-    }
-
-    // TODO remove
-    [HttpPost("vote_random")]
-    public async Task<IActionResult> VoteRandom(CancellationToken ct)
-    {
-        if (HttpContext.RequestServices.GetRequiredService<IWebHostEnvironment>() is var env && !env.IsDevelopment())
-            return NotFound();
-
-        var voter = Voter.NewVoter();
-        var vote = Vote.NewVote(voter, Random.Shared.Next(1, 100), dateTimeProvider.UtcNow);
-        vote.Mine();
-
-        // override the test voter
-        HttpContext.Items[nameof(Voter)] = voter;
-
-        var command = new CastVoteCommand(vote.Hash, voter.PublicKey, vote.Signature, vote.PartyId, vote.UnixTimestampMs, vote.Nonce);
-
-        await mediator.Send(command, ct);
-
-        return Created();
     }
 }

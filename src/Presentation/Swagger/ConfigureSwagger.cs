@@ -28,7 +28,6 @@ public class ConfigureSwagger : IHostingStartup
                 options.IncludeXmlComments(xmlPath);
 
                 options.OperationFilter<IdempotencyKeyOperationFilter>();
-                options.OperationFilter<PublicKeyAndSignatureOperationFilter>();
                 options.OperationFilter<RequestedWithXmlHttpRequest>();
 
                 options.SupportNonNullableReferenceTypes();
