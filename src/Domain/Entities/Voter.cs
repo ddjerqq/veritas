@@ -63,6 +63,40 @@ public sealed class Voter : IDisposable
         return voter;
     }
 
+    public static Voter FromKeyPair(string publicKey, string privateKey)
+    {
+        var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+
+        var parameters = dsa.ExportParameters(true);
+
+        // TODO either fix this parameter export bullshit
+        ECParameters paramers = new ECParameters()
+        {
+            Curve = ECCurve.NamedCurves.nistP256,
+        };
+        // ECDsa.Create()
+
+        try
+        {
+            dsa.ImportSubjectPublicKeyInfo(publicKey.ToBytesFromHex(), out _);
+            dsa.ImportPkcs8PrivateKey(privateKey.ToBytesFromHex(), out _);
+        }
+        catch (CryptographicException ex)
+        {
+            Log.Error(ex, "Invalid public key");
+            throw new InvalidOperationException("Invalid public key", ex);
+        }
+
+        var voter = new Voter
+        {
+            Dsa = dsa,
+            PublicKey = publicKey,
+            PrivateKey = privateKey,
+        };
+
+        return voter;
+    }
+
     public byte[] Sign(byte[] data)
     {
         if (string.IsNullOrWhiteSpace(PrivateKey)) throw new InvalidOperationException("Cannot sign without private key");

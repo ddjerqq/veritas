@@ -78,4 +78,28 @@ internal class TestVoter
             Assert.That(deserialized.Verify(payload, signature), Is.True);
         });
     }
+
+    [Test]
+    [Parallelizable]
+    public void TestCanExportAndImport()
+    {
+        var voter = Voter.NewVoter();
+        var importedVoter = Voter.FromKeyPair(voter.PublicKey, voter.PrivateKey!);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(importedVoter.Address, Is.EqualTo(voter.Address));
+            Assert.That(importedVoter.PublicKey, Is.EqualTo(voter.PublicKey));
+            Assert.That(importedVoter.PrivateKey, Is.EqualTo(voter.PrivateKey));
+        });
+
+        // signing the same data will not be the same, however, verifying the said data must be possible
+        var payload = "aaa"u8.ToArray();
+        var signature = voter.Sign(payload);
+        Assert.That(importedVoter.Verify(payload, signature), Is.True);
+
+        // test the inverse
+        var importedSignature = importedVoter.Sign(payload);
+        Assert.That(voter.Verify(payload, importedSignature), Is.True);
+    }
 }
