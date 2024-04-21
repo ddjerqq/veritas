@@ -48,7 +48,7 @@ public class TestArchitecture
     }
 
     [Test]
-    public void TestCommandHandlersAreProperlyNamedAndSealed()
+    public void TestCommandHandlersAreProperlyNamedAndSealedAndNotPublic()
     {
         var result = Types
             .InAssembly(ApplicationAssembly.Assembly)
@@ -56,8 +56,30 @@ public class TestArchitecture
             .ImplementInterface(typeof(IRequestHandler<>))
             .Should()
             .HaveNameEndingWith("CommandHandler")
+            .Or()
+            .HaveNameEndingWith("QueryHandler")
             .And()
             .BeSealed()
+            .And()
+            .NotBePublic()
+            .GetResult();
+
+        Assert.That(result.IsSuccessful, Is.True);
+    }
+
+    [Test]
+    public void TestEventHandlersAreProperlyNamedAndSealedAndNotPublic()
+    {
+        var result = Types
+            .InAssembly(ApplicationAssembly.Assembly)
+            .That()
+            .ImplementInterface(typeof(INotificationHandler<>))
+            .Should()
+            .HaveNameEndingWith("EventHandler")
+            .And()
+            .BeSealed()
+            .And()
+            .NotBePublic()
             .GetResult();
 
         Assert.That(result.IsSuccessful, Is.True);
