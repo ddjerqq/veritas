@@ -3,6 +3,7 @@ using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
 using Application.Dto;
 using Domain.Entities;
+using Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,7 @@ namespace Presentation.Controllers.V1;
 [ApiController]
 [Route("/api/v1/")]
 [Produces("application/json")]
-public class ApiController(
-    ISender mediator,
-    ILogger<ApiController> logger,
-    IProcessedVotesCache processedVotesCache,
-    ICurrentVoterAccessor currentVoterAccessor) : ControllerBase
+public class ApiController(ISender mediator, ILogger<ApiController> logger, IProcessedVotesCache processedVotesCache) : ControllerBase
 {
     [AllowAnonymous]
     [HttpGet("new_identity")]
@@ -37,7 +34,7 @@ public class ApiController(
         return Ok(dto);
     }
 
-    [HttpPost("votes")]
+    [HttpPost("cast_vote")]
     public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
     {
         if (processedVotesCache.Contains(command.Hash))
@@ -52,9 +49,17 @@ public class ApiController(
     }
 
     [HttpGet("stats/counts")]
-    public async Task<ActionResult> GetStatsVoterTotalCount(CancellationToken ct)
+    public async Task<ActionResult<Dictionary<Party, int>>> GetPartyVoteCounts(CancellationToken ct)
     {
         var query = new GetPartyVotes();
+        var result = await mediator.Send(query, ct);
+        return Ok(result);
+    }
+
+    [HttpGet("stats/daily")]
+    public async Task<ActionResult<Dictionary<Party, Dictionary<DateOnly, int>>>> GetPartyDailyVoteCounts(CancellationToken ct)
+    {
+        var query = new GetDailyPartyVotes();
         var result = await mediator.Send(query, ct);
         return Ok(result);
     }

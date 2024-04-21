@@ -9,7 +9,7 @@ namespace Client.Services;
 
 public class VoteService(VoterAccessor voterAccessor, IDateTimeProvider dateTimeProvider)
 {
-    public async Task CastVote(int partyId)
+    public async Task<CastVoteCommand> CreateVoteCommand(int partyId)
     {
         var voter = await voterAccessor.GetVoterAsync();
         var ts = dateTimeProvider.UtcNowUnixTimeMilliseconds;
@@ -17,7 +17,6 @@ public class VoteService(VoterAccessor voterAccessor, IDateTimeProvider dateTime
         var foundNonce = Miner.Mine(payload, Vote.Difficulty);
         var hash = SHA256.HashData(payload).ToHexString();
 
-        var command = new CastVoteCommand(hash, voter.PublicKey, voter.PrivateKey, partyId, ts, foundNonce);
-        // SEND THIS WITH API SERVICE
+        return new CastVoteCommand(hash, voter.PublicKey, voter.PrivateKey, partyId, ts, foundNonce);
     }
 }

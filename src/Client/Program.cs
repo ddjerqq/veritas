@@ -20,7 +20,9 @@ builder.Services.AddAuthorizationCore();
 
 builder.Services.AddScoped<CookieUtil>();
 builder.Services.AddScoped<VoterAccessor>();
+builder.Services.AddScoped<VoteService>();
 
+builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped(_ => new HttpClient { BaseAddress = new Uri("https://localhost/") });
 builder.Services.AddSingleton(builder.HostEnvironment);
 builder.Services.AddScoped<AuthenticationStateProvider, PublicKeyAuthStateProvider>();

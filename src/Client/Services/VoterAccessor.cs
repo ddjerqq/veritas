@@ -4,7 +4,7 @@ using Client.Common;
 
 namespace Client.Services;
 
-public class VoterAccessor(HttpClient http, CookieUtil cookies)
+public class VoterAccessor(ApiService api, CookieUtil cookies)
 {
     public async Task<FullVoterDto> GetVoterAsync()
     {
@@ -25,7 +25,7 @@ public class VoterAccessor(HttpClient http, CookieUtil cookies)
             || string.IsNullOrWhiteSpace(privateKey)
             || string.IsNullOrWhiteSpace(signature))
         {
-            voter = (await http.GetFromJsonAsync<FullVoterDto>("api/v1/new_identity", Json.SerializerOptions))!;
+            voter = (await api.NewIdentity())!;
 
             if (voter is null)
                 throw new InvalidOperationException("voter was null");
