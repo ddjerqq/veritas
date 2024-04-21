@@ -23,69 +23,30 @@ public sealed class Voter : IDisposable
     [SJsonIgnore]
     public string? PrivateKey { get; init; }
 
-    public void Dispose()
-    {
-        Dsa.Dispose();
-    }
-
     public static Voter NewVoter()
     {
         var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
+        var parameters = dsa.ExportParameters(includePrivateParameters: true);
+
+        var publicKey = new byte[64];
+        parameters.Q.X!.CopyTo(publicKey, 0);
+        parameters.Q.Y!.CopyTo(publicKey, 32);
+
         return new Voter
         {
             Dsa = dsa,
-            PublicKey = dsa.ExportSubjectPublicKeyInfo().ToHexString(),
-            PrivateKey = dsa.ExportPkcs8PrivateKey().ToHexString(),
+            PublicKey = publicKey.ToHexString(),
+            PrivateKey = parameters.D!.ToHexString(),
         };
     }
 
-    public static Voter FromPublicKey(string publicKey)
+    public static Voter FromPublicKey(string publicKey) => FromKeyPair(publicKey, null);
+
+    public static Voter FromKeyPair(string publicKey, string? privateKey)
     {
-        var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-
-        try
-        {
-            dsa.ImportSubjectPublicKeyInfo(publicKey.ToBytesFromHex(), out _);
-        }
-        catch (CryptographicException ex)
-        {
-            Log.Error(ex, "Invalid public key");
-            throw new InvalidOperationException("Invalid public key", ex);
-        }
-
-        var voter = new Voter
-        {
-            Dsa = dsa,
-            PublicKey = publicKey,
-        };
-
-        return voter;
-    }
-
-    public static Voter FromKeyPair(string publicKey, string privateKey)
-    {
-        var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
-
-        var parameters = dsa.ExportParameters(true);
-
-        // TODO either fix this parameter export bullshit
-        ECParameters paramers = new ECParameters()
-        {
-            Curve = ECCurve.NamedCurves.nistP256,
-        };
-        // ECDsa.Create()
-
-        try
-        {
-            dsa.ImportSubjectPublicKeyInfo(publicKey.ToBytesFromHex(), out _);
-            dsa.ImportPkcs8PrivateKey(privateKey.ToBytesFromHex(), out _);
-        }
-        catch (CryptographicException ex)
-        {
-            Log.Error(ex, "Invalid public key");
-            throw new InvalidOperationException("Invalid public key", ex);
-        }
+        var parameters = CreateParameters(publicKey, privateKey);
+        var dsa = ECDsa.Create(parameters);
 
         var voter = new Voter
         {
@@ -105,7 +66,10 @@ public sealed class Voter : IDisposable
 
     public bool Verify(byte[] data, byte[] signature)
     {
-        Dsa.ImportSubjectPublicKeyInfo(PublicKey.ToBytesFromHex(), out _);
+        // for when we json de-serialize, the DSA will have newly generated key info
+        var parameters = CreateParameters(PublicKey, PrivateKey);
+        Dsa.ImportParameters(parameters);
+
         return Dsa.VerifyData(data, signature, HashAlgorithmName.SHA512);
     }
 
@@ -113,4 +77,17 @@ public sealed class Voter : IDisposable
     /// Generates the signature of the address which is used when verifying the voter's identity
     /// </summary>
     public string GenerateAddressSignature() => Sign(Address.ToBytesFromHex()).ToHexString();
+
+    private static ECParameters CreateParameters(string publicKey, string? privateKey) => new()
+    {
+        Curve = ECCurve.NamedCurves.nistP256,
+        D = privateKey?.ToBytesFromHex(),
+        Q = new ECPoint
+        {
+            X = publicKey.ToBytesFromHex().Take(32).ToArray(),
+            Y = publicKey.ToBytesFromHex().Skip(32).ToArray(),
+        },
+    };
+
+    public void Dispose() => Dsa.Dispose();
 }

@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Domain.Common;
+using Domain.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Serialization;
@@ -30,10 +31,41 @@ internal class TestVoter
 
     [Test]
     [Parallelizable]
+    public void TestAddressDoesNotChangeAfterSerde()
+    {
+        var json = JsonConvert.SerializeObject(Voter, JsonSerializerSettings);
+        Console.WriteLine(json);
+
+        var deserialized = JsonConvert.DeserializeObject<Voter>(json, JsonSerializerSettings);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(deserialized, Is.Not.Null);
+            Assert.That(deserialized!.Address, Is.EqualTo(Voter.Address));
+        });
+    }
+
+    [Test]
+    [Parallelizable]
+    public void TestSignatureChangesEvenOnSameData()
+    {
+        var payload = "aaa"u8.ToArray();
+        var signatureA = Voter.Sign(payload);
+        var signatureB = Voter.Sign(payload);
+
+        Console.WriteLine(signatureA.ToHexString());
+        Console.WriteLine(signatureB.ToHexString());
+
+        Assert.That(signatureA.ToHexString(), Is.Not.EqualTo(signatureB.ToHexString()));
+    }
+
+    [Test]
+    [Parallelizable]
     public void TestSign()
     {
         var payload = "aaa"u8.ToArray();
         var signature = Voter.Sign(payload);
+        Console.WriteLine(signature);
         Assert.That(Voter.Verify(payload, signature), Is.True);
     }
 
