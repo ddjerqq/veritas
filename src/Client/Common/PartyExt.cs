@@ -74,7 +74,7 @@ public static class PartyExt
         };
     }
 
-    public static string GetShadowClass(this Party party)
+    public static string GetHoverShadowClass(this Party party)
     {
         // for tailwind class discovery
         _ = "hover:shadow-unm hover:shadow-lelo hover:shadow-girchi hover:shadow-gd";

@@ -7,15 +7,14 @@
 @* data-[active]:scale-[200%] data-[active]:z-50 data-[active]:duration-1000 *@
 @* active:scale-[200%] active:z-50 active:duration-1000 *@
 
-<div @onclick="@(() => IsActive = !IsActive)"
-     data-active="@IsActive"
+<div @onclick="@OnClick"
      class="group flex flex-col flex-grow-0 col-start-2 col-span-10 sm:col-span-6 lg:col-span-4 xl:col-span-3
             rounded-md select-none sm:max-w-[250px]
             bg-gray-600 @Party.GetHoverBgClass()
             border-2 border-gray-600 hover:border-white
             transition-[colors,transform] duration-300 ease-sweet
             hover:scale-105
-            shadow-gray-500 @Party.GetShadowClass()
+            shadow-gray-500 @Party.GetHoverShadowClass()
             shadow-party-card hover:shadow-party-card-hover">
 
     <div class="relative overflow-hidden">
@@ -50,5 +49,6 @@
     [EditorRequired]
     public Party Party { get; set; }
 
-    private bool IsActive { get; set; }
+    [Parameter]
+    public EventCallback OnClick { get; set; }
 }

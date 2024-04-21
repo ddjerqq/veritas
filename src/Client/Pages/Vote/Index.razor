@@ -6,7 +6,7 @@
 <div class="h-full grid grid-cols-12 justify-center items-center gap-3 p-5">
     @foreach (var (partyId, party) in Parties)
     {
-        <PartyCard @key="partyId" Party="@party"/>
+        <PartyCard @key="partyId" Party="@party" OnClick="@(() => VoteFor(party))"/>
     }
 
     @foreach (var (partyId, party) in Parties)
@@ -19,6 +19,17 @@
 
 @code
 {
+    [CascadingParameter]
+    public IModalService Modal { get; set; } = default!;
+
+    private void VoteFor(Party party)
+    {
+        var parameters = new ModalParameters()
+            .Add(nameof(VoteConfirmation.Party), party);
+
+        Modal.Show<VoteConfirmation>("Confirm vote", parameters);
+    }
+
     private static readonly Dictionary<int, Party> Parties = new()
     {
         [5] = 5,

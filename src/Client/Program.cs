@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Blazored.LocalStorage;
+using Blazored.Modal;
 using Blazored.Toast;
 using Client;
 using Client.Common;
@@ -27,6 +28,7 @@ builder.Services.AddSingleton(builder.HostEnvironment);
 builder.Services.AddScoped<AuthenticationStateProvider, PublicKeyAuthStateProvider>();
 
 builder.Services.AddBlazoredToast();
+builder.Services.AddBlazoredModal();
 builder.Services.AddBlazoredLocalStorageAsSingleton(o =>
 {
     o.JsonSerializerOptions = Json.SerializerOptions;
