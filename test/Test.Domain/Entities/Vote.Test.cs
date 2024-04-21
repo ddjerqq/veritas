@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Domain.Common;
+﻿using Domain.Common;
 using Domain.Entities;
 
 namespace Test.Domain.Entities;
