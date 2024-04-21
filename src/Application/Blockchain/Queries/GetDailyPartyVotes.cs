@@ -15,11 +15,14 @@ internal sealed class GetDailyPartyVotesQueryHandler(IAppDbContext dbContext, ID
     public async Task<Dictionary<Party, Dictionary<DateOnly, int>>> Handle(GetDailyPartyVotes request, CancellationToken ct)
     {
         var now = dateTimeProvider.UtcNow;
-        var nowDate = DateOnly.FromDateTime(now);
+        var after = now.Date.AddDays(-request.Days);
 
         var votesInTheLastNDays = await dbContext.Set<Vote>()
             .AsNoTracking()
-            .Where(v => (now - v.Timestamp).Days <= request.Days)
+            .Where(v => v.Timestamp.Date >= after)
+            .ToListAsync(ct);
+
+        var dailyVoteCounts = votesInTheLastNDays
             .GroupBy(v => v.PartyId)
             .Select(group => new
             {
@@ -28,11 +31,11 @@ internal sealed class GetDailyPartyVotesQueryHandler(IAppDbContext dbContext, ID
                     .Where(v => v.PartyId == group.Key)
                     .GroupBy(v => (now - v.Timestamp).Days)
                     .ToDictionary(
-                        subGroup => nowDate.AddDays(-subGroup.Key),
+                        subGroup => DateOnly.FromDateTime(now.Date.AddDays(-subGroup.Key)),
                         subGroup => subGroup.Count()),
             })
-            .ToListAsync(ct);
+            .ToDictionary(kv => kv.Party, kv => kv.VotesThroughoutDays);
 
-        return votesInTheLastNDays.ToDictionary(kv => kv.Party, kv => kv.VotesThroughoutDays);
+        return dailyVoteCounts;
     }
 }

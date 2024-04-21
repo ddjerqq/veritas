@@ -34,6 +34,10 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
         return Ok(dto);
     }
 
+    [HttpGet("claims")]
+    public ActionResult<Dictionary<string, string>> GetUserClaims() =>
+        Ok(User.Claims.ToDictionary(c => c.Type, c => c.Value));
+
     [HttpPost("cast_vote")]
     public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
     {

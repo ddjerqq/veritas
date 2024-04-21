@@ -20,14 +20,14 @@ public record BlockDto(
 
     public int SizeMegaBytes => Votes.Count * 208 / 1024;
 
-    public Party TopParty => Votes
+    public Party? TopParty => Votes
         .GroupBy(vote => vote.Party.Id)
         .Select(group => new
         {
             Party = group.Key,
             Count = group.Count(),
         })
-        .MaxBy(partyCounts => partyCounts.Count)!
+        .MaxBy(partyCounts => partyCounts.Count)?
         .Party;
 
     public static BlockDto RandomBlockDto(long? index = null, int? votes = null)

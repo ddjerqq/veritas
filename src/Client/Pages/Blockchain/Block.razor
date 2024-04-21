@@ -31,12 +31,16 @@
             <span>
                 ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
             </span>
-            <span>
-                პირველ ადგილას არის:<br/>
-                <span class="@Model.TopParty.GetTextClass()">
-                    @Model.TopParty.Name.
+
+            @if (Model.TopParty is { } topParty)
+            {
+                <span>
+                    პირველ ადგილას არის:<br/>
+                    <span class="@topParty.GetTextClass()">
+                        @topParty.Name.
+                    </span>
                 </span>
-            </span>
+            }
         </section>
 
         <hr class="border-s border-gray-500 w-full"/>

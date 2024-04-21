@@ -10,6 +10,9 @@ public class ApiService(HttpClient http, VoteService voteService)
     public async Task<FullVoterDto?> NewIdentity() =>
         await http.GetFromJsonAsync<FullVoterDto>("api/v1/new_identity", Json.SerializerOptions);
 
+    public async Task<Dictionary<string, string>?> GetClaims() =>
+        await http.GetFromJsonAsync<Dictionary<string, string>>("api/v1/claims");
+
     public async Task CastVote(int partyId)
     {
         var castVoteCommand = await voteService.CreateVoteCommand(partyId);

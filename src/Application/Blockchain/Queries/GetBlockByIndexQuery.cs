@@ -15,19 +15,24 @@ internal sealed class GetBlockByIndexQueryHandler(IAppDbContext dbContext) : IRe
 {
     public async Task<BlockDto?> Handle(GetBlockByIndexQuery request, CancellationToken ct)
     {
-        return await dbContext.Set<Block>()
+        var block = await dbContext.Set<Block>()
             .AsNoTracking()
+            .Include(b => b.Votes)
+            .ThenInclude(v => v.Voter)
             .Where(b => b.Index == request.Index)
-            .Select(block => new BlockDto(
-                block.Index,
-                block.Nonce,
-                block.Hash,
-                block.MerkleRoot,
-                block.PreviousHash,
-                block.Votes.Last().Timestamp,
-                block.Votes
-                    .Select(vote => new VoteDto(vote.Hash, vote.Nonce, vote.Timestamp, vote.PartyId, vote.VoterAddress, vote.BlockIndex))
-                    .ToList()))
             .FirstOrDefaultAsync(ct);
+        if (block is null) return null;
+
+        var blockDto = new BlockDto(
+            block.Index,
+            block.Nonce,
+            block.Hash,
+            block.MerkleRoot,
+            block.PreviousHash,
+            block.Votes.MaxBy(v => v.Timestamp)?.Timestamp ?? DateTime.UtcNow,
+            block.Votes
+                .Select(vote => new VoteDto(vote.Hash, vote.Nonce, vote.Timestamp, vote.PartyId, vote.VoterAddress, vote.BlockIndex))
+                .ToList());
+        return blockDto;
     }
 }
