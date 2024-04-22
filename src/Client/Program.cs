@@ -1,4 +1,3 @@
-using System.Net;
 using Application.Common.Abstractions;
 using Application.Services;
 using Blazored.LocalStorage;
@@ -28,11 +27,11 @@ builder.Services.AddScoped<VoterAccessor>();
 builder.Services.AddScoped<VoteService>();
 
 builder.Services.AddScoped<ApiService>();
-builder.Services.AddScoped(_ =>
+builder.Services.AddScoped<AuthHttpClientHandler>();
+builder.Services.AddScoped(sp =>
 {
-    // TODO CREDENTIALS ARE NOT BEING SENT, FIX CORS, ADD LOCALHOST:5001 DURING TESTING
-    var credentials = new HttpClientHandler() { Credentials = new NetworkCredential() };
-    return new HttpClient { BaseAddress = new Uri("https://localhost/") };
+    var authHandler = sp.GetRequiredService<AuthHttpClientHandler>();
+    return new HttpClient(authHandler) { BaseAddress = new Uri("https://localhost/") };
 });
 builder.Services.AddSingleton(builder.HostEnvironment);
 builder.Services.AddScoped<AuthenticationStateProvider, PublicKeyAuthStateProvider>();

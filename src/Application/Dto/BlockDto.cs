@@ -21,7 +21,7 @@ public record BlockDto(
     public int SizeMegaBytes => Votes.Count * 208 / 1024;
 
     public Party? TopParty => Votes
-        .GroupBy(vote => vote.Party.Id)
+        .GroupBy(vote => vote.PartyId)
         .Select(group => new
         {
             Party = group.Key,

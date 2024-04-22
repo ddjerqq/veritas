@@ -52,7 +52,8 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
 
         var vote = command.GetVote();
         var dto = new VoteDto(vote.Hash, vote.Nonce, vote.Timestamp, vote.PartyId, vote.VoterAddress, null);
-        return Created($"api/votes/{vote.Hash}", dto);
+        Response.StatusCode = StatusCodes.Status201Created;
+        return Ok(dto);
     }
 
     [HttpGet("stats/counts")]

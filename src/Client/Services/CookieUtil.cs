@@ -1,3 +1,4 @@
+using Application.Dto;
 using Microsoft.JSInterop;
 
 namespace Client.Services;
@@ -20,6 +21,30 @@ public class CookieUtil(IJSRuntime jsRuntime) : IAsyncDisposable
     {
         var module = await _moduleTask.Value;
         await module.InvokeVoidAsync("set", name, value, expireDays);
+    }
+
+    public async ValueTask<FullVoterDto?> GetVoter()
+    {
+        var address = await GetCookie(nameof(FullVoterDto.Address));
+        var publicKey = await GetCookie(nameof(FullVoterDto.PublicKey));
+        var privateKey = await GetCookie(nameof(FullVoterDto.PrivateKey));
+        var signature = await GetCookie(nameof(FullVoterDto.Signature));
+
+        if (string.IsNullOrWhiteSpace(address)
+            || string.IsNullOrWhiteSpace(publicKey)
+            || string.IsNullOrWhiteSpace(privateKey)
+            || string.IsNullOrWhiteSpace(signature))
+            return null;
+
+        return new FullVoterDto(address, publicKey, privateKey, signature);
+    }
+
+    public async ValueTask SetVoter(FullVoterDto voter)
+    {
+        await SetCookie(nameof(FullVoterDto.Address), voter.Address, 365);
+        await SetCookie(nameof(FullVoterDto.PublicKey), voter.PublicKey, 365);
+        await SetCookie(nameof(FullVoterDto.PrivateKey), voter.PrivateKey, 365);
+        await SetCookie(nameof(FullVoterDto.Signature), voter.Signature, 365);
     }
 
     public async ValueTask DisposeAsync()

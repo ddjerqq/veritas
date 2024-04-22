@@ -31,7 +31,10 @@
             Cast Vote
         </button>
 
-        @CastVote
+        @if (CastVote is not null)
+        {
+            @CastVote
+        }
     </div>
 </div>
 
@@ -40,7 +43,7 @@
 {
     private FullVoterDto? FullVoterDto { get; set; }
     private Dictionary<string, string>? Claims { get; set; } = [];
-    private VoteDto? CastVote { get; set; } = default!;
+    private VoteDto? CastVote { get; set; }
     private Dictionary<Party, int>? StatsCounts { get; set; } = [];
     private Dictionary<Party, Dictionary<DateOnly, int>>? DailyStatsCounts { get; set; } = [];
     private VoterDto? VoterDto { get; set; }

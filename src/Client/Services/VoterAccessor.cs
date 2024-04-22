@@ -8,31 +8,16 @@ public class VoterAccessor(HttpClient http, CookieUtil cookies)
 {
     public async Task<FullVoterDto> GetVoterAsync()
     {
-        var address = await cookies.GetCookie(nameof(FullVoterDto.Address));
-        var publicKey = await cookies.GetCookie(nameof(FullVoterDto.PublicKey));
-        var privateKey = await cookies.GetCookie(nameof(FullVoterDto.PrivateKey));
-        var signature = await cookies.GetCookie(nameof(FullVoterDto.Signature));
+        var voter = await cookies.GetVoter();
 
-        FullVoterDto voter;
-
-        if (string.IsNullOrWhiteSpace(address)
-            || string.IsNullOrWhiteSpace(publicKey)
-            || string.IsNullOrWhiteSpace(privateKey)
-            || string.IsNullOrWhiteSpace(signature))
+        if (voter is null)
         {
             voter = (await http.GetFromJsonAsync<FullVoterDto>("api/v1/new_identity", Json.SerializerOptions))!;
 
             if (voter is null)
                 throw new InvalidOperationException("voter was null");
 
-            await cookies.SetCookie(nameof(FullVoterDto.Address), voter.Address, 365);
-            await cookies.SetCookie(nameof(FullVoterDto.PublicKey), voter.PublicKey, 365);
-            await cookies.SetCookie(nameof(FullVoterDto.PrivateKey), voter.PrivateKey, 365);
-            await cookies.SetCookie(nameof(FullVoterDto.Signature), voter.Signature, 365);
-        }
-        else
-        {
-            voter = new FullVoterDto(address, publicKey, privateKey, signature);
+            await cookies.SetVoter(voter);
         }
 
         return voter;

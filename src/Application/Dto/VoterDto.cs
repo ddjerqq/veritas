@@ -1,5 +1,4 @@
 ﻿using Domain.Common;
-using Domain.Entities;
 using Domain.ValueObjects;
 
 namespace Application.Dto;
@@ -9,7 +8,7 @@ public sealed record VoterDto(string Address, string PublicKey, IEnumerable<Vote
     public string ShortAddress => Address[..8];
 
     public Party? FavoriteParty => Votes
-        .GroupBy(vote => vote.Party.Id)
+        .GroupBy(vote => vote.PartyId)
         .Select(group => new
         {
             Party = group.Key,
