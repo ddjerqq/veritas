@@ -1,0 +1,50 @@
+﻿@page "/test"
+@using Domain.ValueObjects
+@inject ApiService Api
+
+<div class="flex flex-col gap-3">
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { FullVoterDto = await Api.NewIdentity(); })">
+            fetch full FullVoterDto
+        </button>
+
+        @FullVoterDto
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { Claims = await Api.GetClaims(); })">
+            fetch full Claims
+        </button>
+
+        <ul>
+            @foreach (var claim in Claims)
+            {
+                <li>
+                    @claim.Key @claim.Value
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { CastVote = await Api.CastVote(5); })">
+            Cast Vote
+        </button>
+
+        @CastVote
+    </div>
+</div>
+
+
+@code
+{
+    private FullVoterDto? FullVoterDto { get; set; }
+    private Dictionary<string, string>? Claims { get; set; } = [];
+    private VoteDto? CastVote { get; set; } = default!;
+    private Dictionary<Party, int>? StatsCounts { get; set; } = [];
+    private Dictionary<Party, Dictionary<DateOnly, int>>? DailyStatsCounts { get; set; } = [];
+    private VoterDto? VoterDto { get; set; }
+    private VoteDto? VoteDto { get; set; }
+    private BlockDto? BlockDtoByIndex { get; set; }
+    private BlockDto? BlockDtoByHash { get; set; }
+}

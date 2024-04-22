@@ -7,7 +7,7 @@ namespace Domain.Entities;
 
 public sealed class Vote
 {
-    public const int Difficulty = 6;
+    public const int Difficulty = 4;
 
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local for EF Core
     public required string Hash { get; set; }

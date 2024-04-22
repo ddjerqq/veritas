@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Diagnostics;
+using System.Net.Http.Json;
 using Application.Dto;
 using Client.Common;
 using Domain.ValueObjects;
@@ -13,10 +14,15 @@ public class ApiService(HttpClient http, VoteService voteService)
     public async Task<Dictionary<string, string>?> GetClaims() =>
         await http.GetFromJsonAsync<Dictionary<string, string>>("api/v1/claims");
 
-    public async Task CastVote(int partyId)
+    public async Task<VoteDto?> CastVote(int partyId)
     {
+        Console.WriteLine("start mining vote");
+        var stopwatch = Stopwatch.StartNew();
         var castVoteCommand = await voteService.CreateVoteCommand(partyId);
-        await http.PostAsJsonAsync("api/v1/cast_vote", castVoteCommand, Json.SerializerOptions);
+        Console.WriteLine($"mining took: {stopwatch.Elapsed:c}");
+
+        var resp = await http.PostAsJsonAsync("api/v1/cast_vote", castVoteCommand, Json.SerializerOptions);
+        return await resp.Content.ReadFromJsonAsync<VoteDto>();
     }
 
     public async Task<Dictionary<Party, int>?> GetPartyVoteCounts() =>

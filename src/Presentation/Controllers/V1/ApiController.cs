@@ -39,7 +39,7 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
         Ok(User.Claims.ToDictionary(c => c.Type, c => c.Value));
 
     [HttpPost("cast_vote")]
-    public async Task<IActionResult> CastVote(CastVoteCommand command, CancellationToken ct)
+    public async Task<ActionResult<VoteDto>> CastVote(CastVoteCommand command, CancellationToken ct)
     {
         if (processedVotesCache.Contains(command.Hash))
         {
@@ -49,7 +49,10 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
 
         processedVotesCache.Add(command.Hash);
         await mediator.Send(command, ct);
-        return Created();
+
+        var vote = command.GetVote();
+        var dto = new VoteDto(vote.Hash, vote.Nonce, vote.Timestamp, vote.PartyId, vote.VoterAddress, null);
+        return Created($"api/votes/{vote.Hash}", dto);
     }
 
     [HttpGet("stats/counts")]
