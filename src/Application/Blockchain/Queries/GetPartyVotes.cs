@@ -1,17 +1,16 @@
 ﻿using Application.Common.Abstractions;
 using Domain.Entities;
-using Domain.ValueObjects;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Blockchain.Queries;
 
-public record GetPartyVotes : IRequest<Dictionary<Party, int>>;
+public record GetPartyVotes : IRequest<Dictionary<int, int>>;
 
 // ReSharper disable once UnusedType.Global
-internal sealed class GetPartyVotesQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetPartyVotes, Dictionary<Party, int>>
+internal sealed class GetPartyVotesQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetPartyVotes, Dictionary<int, int>>
 {
-    public async Task<Dictionary<Party, int>> Handle(GetPartyVotes request, CancellationToken ct)
+    public async Task<Dictionary<int, int>> Handle(GetPartyVotes request, CancellationToken ct)
     {
         var parties = await dbContext.Set<Vote>()
             .AsNoTracking()
@@ -23,6 +22,6 @@ internal sealed class GetPartyVotesQueryHandler(IAppDbContext dbContext) : IRequ
             })
             .ToListAsync(ct);
 
-        return parties.ToDictionary(kv => (Party)kv.Party, kv => kv.Count);
+        return parties.ToDictionary(kv => kv.Party, kv => kv.Count);
     }
 }

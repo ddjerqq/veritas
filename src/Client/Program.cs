@@ -3,6 +3,7 @@ using Application.Services;
 using Blazored.LocalStorage;
 using Blazored.Modal;
 using Blazored.Toast;
+using Blazored.Toast.Services;
 using Client;
 using Client.Common;
 using Client.Services;
@@ -27,11 +28,17 @@ builder.Services.AddScoped<VoterAccessor>();
 builder.Services.AddScoped<VoteService>();
 
 builder.Services.AddScoped<ApiService>();
-builder.Services.AddScoped<AuthHttpClientHandler>();
 builder.Services.AddScoped(sp =>
 {
-    var authHandler = sp.GetRequiredService<AuthHttpClientHandler>();
-    return new HttpClient(authHandler) { BaseAddress = new Uri("https://localhost/") };
+    var baseHandler = new HttpClientHandler();
+    var authHandler = new AuthHttpClientHandler(baseHandler, sp.GetRequiredService<CookieUtil>());
+    var errorLoggerHandler = new ErrorLoggerHttpClientHandler(authHandler, sp.GetRequiredService<IToastService>());
+
+#if DEBUG
+    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://localhost/") };
+#else
+    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://mieci.ddjerqq.xyz/") };
+#endif
 });
 builder.Services.AddSingleton(builder.HostEnvironment);
 builder.Services.AddScoped<AuthenticationStateProvider, PublicKeyAuthStateProvider>();

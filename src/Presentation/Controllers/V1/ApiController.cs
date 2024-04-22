@@ -3,7 +3,6 @@ using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
 using Application.Dto;
 using Domain.Entities;
-using Domain.ValueObjects;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +56,7 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
     }
 
     [HttpGet("stats/counts")]
-    public async Task<ActionResult<Dictionary<Party, int>>> GetPartyVoteCounts(CancellationToken ct)
+    public async Task<ActionResult<Dictionary<int, int>>> GetPartyVoteCounts(CancellationToken ct)
     {
         var query = new GetPartyVotes();
         var result = await mediator.Send(query, ct);
@@ -65,7 +64,7 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
     }
 
     [HttpGet("stats/daily")]
-    public async Task<ActionResult<Dictionary<Party, Dictionary<DateOnly, int>>>> GetPartyDailyVoteCounts(CancellationToken ct)
+    public async Task<ActionResult<Dictionary<int, Dictionary<DateOnly, int>>>> GetPartyDailyVoteCounts(CancellationToken ct)
     {
         var query = new GetDailyPartyVotes();
         var result = await mediator.Send(query, ct);

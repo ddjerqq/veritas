@@ -15,10 +15,6 @@ public class VoteService(VoterAccessor voterAccessor, IDateTimeProvider dateTime
         var payload = VoteExt.GetHashPayload(voter.Address, partyId, ts, 0);
         var foundNonce = Miner.Mine(payload, Vote.Difficulty);
         var hash = SHA256.HashData(payload).ToHexString();
-
-        var command = new CastVoteCommand(hash, voter.PublicKey, voter.PrivateKey, partyId, ts, foundNonce);
-        Console.WriteLine($"created command: {command}");
-
-        return command;
+        return new CastVoteCommand(hash, voter.PublicKey, voter.PrivateKey, partyId, ts, foundNonce);
     }
 }

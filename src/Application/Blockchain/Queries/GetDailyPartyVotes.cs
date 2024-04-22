@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Blockchain.Queries;
 
-public record GetDailyPartyVotes(int Days = 15) : IRequest<Dictionary<Party, Dictionary<DateOnly, int>>>;
+public record GetDailyPartyVotes(int Days = 15) : IRequest<Dictionary<int, Dictionary<DateOnly, int>>>;
 
 // ReSharper disable once UnusedType.Global
 internal sealed class GetDailyPartyVotesQueryHandler(IAppDbContext dbContext, IDateTimeProvider dateTimeProvider)
-    : IRequestHandler<GetDailyPartyVotes, Dictionary<Party, Dictionary<DateOnly, int>>>
+    : IRequestHandler<GetDailyPartyVotes, Dictionary<int, Dictionary<DateOnly, int>>>
 {
-    public async Task<Dictionary<Party, Dictionary<DateOnly, int>>> Handle(GetDailyPartyVotes request, CancellationToken ct)
+    public async Task<Dictionary<int, Dictionary<DateOnly, int>>> Handle(GetDailyPartyVotes request, CancellationToken ct)
     {
         var now = dateTimeProvider.UtcNow;
         var after = now.Date.AddDays(-request.Days);
@@ -34,7 +34,7 @@ internal sealed class GetDailyPartyVotesQueryHandler(IAppDbContext dbContext, ID
                         subGroup => DateOnly.FromDateTime(now.Date.AddDays(-subGroup.Key)),
                         subGroup => subGroup.Count()),
             })
-            .ToDictionary(kv => kv.Party, kv => kv.VotesThroughoutDays);
+            .ToDictionary(kv => (int)kv.Party, kv => kv.VotesThroughoutDays);
 
         return dailyVoteCounts;
     }

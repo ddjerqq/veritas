@@ -2,10 +2,12 @@
 
 namespace Client.Services;
 
-public class AuthHttpClientHandler(CookieUtil cookies) : HttpClientHandler
+public class AuthHttpClientHandler(HttpMessageHandler innerHandler, CookieUtil cookies) : DelegatingHandler(innerHandler)
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
+        Console.WriteLine("auth client start");
+
         var voter = await cookies.GetVoter();
 
         if (voter is not null)
@@ -16,6 +18,9 @@ public class AuthHttpClientHandler(CookieUtil cookies) : HttpClientHandler
             request.Headers.Add(nameof(FullVoterDto.Signature), voter.Signature);
         }
 
-        return await base.SendAsync(request, cancellationToken);
+        var resp = await base.SendAsync(request, cancellationToken);
+        Console.WriteLine("auth client end");
+
+        return resp;
     }
 }

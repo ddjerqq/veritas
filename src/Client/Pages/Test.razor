@@ -1,8 +1,7 @@
 ﻿@page "/test"
-@using Domain.ValueObjects
 @inject ApiService Api
 
-<div class="flex flex-col gap-3">
+<div class="flex flex-col gap-3 overflow-y-scroll scrollbar-none w-full h-full font-archyedt">
     <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
         <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { FullVoterDto = await Api.NewIdentity(); })">
             fetch full FullVoterDto
@@ -17,10 +16,10 @@
         </button>
 
         <ul>
-            @foreach (var claim in Claims)
+            @foreach (var kv in Claims)
             {
                 <li>
-                    @claim.Key @claim.Value
+                    @kv.Key @kv.Value
                 </li>
             }
         </ul>
@@ -36,18 +35,113 @@
             @CastVote
         }
     </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { StatsCounts = await Api.GetPartyVoteCounts(); })">
+            Fetch stats count
+        </button>
+
+        <ul>
+            @foreach (var kv in StatsCounts)
+            {
+                <li>
+                    @kv.Key @kv.Value
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { DailyStatsCounts = await Api.GetPartyDailyVoteCounts(); })">
+            Fetch daily stats count
+        </button>
+
+        <ul>
+            @foreach (var kv in DailyStatsCounts)
+            {
+                <li>
+                    @kv.Key
+
+                    @foreach (var kva in kv.Value)
+                    {
+                        @kva.Key
+                        @kva.Value
+                    }
+                </li>
+            }
+        </ul>
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { VoterDto = await Api.GetVoterByAddress("0x567e123eb3c9214b9c640da5322e1673b8d8695cf3"); })">
+            Fetch voter
+        </button>
+
+        @if (VoterDto is not null)
+        {
+            @VoterDto
+
+            @foreach (var vote in VoterDto.Votes)
+            {
+                @vote
+            }
+        }
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { VoteDto = await Api.GetVoteByHash("00004684132fdbc6111c07247fda9432711f517dea957b8b84e1ec008bd92afd"); })">
+            Fetch vote
+        </button>
+
+        @if (VoteDto is not null)
+        {
+            @VoteDto
+        }
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { BlockDtoByIndex = await Api.GetBlockByIndex(0); })">
+            Fetch block by index
+        </button>
+
+        @if (BlockDtoByIndex is not null)
+        {
+            @BlockDtoByIndex
+        }
+    </div>
+
+    <div class="flex flex-col text-white break-all text-start font-mono max-w-xl gap-3 mt-3">
+        <button class="p-4 rounded-md bg-gray-700" @onclick="@(async () => { BlockDtoByHash = await Api.GetBlockByHash("000000983e2e5dae2c718cbd3d495695f5dc8c489375bcc3ce65806d9536ea59"); })">
+            Fetch block by hash
+        </button>
+
+        @if (BlockDtoByHash is not null)
+        {
+            @BlockDtoByHash
+        }
+    </div>
 </div>
 
 
 @code
 {
     private FullVoterDto? FullVoterDto { get; set; }
+
     private Dictionary<string, string>? Claims { get; set; } = [];
+
     private VoteDto? CastVote { get; set; }
-    private Dictionary<Party, int>? StatsCounts { get; set; } = [];
-    private Dictionary<Party, Dictionary<DateOnly, int>>? DailyStatsCounts { get; set; } = [];
+
+    private Dictionary<int, int>? StatsCounts { get; set; } = [];
+
+    private Dictionary<int, Dictionary<DateOnly, int>>? DailyStatsCounts { get; set; } = [];
+
+    // get voter by address
     private VoterDto? VoterDto { get; set; }
+
+    // get vote by hash
     private VoteDto? VoteDto { get; set; }
+
     private BlockDto? BlockDtoByIndex { get; set; }
+
     private BlockDto? BlockDtoByHash { get; set; }
 }
