@@ -1,69 +1,70 @@
 ﻿@page "/voters/{VoterAddress}"
+@inject ApiService Api
 
-<Card Class="h-full flex flex-col md:flex-row items-start p-5 gap-3">
-    <div class="w-full md:w-auto flex flex-col gap-3">
-        <div class="flex flex-row w-full gap-3 text-nowrap">
-            <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
-                 style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.ShortAddress)deg,#6b6dc8,#6b81c8,#9194d1);">
-                <Heroicon Name="@HeroiconName.Wallet" class="block w-8 h-8"/>
-            </div>
+<Loader Loaded="Loaded" Model="Model">
+    <Card Class="flex flex-col md:flex-row items-start p-5 gap-3">
+        <div class="w-full md:w-auto flex flex-col gap-3">
+            <div class="flex flex-col w-full">
+                <div class="flex flex-row w-full gap-3 text-nowrap">
+                    <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
+                         style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.ShortAddress)deg,#cc6bc0,#91a0d1);">
+                        <Heroicon Name="@HeroiconName.Wallet" class="block w-8 h-8"/>
+                    </div>
 
-            <div class="flex flex-col items-start justify-center h-full text-lg max-w-sm">
-                <span class="text-white">ამომრჩეველი</span>
+                    <div class="items-start justify-center h-full text-lg max-w-sm">
+                        <h2 class="text-6xl text-white">ამომრჩეველი</h2>
+                    </div>
+                </div>
 
-                <div class="flex flex-col leading-4 font-mono text-start text-gray-400">
-                    <span>@Model.Address[..22]-</span>
-                    <span>@Model.Address[22..]</span>
+                <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+                    @Model.Address
                 </div>
             </div>
 
+            <hr class="border-s border-gray-400 w-full"/>
+
+            <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md">
+                <span>
+                    ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count()</b> ჯერ.<br/>
+                </span>
+
+                @if (Model.FavoriteParty is { } favoriteParty)
+                {
+                    <span>
+                        მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/>
+                    </span>
+                }
+                else
+                {
+                    <span>
+                        მას არ ჰყავს ფავორიტი პარტია.<br/>
+                    </span>
+                }
+
+                @if (Model.LastVoteTime is { } lastVoteTime)
+                {
+                    <span class="[&>b]:text-white">
+                        ბოლოს ხმა მიცემული აქვს:<br/>
+                        <b>@lastVoteTime.ToString("d")</b>-ში
+                        <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე,<br/>
+                        <TimeTracker For="@lastVoteTime" class="text-white"/>-ის წინ
+                    </span>
+                }
+            </section>
+
+            <hr class="border-s border-gray-400 w-full"/>
         </div>
 
-        <hr class="border-s border-gray-400 w-full"/>
+        @if (Model.Votes.Count > 0)
+        {
+            <vr class="hidden md:block border-s border-gray-500 h-full"/>
 
-        <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md">
-            <span>
-                ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count()</b> ჯერ.<br/>
-            </span>
-
-            @if (Model.FavoriteParty is { } favoriteParty)
-            {
-                <span>
-                    მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/>
-                </span>
-            }
-            else
-            {
-                <span>
-                    მას არ ჰყავს ფავორიტი პარტია.<br/>
-                </span>
-            }
-
-            @if (Model.LastVoteTime is { } lastVoteTime)
-            {
-                <span class="[&>b]:text-white">
-                    ბოლოს ხმა მიცემული აქვს:<br/>
-                    <b>@lastVoteTime.ToString("d")</b>-ში
-                    <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე,<br/>
-                    <TimeTracker For="@lastVoteTime" class="text-white"/>-ის წინ
-                </span>
-            }
-        </section>
-
-        <hr class="border-s border-gray-400 w-full"/>
-    </div>
-
-
-    <vr class="hidden md:block border-s border-gray-500 h-full"/>
-
-    <div class="h-full overflow-y-scroll scrollbar-none">
-        <h2 class="text-2xl text-white text-start" @onclick="@(() => VoteList.AddVote(VoteDto.RandomVoteDto()))">
-            ხმები
-        </h2>
-
-        <VoteList @ref="VoteList" Votes="@Model.Votes.ToList()" Max="100"/>
-    </div>
-</Card>
+            <div class="h-full overflow-y-scroll scrollbar-none">
+                <VoteList @ref="VoteList" Votes="@Model.Votes" Max="100"/>
+            </div>
+        }
+    </Card>
+</Loader>
 
 @code
 {
@@ -72,5 +73,13 @@
 
     private VoteList VoteList { get; set; } = default!;
 
-    private VoterDto Model { get; } = VoterDto.RandomVoterDto(Random.Shared.Next(0, 50));
+    private VoterDto? Model { get; set; }
+
+    private bool Loaded { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await Api.GetVoterByAddress(VoterAddress, CancellationToken);
+        Loaded = true;
+    }
 }

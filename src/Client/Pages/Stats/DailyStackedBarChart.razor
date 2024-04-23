@@ -6,6 +6,9 @@
 
 @code
 {
+    [Parameter, EditorRequired]
+    public Dictionary<int, Dictionary<DateOnly, int>> DailyVotes { get; set; } = [];
+
     [Parameter]
     public int Days { get; set; } = 5;
 

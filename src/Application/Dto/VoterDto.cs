@@ -1,9 +1,8 @@
-﻿using Domain.Common;
-using Domain.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Application.Dto;
 
-public sealed record VoterDto(string Address, string PublicKey, IEnumerable<VoteDto> Votes)
+public sealed record VoterDto(string Address, string PublicKey, List<VoteDto> Votes)
 {
     public string ShortAddress => Address[..8];
 
@@ -18,15 +17,4 @@ public sealed record VoterDto(string Address, string PublicKey, IEnumerable<Vote
         .Party;
 
     public DateTime? LastVoteTime => Votes.MaxBy(vote => vote.Timestamp)?.Timestamp;
-
-    public static VoterDto RandomVoterDto(int voteCount)
-    {
-        var addr = "0x" + StringExt.RandomHexString(42);
-
-        var votes = Enumerable.Range(0, voteCount)
-            .Select(_ => VoteDto.RandomVoteDto())
-            .ToList();
-
-        return new VoterDto(addr, StringExt.RandomHexString(128), votes);
-    }
 }

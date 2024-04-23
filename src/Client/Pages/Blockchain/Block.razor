@@ -1,93 +1,100 @@
 ﻿@page "/blocks/{Hash}"
 @page "/blocks/{Index:long}"
+@inject ApiService Api
 
-<Card Class="h-full flex flex-col md:flex-row items-start p-5 gap-3">
-    <div class="w-full md:w-auto flex flex-col gap-3">
-        <div class="flex flex-col gap-1">
-            <div class="flex flex-row w-full gap-3 text-nowrap">
-                <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
-                     style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
-                    <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
+<Loader Loaded="Loaded" Model="Model">
+    <Card Class="flex flex-col md:flex-row items-start p-5 gap-3">
+        <div class="w-full md:w-auto flex flex-col gap-3">
+            <div class="flex flex-col gap-1">
+                <div class="flex flex-row w-full gap-3 text-nowrap">
+                    <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
+                         style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
+                        <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
+                    </div>
+
+                    <div class="items-start h-full">
+                        <h2 class="text-6xl text-white">ბლოკი</h2>
+                    </div>
                 </div>
 
-                <div class="items-start h-full">
-                    <h2 class="text-6xl text-white">ბლოკი</h2>
+                <div class="flex text-xl flex-row max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+                    <Heroicon Name="@HeroiconName.Hashtag" class="size-4"/>
+                    @Model.Index.ToString("N0")
+                </div>
+
+                <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-gray-400">
+                    @Model.Hash
                 </div>
             </div>
 
-            <div class="flex text-xl flex-row max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
-                <Heroicon Name="@HeroiconName.Hashtag" class="size-4"/>
-                @Model.Index.ToString("N0")
-            </div>
+            <hr class="border-s border-gray-500 w-full"/>
 
-            <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-gray-400">
-                @Model.Hash
-            </div>
+            <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md [&_b]:text-white">
+                <span>
+                    ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
+                </span>
+
+                @if (Model.TopParty is { } topParty)
+                {
+                    <span>
+                        პირველ ადგილას არის:<br/>
+                        <span class="@topParty.GetTextClass()">
+                            @topParty.Name.
+                        </span>
+                    </span>
+                }
+            </section>
+
+            <hr class="border-s border-gray-500 w-full"/>
+
+            <section class="flex w-full flex-shrink-0 leading-6 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
+                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                    <property>ნონსი</property>
+                    <value class="font-mono">@Model.Nonce.ToString("N0")</value>
+                </div>
+
+                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                    <property>ხმების რაოდენობა</property>
+                    <value class="font-mono">@Model.Votes.Count.ToString("N0")</value>
+                </div>
+
+                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                    <property>ტევადობა</property>
+                    <value class="font-mono">@(((float)Model.Votes.Count / 128 * 100).ToString("F2"))%</value>
+                </div>
+
+                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                    <property>მაინინგ დრო</property>
+                    <TimeTracker For="@Model.Mined" class="text-white"/>
+                </div>
+
+                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                    <property>ფესვი</property>
+                    <value class="font-mono">@Model.ShortMerkleRoot</value>
+                </div>
+
+                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                    <property>წინა ბლოკის ჰეში</property>
+                    <value class="font-mono">@Model.ShortPreviousHash</value>
+                </div>
+            </section>
+
+            <hr class="block md:hidden border-s border-gray-500 w-full"/>
         </div>
 
-        <hr class="border-s border-gray-500 w-full"/>
 
-        <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md [&_b]:text-white">
-            <span>
-                ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
-            </span>
+        @if (Model.Votes.Count > 0)
+        {
+            <vr class="hidden md:block border-s border-gray-500 h-full"/>
 
-            @if (Model.TopParty is { } topParty)
-            {
-                <span>
-                    პირველ ადგილას არის:<br/>
-                    <span class="@topParty.GetTextClass()">
-                        @topParty.Name.
-                    </span>
-                </span>
-            }
-        </section>
+            <div class="h-full overflow-y-scroll scrollbar-none">
+                <h2 class="text-2xl text-white text-start">ხმები</h2>
 
-        <hr class="border-s border-gray-500 w-full"/>
-
-        <section class="flex w-full flex-shrink-0 leading-6 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
-            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                <property>ნონსი</property>
-                <value class="font-mono">@Model.Nonce.ToString("N0")</value>
+                <VoteList Votes="@Model.Votes" Max="100"/>
             </div>
-
-            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                <property>ხმების რაოდენობა</property>
-                <value class="font-mono">@Model.Votes.Count.ToString("N0")</value>
-            </div>
-
-            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                <property>ტევადობა</property>
-                <value class="font-mono">@(((float)Model.Votes.Count / 128 * 100).ToString("F2"))%</value>
-            </div>
-
-            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                <property>მაინინგ დრო</property>
-                <TimeTracker For="@Model.Mined" class="text-white"/>
-            </div>
-
-            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                <property>ფესვი</property>
-                <value class="font-mono">@Model.ShortMerkleRoot</value>
-            </div>
-
-            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                <property>წინა ბლოკის ჰეში</property>
-                <value class="font-mono">@Model.ShortPreviousHash</value>
-            </div>
-        </section>
-
-        <hr class="block md:hidden border-s border-gray-500 w-full"/>
-    </div>
-
-    <vr class="hidden md:block border-s border-gray-500 h-full"/>
-
-    <div class="h-full overflow-y-scroll scrollbar-none">
-        <h2 class="text-2xl text-white text-start">ხმები</h2>
-
-        <VoteList Votes="@Model.Votes" Max="100"/>
-    </div>
-</Card>
+        }
+    </Card>
+</Loader>
 
 @code
 {
@@ -97,5 +104,22 @@
     [Parameter]
     public long? Index { get; set; }
 
-    private BlockDto Model { get; } = BlockDto.RandomBlockDto();
+    private bool Loaded { get; set; }
+
+    private BlockDto? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if (!string.IsNullOrWhiteSpace(Hash))
+        {
+            Model = await Api.GetBlockByHash(Hash, CancellationToken);
+        }
+        else
+        {
+            var idx = Index ?? 0;
+            Model = await Api.GetBlockByIndex(idx, CancellationToken);
+        }
+
+        Loaded = true;
+    }
 }

@@ -36,6 +36,30 @@ internal sealed class GetDailyPartyVotesQueryHandler(IAppDbContext dbContext, ID
             })
             .ToDictionary(kv => (int)kv.Party, kv => kv.VotesThroughoutDays);
 
-        return dailyVoteCounts;
+        Dictionary<int, Dictionary<DateOnly, int>> output = Party.Allowed
+            .Where(id => id != 0)
+            .Select(p =>
+            {
+                var days = Enumerable.Range(0, request.Days)
+                    .Reverse()
+                    .Select(i => now.Date.AddDays(-i))
+                    .ToDictionary(DateOnly.FromDateTime, _ => 0);
+
+                return (p, days);
+            }).ToDictionary();
+
+        // there can be instances where a party has some votes on a day, but others have none, in these cases we want to normalize the days to 0
+        foreach (var (party, days) in dailyVoteCounts)
+        {
+            if (!output.TryGetValue(party, out var outputDay))
+                continue;
+
+            foreach (var (day, votes) in days)
+            {
+                outputDay[day] = votes;
+            }
+        }
+
+        return output;
     }
 }

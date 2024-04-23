@@ -35,7 +35,7 @@ builder.Services.AddScoped(sp =>
     var errorLoggerHandler = new ErrorLoggerHttpClientHandler(authHandler, sp.GetRequiredService<IToastService>());
 
 #if DEBUG
-    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://localhost/") };
+    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://192.168.0.131/") };
 #else
     return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://mieci.ddjerqq.xyz/") };
 #endif

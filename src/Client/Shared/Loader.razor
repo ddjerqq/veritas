@@ -1,0 +1,28 @@
+﻿@typeparam T
+
+@switch (Loaded)
+{
+    case true when Model is null:
+        <NotFound/>
+        break;
+    case true when Model is not null:
+        @ChildContent
+        break;
+    default:
+        <span class="text-white">
+            Loading...
+        </span>
+        break;
+}
+
+@code
+{
+    [Parameter, EditorRequired]
+    public T Model { get; set; } = default!;
+
+    [Parameter, EditorRequired]
+    public bool Loaded { get; set; }
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+}

@@ -1,5 +1,4 @@
-﻿using Domain.Common;
-using Domain.ValueObjects;
+﻿using Domain.ValueObjects;
 
 namespace Application.Dto;
 
@@ -18,7 +17,7 @@ public record BlockDto(
 
     public string ShortMerkleRoot => $"{MerkleRoot[..4]}-{MerkleRoot[^4..]}";
 
-    public int SizeMegaBytes => Votes.Count * 208 / 1024;
+    public int SizeBytes => Votes.Count * 208;
 
     public Party? TopParty => Votes
         .GroupBy(vote => vote.PartyId)
@@ -29,18 +28,4 @@ public record BlockDto(
         })
         .MaxBy(partyCounts => partyCounts.Count)?
         .Party;
-
-    public static BlockDto RandomBlockDto(long? index = null, int? votes = null)
-    {
-        return new BlockDto(
-            index ?? Random.Shared.Next(0, 10_000_000),
-            Random.Shared.NextInt64(0, 10_000_000),
-            StringExt.RandomHexString(64),
-            StringExt.RandomHexString(64),
-            StringExt.RandomHexString(64),
-            DateTime.Now,
-            Enumerable.Range(0, Random.Shared.Next(1, votes ?? 100))
-                .Select(_ => VoteDto.RandomVoteDto())
-                .ToList());
-    }
 }

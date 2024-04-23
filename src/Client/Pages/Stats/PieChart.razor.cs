@@ -2,6 +2,7 @@
 using ChartJs.Blazor.Util;
 using Client.Common;
 using Domain.ValueObjects;
+using Microsoft.AspNetCore.Components;
 
 namespace Client.Pages.Stats;
 
@@ -9,17 +10,11 @@ public partial class PieChart
 {
     private PieConfig? _config;
 
-    protected override void OnInitialized()
-    {
-        Votes = new Dictionary<Party, int>
-        {
-            [42] = Random.Shared.Next(0, 1_000_000),
-            [5] = Random.Shared.Next(0, 1_000_000),
-            [9] = Random.Shared.Next(0, 1_000_000),
-            [36] = Random.Shared.Next(0, 1_000_000),
-        };
+    private Dictionary<int, int>? Votes { get; set; }
 
-        // for debug only
+    protected override async Task OnInitializedAsync()
+    {
+        Votes = (await Api.GetPartyVoteCounts(CancellationToken))!;
         Votes = Votes
             .OrderBy(kv => kv.Value)
             .Reverse()
@@ -37,7 +32,7 @@ public partial class PieChart
             },
         };
 
-        foreach (var party in Votes.Keys)
+        foreach (Party party in Votes.Keys)
         {
             _config.Data.Labels.Add($" {party.Name}");
         }
@@ -46,7 +41,7 @@ public partial class PieChart
         {
             BackgroundColor = Votes.Keys.Select(party =>
             {
-                var (r, g, b) = party.GetColorRgb();
+                var (r, g, b) = ((Party)party).GetColorRgb();
                 return ColorUtil.ColorHexString(r, g, b);
             }).ToArray(),
         };

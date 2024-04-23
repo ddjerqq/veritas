@@ -9,11 +9,6 @@
         <PartyCard @key="partyId" Party="@party" OnClick="@(() => VoteFor(party))"/>
     }
 
-    @foreach (var (partyId, party) in Parties)
-    {
-        <PartyCard @key="@(partyId + 1)" Party="@party"/>
-    }
-
     <div class="block md:hidden col-span-12 p-3"></div>
 </div>
 
@@ -22,19 +17,19 @@
     [CascadingParameter]
     public IModalService Modal { get; set; } = default!;
 
+    // TODO on initialized, if the cookies have last vote time in them, and it is not 12 hours behind,
+    // then we should redirect the user to /stats
+
     private void VoteFor(Party party)
     {
         var parameters = new ModalParameters()
             .Add(nameof(VoteConfirmation.Party), party);
 
-        Modal.Show<VoteConfirmation>("Confirm vote", parameters);
+        Modal.Show<VoteConfirmation>(parameters);
     }
 
-    private static readonly Dictionary<int, Party> Parties = new()
-    {
-        [5] = 5,
-        [9] = 9,
-        [36] = 36,
-        [42] = 42,
-    };
+    private static readonly Dictionary<int, Party> Parties = Party.Allowed
+        .Where(p => p != 0)
+        .Select(p => (p, (Party)p))
+        .ToDictionary();
 }

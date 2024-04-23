@@ -1,43 +1,28 @@
 ﻿@using ChartJs.Blazor
 @using Domain.ValueObjects
 @using Humanizer
+@inject ApiService Api
 
-<div class="h-full flex flex-col md:flex-row justify-center items-center gap-6 p-3 py-6">
-    <div class="h-full w-full mb-auto max-w-[300px] px-3">
-        <Chart Config="_config" Width="Radius" Height="Radius"/>
+<Loader Loaded="@(Votes is not null)" Model="Votes">
+    <div class="h-full flex flex-col md:flex-row justify-center items-center gap-6 p-3 py-6">
+        <div class="h-full w-full mb-auto max-w-[300px] px-3">
+            <Chart Config="_config" Width="Radius" Height="Radius"/>
+        </div>
+
+        <ol class="w-full md:w-auto text-xl flex-1 text-nowrap text-white max-w-sm">
+            @foreach ((Party party, int voteCount) in Votes!)
+            {
+                <li @key="@party.Id" class="flex flex-row justify-between gap-1">
+                    <span class="@party.GetTextClass() truncate">@party.Name</span>
+                    <span>@voteCount.ToMetric()</span>
+                </li>
+            }
+        </ol>
     </div>
-
-    <ol class="w-full md:w-auto text-xl flex-1 text-nowrap text-white max-w-sm">
-        @foreach (var (party, voteCount) in Votes)
-        {
-            <li @key="@party.Id" class="flex flex-row justify-between gap-1">
-                <span class="@party.GetTextClass() truncate">@party.Name</span>
-                <span>@voteCount.ToMetric()</span>
-            </li>
-        }
-
-        @foreach (var (party, voteCount) in Votes)
-        {
-            <li @key="@(party.Id + 1)" class="flex flex-row justify-between gap-1">
-                <span class="@party.GetTextClass() truncate">@party.Name</span>
-                <span>@voteCount.ToMetric()</span>
-            </li>
-        }
-
-        @foreach (var (party, voteCount) in Votes)
-        {
-            <li @key="@(party.Id + 2)" class="flex flex-row justify-between gap-1">
-                <span class="@party.GetTextClass() truncate">@party.Name</span>
-                <span>@voteCount.ToMetric()</span>
-            </li>
-        }
-    </ol>
-</div>
+</Loader>
 
 @code
 {
     [Parameter]
     public int? Radius { get; set; }
-
-    private Dictionary<Party, int> Votes { get; set; } = null!;
 }

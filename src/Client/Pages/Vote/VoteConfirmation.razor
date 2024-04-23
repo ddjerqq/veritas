@@ -1,4 +1,7 @@
 ﻿@using Domain.ValueObjects
+@inject ApiService Api
+@inject VoteService VoteService
+@inject NavigationManager Nav
 
 <div class="flex flex-col justify-center items-center p-4 max-w-full md:max-w-lg
             bg-gray-800 rounded-md font-archyedt border-2 @Party.GetBorderClass()">
@@ -34,6 +37,12 @@
 
     private async Task Vote()
     {
-        Console.WriteLine("voter for: {0}", Party.Id);
+        await InvokeAsync(async () =>
+        {
+            var command = await VoteService.CreateVoteCommand(Party.Id);
+            await Api.CastVote(command);
+            Toast.ShowSuccess($"თქვენ წარმატებით მიეცით ხმა {Party.Name}-ს");
+            Nav.NavigateTo("stats");
+        });
     }
 }

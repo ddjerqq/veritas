@@ -22,14 +22,8 @@
 {
     private List<BlockDto> Blocks { get; set; } = [];
 
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-
-        Blocks = Enumerable.Range(0, 30)
-            .Select(i => BlockDto.RandomBlockDto(i))
-            .ToList();
-    }
+    // TODO fetch blocks from within, with signalr
+    // TODO fetch blocks from API, but continue adding realtime blocks with signalr
 
     public void AddBlock(BlockDto block)
     {

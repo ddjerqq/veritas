@@ -1,4 +1,6 @@
-﻿<div class="relative flex flex-row-reverse overflow-x-hidden w-full md:flex-col justify-between gap-3">
+﻿@* // TODO do we even need this anymore? *@
+
+<div class="relative flex flex-row-reverse overflow-x-hidden w-full md:flex-col justify-between gap-3">
     <div class="block md:hidden absolute w-full border border-gray-500 top-6"></div>
 
     @foreach (var block in Blocks.Take(10))
@@ -25,7 +27,7 @@
 
                 <div>
                     <span class="font-archyedt">@(block.Votes.Count) ხმა</span>
-                    <span class="text-gray-400">@(block.SizeMegaBytes)Mb</span>
+                    <span class="text-gray-400">@(block.SizeBytes)Bytes</span>
                 </div>
             </div>
         </a>

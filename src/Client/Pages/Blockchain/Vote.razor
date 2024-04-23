@@ -1,70 +1,81 @@
 ﻿@page "/votes/{Hash}"
+@inject ApiService Api
 
-<Card Class="flex flex-col text-white p-5 gap-3">
-    <div class="flex flex-row w-full gap-3 text-nowrap">
-        <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
-             style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model.Hash)deg,#cc6bc0,#91a0d1);">
-            <Heroicon Name="@HeroiconName.Megaphone" class="block w-8 h-8"/>
+<Loader Loaded="Loaded" Model="Model">
+    <Card Class="flex flex-col text-white p-5 gap-3">
+        <div class="flex flex-row w-full gap-3 text-nowrap">
+            <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
+                 style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.Hash)deg,#cc6bc0,#91a0d1);">
+                <Heroicon Name="@HeroiconName.Megaphone" class="block w-8 h-8"/>
+            </div>
+
+            <div class="items-start justify-center h-full text-lg max-w-sm">
+                <h2 class="text-6xl text-white">ხმა</h2>
+            </div>
         </div>
 
-        <div class="items-start justify-center h-full text-lg max-w-sm">
-            <h2 class="text-6xl text-white">ხმა</h2>
-        </div>
-    </div>
-
-    <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
-        @Model.Hash
-    </div>
-
-    <hr class="border-s border-gray-400 w-full"/>
-
-    <section class="flex w-full flex-shrink-0 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
-        <div class="flex flex-row justify-between [&>property]:text-white">
-            <property>პარტია</property>
-            <value class="@Model.Party.GetTextClass()">@Model.Party.Name</value>
+        <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+            @Model.Hash
         </div>
 
-        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-            <property>ნონსი</property>
-            <value>@Model.Nonce.ToString("N0")</value>
-        </div>
+        <hr class="border-s border-gray-400 w-full"/>
 
-        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-            <property>ბროდკასტი</property>
-            <TimeTracker For="@Model.Timestamp" class="text-gray-400"/>
-        </div>
+        <section class="flex w-full flex-shrink-0 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
+            <div class="flex flex-row justify-between [&>property]:text-white">
+                <property>პარტია</property>
+                <value class="@Model.Party.GetTextClass()">@Model.Party.Name</value>
+            </div>
 
-        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-            <property>ამომრჩეველი</property>
-            <value>
-                <a href="voters/@Model.VoterAddress" class="font-mono truncate hover:underline">
-                    @Model.ShortVoterAddress
-                </a>
-            </value>
-        </div>
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ნონსი</property>
+                <value>@Model.Nonce.ToString("N0")</value>
+            </div>
 
-        <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-            @if (Model.BlockIndex is { } idx)
-            {
-                <property>ხმის ID</property>
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ბროდკასტი</property>
+                <TimeTracker For="@Model.Timestamp" class="text-gray-400"/>
+            </div>
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ამომრჩეველი</property>
                 <value>
-                    <a href="blocks/@idx" class="truncate hover:underline">
-                        @idx.ToString("N0")
+                    <a href="voters/@Model.VoterAddress" class="font-mono truncate hover:underline">
+                        @Model.ShortVoterAddress
                     </a>
                 </value>
-            }
-            else
-            {
-                <property>ხმა ჯერ არ არის დავერიფაიებული</property>
-            }
-        </div>
-    </section>
-</Card>
+            </div>
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                @if (Model.BlockIndex is { } idx)
+                {
+                    <property>ხმის ID</property>
+                    <value>
+                        <a href="blocks/@idx" class="truncate hover:underline">
+                            @idx.ToString("N0")
+                        </a>
+                    </value>
+                }
+                else
+                {
+                    <property>ხმა ჯერ არ არის დავერიფაიებული</property>
+                }
+            </div>
+        </section>
+    </Card>
+</Loader>
 
 @code
 {
     [Parameter]
     public string Hash { get; set; } = string.Empty;
 
-    private VoteDto Model { get; } = VoteDto.RandomVoteDto();
+    private bool Loaded { get; set; }
+
+    private VoteDto? Model { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Model = await Api.GetVoteByHash(Hash, CancellationToken);
+        Loaded = true;
+    }
 }
