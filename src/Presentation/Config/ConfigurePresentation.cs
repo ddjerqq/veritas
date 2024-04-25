@@ -1,9 +1,11 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Application.Common.Abstractions;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.ResponseCompression;
 using Presentation.Config;
 using Presentation.Filters;
+using Presentation.Hubs;
 
 [assembly: HostingStartup(typeof(ConfigurePresentation))]
 
@@ -52,18 +54,24 @@ public class ConfigurePresentation : IHostingStartup
             // this is bad, because we want to use ProblemDetails for status code errors.
             // .ConfigureApiBehaviorOptions(options => options.SuppressMapClientErrors = true);
 
-            // TODO SignalR
-            // services.AddSignalR(o => { o.EnableDetailedErrors = env.IsDevelopment(); });
-
             services.AddCors(options =>
             {
                 options.AddDefaultPolicy(policy =>
                 {
+                    // TODO fix the urls
                     policy.AllowAnyHeader();
-                    policy.AllowAnyOrigin();
-                    policy.AllowAnyMethod();
+                    policy.WithOrigins("https://localhost", "https://localhost:5001", "https://mieci.ddjerqq.xyz");
+                    policy.WithMethods("GET", "POST", "HEAD");
+                    policy.AllowCredentials();
                 });
             });
+
+            services.AddSignalR(options =>
+            {
+                options.EnableDetailedErrors = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+            });
+
+            services.AddScoped<IBlockchainEventBroadcast, SignalRBlockchainEventBroadcast>();
 
             services.AddResponseCaching();
             services.AddResponseCompression(options =>

@@ -16,9 +16,10 @@
       "hotReloadEnabled": true,
       "launchBrowser": false,
       "#inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
-      "applicationUrl": "http://localhost:80;https://localhost:443",
+      "applicationUrl": "http://0.0.0.0:80;https://0.0.0.0:443",
       "environmentVariables": {
         "DB__PATH": "C:/work/veritas/.data/app.db",
+        "LOG__PATH": "C:/work/veritas/.logs/veritas-.log",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"
       }
@@ -31,6 +32,7 @@
       "applicationUrl": "http://0.0.0.0:80;https://0.0.0.0:443",
       "environmentVariables": {
         "DB__PATH": "C:/work/veritas/.data/app.db",
+        "LOG__PATH": "C:/work/veritas/.logs/veritas-.log",
         "ASPNETCORE_ENVIRONMENT": "Production",
         "ASPNETCORE_HOSTINGSTARTUPASSEMBLIES": "Domain;Application;Infrastructure;Presentation"
       }

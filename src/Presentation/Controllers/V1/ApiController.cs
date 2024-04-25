@@ -104,6 +104,14 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
             : NotFound();
     }
 
+    [HttpGet("blocks/last")]
+    public async Task<ActionResult<IEnumerable<BlockDto>>> GetLastBlocks([FromQuery] int amount, CancellationToken ct)
+    {
+        var query = new GetLastNBlockDtosQuery(amount);
+        var blocks = await mediator.Send(query, ct);
+        return Ok(blocks);
+    }
+
     [HttpGet("blocks/{hash}")]
     public async Task<ActionResult<BlockDto>> GetBlockByHash(string hash, CancellationToken ct)
     {

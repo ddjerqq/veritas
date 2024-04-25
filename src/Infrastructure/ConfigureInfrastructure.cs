@@ -34,11 +34,10 @@ public class ConfigureInfrastructure : IHostingStartup
     private static TokenBucketRateLimiterOptions GlobalPolicy => new()
     {
         AutoReplenishment = true,
-        QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "0"),
+        QueueLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__QUEUE_LIMIT") ?? "30"),
         QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
-        ReplenishmentPeriod =
-            TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__REPLENISHMENT_PERIOD") ?? "1")),
-        TokenLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKEN_LIMIT") ?? "10"),
+        ReplenishmentPeriod = TimeSpan.FromSeconds(int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__REPLENISHMENT_PERIOD") ?? "1")),
+        TokenLimit = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKEN_LIMIT") ?? "20"),
         TokensPerPeriod = int.Parse(Environment.GetEnvironmentVariable("RATE_LIMIT__TOKENS_PER_PERIOD") ?? "1"),
     };
 

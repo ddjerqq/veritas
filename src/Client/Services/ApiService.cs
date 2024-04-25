@@ -34,6 +34,9 @@ public class ApiService(HttpClient http)
     public async Task<BlockDto?> GetBlockByIndex(long index, CancellationToken ct = default) =>
         await http.GetFromJsonAsync<BlockDto>($"api/v1/blocks/{index}", Json.SerializerOptions, ct);
 
+    public async Task<IEnumerable<BlockDto>?> GetLastNBlocks(int amount, CancellationToken ct = default) =>
+        await http.GetFromJsonAsync<IEnumerable<BlockDto>>($"api/v1/blocks/last?amount={amount}", Json.SerializerOptions, ct);
+
     public async Task<BlockDto?> GetBlockByHash(string hash, CancellationToken ct = default) =>
         await http.GetFromJsonAsync<BlockDto>($"api/v1/blocks/{hash}", Json.SerializerOptions, ct);
 }

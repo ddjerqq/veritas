@@ -2,6 +2,7 @@
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;
+using Presentation.Hubs;
 
 namespace Presentation;
 
@@ -81,5 +82,7 @@ public static class WebAppExtensions
 
         app.MapControllers();
         app.MapDefaultControllerRoute();
+
+        app.MapHub<BlockchainHub>("/ws");
     }
 }

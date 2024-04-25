@@ -2,7 +2,6 @@
 using ChartJs.Blazor.Util;
 using Client.Common;
 using Domain.ValueObjects;
-using Microsoft.AspNetCore.Components;
 
 namespace Client.Pages.Stats;
 
