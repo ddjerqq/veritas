@@ -35,10 +35,12 @@ builder.Services.AddScoped(sp =>
     var errorLoggerHandler = new ErrorLoggerHttpClientHandler(authHandler, sp.GetRequiredService<IToastService>());
 
 #if DEBUG
-    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://localhost/") };
+    const string baseAddress = "https://localhost/";
 #else
-    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri("https://mieci.ddjerqq.xyz/") };
+    const string baseAddress = "https://mieci.ge/";
 #endif
+
+    return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri(baseAddress) };
 });
 builder.Services.AddSingleton(builder.HostEnvironment);
 builder.Services.AddScoped<AuthenticationStateProvider, PublicKeyAuthStateProvider>();

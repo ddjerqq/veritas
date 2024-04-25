@@ -47,7 +47,7 @@
 #if DEBUG
         var url = "https://localhost/ws";
 #else
-        var url = NavigationManager.ToAbsoluteUri("/ws")
+        var url = NavigationManager.ToAbsoluteUri("/ws");
 #endif
 
         _connection = new HubConnectionBuilder()

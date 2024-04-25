@@ -22,7 +22,7 @@ public class ConfigurePresentation : IHostingStartup
         if (_configured) return;
         _configured = true;
 
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices((ctx, services) =>
         {
             services.AddAntiforgery();
 
@@ -58,9 +58,17 @@ public class ConfigurePresentation : IHostingStartup
             {
                 options.AddDefaultPolicy(policy =>
                 {
-                    // TODO fix the urls
                     policy.AllowAnyHeader();
-                    policy.WithOrigins("https://localhost", "https://localhost:5001", "https://mieci.ddjerqq.xyz");
+
+                    if (ctx.HostingEnvironment.IsDevelopment())
+                    {
+                        policy.WithOrigins("https://localhost", "https://localhost:5001");
+                    }
+                    else
+                    {
+                        policy.WithOrigins("https://mieci.ge");
+                    }
+
                     policy.WithMethods("GET", "POST", "HEAD");
                     policy.AllowCredentials();
                 });

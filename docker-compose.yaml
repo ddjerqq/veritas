@@ -22,7 +22,7 @@
     environment:
       - LOG__PATH=/var/log/veritas/veritas-.logs
       - DB__PATH=/data/app.db
-      - WEB_APP__DOMAIN=localhost
+      - WEB_APP__DOMAIN=mieci.ge
       - ASPNETCORE_ENVIRONMENT=Production
       - HTTP_PORTS=8000
       - ASPNETCORE_URLS=http://0.0.0.0:8000;
