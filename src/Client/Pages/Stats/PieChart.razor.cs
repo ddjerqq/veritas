@@ -1,4 +1,4 @@
-﻿using ChartJs.Blazor.PieChart;
+using ChartJs.Blazor.PieChart;
 using ChartJs.Blazor.Util;
 using Client.Common;
 using Domain.ValueObjects;

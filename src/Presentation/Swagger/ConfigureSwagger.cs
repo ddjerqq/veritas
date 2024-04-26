@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Microsoft.OpenApi.Models;
 using Presentation.Swagger;
 

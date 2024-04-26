@@ -1,4 +1,4 @@
-﻿using Domain.Entities;
+using Domain.Entities;
 using Presentation.Config;
 using Presentation.Filters;
 using Serilog;
@@ -36,7 +36,8 @@ public static class WebAppExtensions
 
     public static LoggerConfiguration Configure(this LoggerConfiguration config)
     {
-        var logPath = Environment.GetEnvironmentVariable("LOG__PATH") ?? ".logs/veritas-.log";
+        var logPath = Environment.GetEnvironmentVariable("LOG__PATH")
+            ?? throw new Exception("LOG__PATH is not set");
 
         return config
             .MinimumLevel.Information()

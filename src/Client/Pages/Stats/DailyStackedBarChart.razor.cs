@@ -1,4 +1,4 @@
-﻿using ChartJs.Blazor.BarChart;
+using ChartJs.Blazor.BarChart;
 using ChartJs.Blazor.Util;
 using Client.Common;
 using Domain.Common;

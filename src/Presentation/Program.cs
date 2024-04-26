@@ -7,7 +7,6 @@ using Presentation.Middleware;
 AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var solutionDir = Directory.GetParent(Directory.GetCurrentDirectory())?.Parent;
-
 DotEnv.Fluent()
     .WithTrimValues()
     .WithEnvFiles($"{solutionDir}/.env")
@@ -37,6 +36,7 @@ if (app.Environment.IsProduction())
     app.UseProductionMiddleware();
 
 app.UseAppMiddleware();
+
 app.MapEndpoints();
 
 app.Run();

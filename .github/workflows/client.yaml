@@ -1,4 +1,4 @@
-﻿name: Client
+name: Client
 
 on:
   workflow_dispatch:

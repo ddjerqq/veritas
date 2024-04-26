@@ -1,4 +1,4 @@
-﻿namespace Domain.Abstractions;
+namespace Domain.Abstractions;
 
 public interface IEntity<TId> where TId : IEquatable<TId>
 {

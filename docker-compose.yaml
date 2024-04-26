@@ -1,4 +1,4 @@
-﻿services:
+services:
   nginx:
     image: nginx:alpine
     container_name: nginx
@@ -19,21 +19,11 @@
     container_name: api
     ports:
       - "8000:8000"
-    environment:
-      - LOG__PATH=/var/log/veritas/veritas-.logs
-      - DB__PATH=/data/app.db
-      - WEB_APP__DOMAIN=mieci.ge
-      - ASPNETCORE_ENVIRONMENT=Production
-      - HTTP_PORTS=8000
-      - ASPNETCORE_URLS=http://0.0.0.0:8000;
-      - ASPNETCORE_HOSTINGSTARTUPASSEMBLIES=Domain;Application;Infrastructure;Presentation
-      - RATE_LIMIT__QUEUE_LIMIT=0
-      - RATE_LIMIT__REPLENISHMENT_PERIOD=1
-      - RATE_LIMIT__TOKEN_LIMIT=10
-      - RATE_LIMIT__TOKENS_PER_PERIOD=1
-      - OUTBOX__MESSAGES_PER_BATCH=20
+    env_file:
+      - .env
     volumes:
       - ./.logs:/var/log/veritas
       - ./.data:/data
+      - ./.aspnet/ssl/:/etc/nginx/ssl/:ro
       - ./.temp-keys:/root/.aspnet/DataProtection-Keys
     restart: unless-stopped

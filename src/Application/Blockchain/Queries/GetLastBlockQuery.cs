@@ -1,4 +1,4 @@
-﻿using Application.Common.Abstractions;
+using Application.Common.Abstractions;
 using Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

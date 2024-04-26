@@ -17,8 +17,7 @@
       "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}",
       "applicationUrl": "http://0.0.0.0:5000;https://0.0.0.0:5001",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        "WEB_APP__DOMAIN": "localhost"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
