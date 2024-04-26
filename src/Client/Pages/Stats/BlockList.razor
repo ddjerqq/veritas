@@ -45,7 +45,7 @@
     protected override async Task OnInitializedAsync()
     {
 #if DEBUG
-        var url = "https://localhost/ws";
+        var url = "http://localhost/ws";
 #else
         var url = NavigationManager.ToAbsoluteUri("/ws");
 #endif

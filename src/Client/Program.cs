@@ -1,3 +1,4 @@
+using System.Net;
 using Application.Common.Abstractions;
 using Application.Services;
 using Blazored.LocalStorage;
@@ -35,7 +36,7 @@ builder.Services.AddScoped(sp =>
     var errorLoggerHandler = new ErrorLoggerHttpClientHandler(authHandler, sp.GetRequiredService<IToastService>());
 
 #if DEBUG
-    const string baseAddress = "https://localhost/";
+    const string baseAddress = "http://localhost/";
 #else
     const string baseAddress = "https://mieci.ge/";
 #endif
