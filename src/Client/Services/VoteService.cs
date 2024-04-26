@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using Application.Blockchain.Commands;
 using Application.Common.Abstractions;

@@ -1,4 +1,4 @@
-﻿using Infrastructure.Idempotency;
+using Infrastructure.Idempotency;
 using Infrastructure.Persistence;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.EntityFrameworkCore;

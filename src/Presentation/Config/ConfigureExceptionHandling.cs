@@ -1,4 +1,4 @@
-﻿using Presentation.Config;
+using Presentation.Config;
 using Presentation.ExceptionHandling;
 
 [assembly: HostingStartup(typeof(ConfigureExceptionHandling))]

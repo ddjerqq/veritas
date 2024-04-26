@@ -1,4 +1,4 @@
-﻿using Domain.Common;
+using Domain.Common;
 using Domain.Entities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;

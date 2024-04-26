@@ -1,4 +1,4 @@
-﻿using Application;
+using Application;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;

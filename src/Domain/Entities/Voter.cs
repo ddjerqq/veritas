@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Domain.Common;
 using SJsonIgnore = System.Text.Json.Serialization.JsonIgnoreAttribute;
 using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;

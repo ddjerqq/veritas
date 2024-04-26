@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using Domain.Common;
 
 namespace Test.Domain.Common;
