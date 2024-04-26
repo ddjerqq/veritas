@@ -2,7 +2,7 @@
 @inject ApiService Api
 
 <Loader Loaded="Loaded" Model="Model">
-    <Card Class="flex flex-col text-white p-5 gap-3">
+    <ContentCard Class="flex flex-col text-white p-5 gap-3">
         <div class="flex flex-row w-full gap-3 text-nowrap">
             <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
                  style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.Hash)deg,#cc6bc0,#91a0d1);">
@@ -61,7 +61,7 @@
                 }
             </div>
         </section>
-    </Card>
+    </ContentCard>
 </Loader>
 
 @code

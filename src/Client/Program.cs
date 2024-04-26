@@ -32,7 +32,7 @@ builder.Services.AddScoped<ApiService>();
 builder.Services.AddScoped(sp =>
 {
     var baseHandler = new HttpClientHandler();
-    var authHandler = new AuthHttpClientHandler(baseHandler, sp.GetRequiredService<CookieUtil>());
+    var authHandler = new AuthenticatingDelegationHandler(baseHandler, sp.GetRequiredService<CookieUtil>());
     var errorLoggerHandler = new ErrorLoggerHttpClientHandler(authHandler, sp.GetRequiredService<IToastService>());
 
 #if DEBUG

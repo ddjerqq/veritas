@@ -9,22 +9,27 @@ export default {
   ],
   darkMode: "class",
   theme: {
+    colors: {
+      background: "#252525",
+      sidebar: "#202020",
+
+      // TODO remove these
+      "party-card-name": "#303030",
+      "party-card": "#505050",
+
+      unm: "#ce2121",
+      lelo: "#d4a700",
+      girchi: "#317e38",
+      gd: "#0b6abe",
+
+      ...colors,
+
+      gray: colors.neutral,
+    },
+    fontFamily: {
+      archyedt: "archyedt",
+    },
     extend: {
-      colors: {
-        background: "#252525",
-        sidebar: "#202020",
-        "party-card-name": "#303030",
-        "party-card": "#505050",
-
-        unm: "#ce2121",
-        lelo: "#d4a700",
-        girchi: "#317e38",
-        gd: "#0b6abe",
-
-        ...colors,
-
-        gray: colors.neutral,
-      },
       keyframes: {
         "slideDown": {
           "0%": {
@@ -54,9 +59,6 @@ export default {
       boxShadow: {
         "party-card": "0 0 20px 0",
         "party-card-hover": "0 0 50px 5px",
-      },
-      fontFamily: {
-        archyedt: "archyedt",
       },
     },
   },

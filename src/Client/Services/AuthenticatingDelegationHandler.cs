@@ -2,7 +2,7 @@
 
 namespace Client.Services;
 
-public class AuthHttpClientHandler(HttpMessageHandler innerHandler, CookieUtil cookies) : DelegatingHandler(innerHandler)
+public class AuthenticatingDelegationHandler(HttpMessageHandler innerHandler, CookieUtil cookies) : DelegatingHandler(innerHandler)
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {

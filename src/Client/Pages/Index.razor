@@ -1,22 +1,16 @@
 @page "/"
 
-<section class="flex flex-col justify-center h-full w-full max-w-screen-xl">
-    <h1 class="text-6xl font-extrabold tracking-tight leading-none text-white">
-        მიეცი.ჯი
-    </h1>
+<AppSection Class="col-span-12 md:col-start-4 md:col-span-6 text-white">
+    <h1 class="mb-2">მიეცი.ჯი</h1>
 
-    <p class="text-3xl text-gray-300 font-light mb-2">
-        მიეცი ხმა და გაიგე რას ფიქრობს სხვა.
-    </p>
-
-    <div class="flex flex-col md:flex-row gap-4 md:justify-center text-xl">
-        <a href="about" class="inline-flex justify-center items-center py-3 px-5 backdrop-blur-[3.5px] gap-2 text-center rounded-md text-gray-400 border border-gray-500 hover:bg-trueGray-700">
+    <div class="w-full flex flex-row gap-4 justify-center text-xl">
+        <Button Link Href="about" Class="text-gray-400 border-gray-400 hover:bg-gray-700">
             როგორ მუშაობს?
-        </a>
+        </Button>
 
-        <a href="vote" class="inline-flex justify-center items-center py-3 px-5 backdrop-blur-[3.5px] gap-2 text-center rounded-md text-green-600 border border-green-600 hover:bg-trueGray-700">
+        <Button Link Href="about" Class="inline-flex gap-1 justify-center items-center text-green-600 border-green-600">
             მიეცი ხმა
             <Heroicon Name="@HeroiconName.ArrowRight" class="w-6 h-6"/>
-        </a>
+        </Button>
     </div>
-</section>
+</AppSection>

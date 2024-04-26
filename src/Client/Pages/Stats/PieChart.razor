@@ -1,20 +1,43 @@
 @using ChartJs.Blazor
 @using Domain.ValueObjects
-@using Humanizer
 @inject ApiService Api
 
 <Loader Loaded="@(Votes is not null)" Model="Votes">
-    <div class="h-full flex flex-col md:flex-row justify-center items-center gap-6 p-3 py-6">
-        <div class="h-full w-full mb-auto max-w-[300px] px-3">
+    <div class="h-full flex flex-col justify-center items-center gap-6 p-5">
+        <div class="h-full mb-auto max-w-[300px] px-3">
             <Chart Config="_config" Width="Radius" Height="Radius"/>
         </div>
 
-        <ol class="w-full md:w-auto text-xl flex-1 text-nowrap text-white max-w-sm">
+        <ol class="w-full text-xl flex-1 text-nowrap text-white max-w-sm">
             @foreach ((Party party, int voteCount) in Votes!)
             {
-                <li @key="@party.Id" class="flex flex-row justify-between gap-1">
+                <li @key="@party.Id" class="flex flex-row justify-between gap-10">
                     <span class="@party.GetTextClass() truncate">@party.Name</span>
-                    <span>@voteCount.ToMetric()</span>
+                    <span>@voteCount.ToString("N0")</span>
+                </li>
+            }
+
+            @foreach ((Party party, int voteCount) in Votes!)
+            {
+                <li @key="@(party.Id + 1)" class="flex flex-row justify-between gap-10">
+                    <span class="@party.GetTextClass() truncate">@party.Name</span>
+                    <span>@voteCount.ToString("N0")</span>
+                </li>
+            }
+
+            @foreach ((Party party, int voteCount) in Votes!)
+            {
+                <li @key="@(party.Id + 2)" class="flex flex-row justify-between gap-10">
+                    <span class="@party.GetTextClass() truncate">@party.Name</span>
+                    <span>@voteCount.ToString("N0")</span>
+                </li>
+            }
+
+            @foreach ((Party party, int voteCount) in Votes!)
+            {
+                <li @key="@(party.Id + 3)" class="flex flex-row justify-between gap-10">
+                    <span class="@party.GetTextClass() truncate">@party.Name</span>
+                    <span>@voteCount.ToString("N0")</span>
                 </li>
             }
         </ol>

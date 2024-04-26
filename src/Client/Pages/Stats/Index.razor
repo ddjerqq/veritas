@@ -1,43 +1,7 @@
 ﻿@page "/stats"
-@inject ApiService Api
 
 <PageTitle>Stats</PageTitle>
 
-<div class="w-full h-full grid grid-cols-12 justify-start content-center gap-3 container">
-    <Card class="col-span-12">
-        <PieChart/>
-    </Card>
-
-    <Card Class="h-[270px] sm:h-[320px] col-span-12 overflow-hidden">
-        <Loader Loaded="@(DailyStats is not null)" Model="DailyStats">
-            <div class="block sm:hidden">
-                <DailyStackedBarChart DailyVotes="DailyStats" Height="250" Days="3"/>
-            </div>
-
-            <div class="hidden sm:block lg:hidden">
-                <DailyStackedBarChart DailyVotes="DailyStats" Height="300" Days="7"/>
-            </div>
-
-            <div class="hidden lg:block">
-                <DailyStackedBarChart DailyVotes="DailyStats" Height="300" Days="10"/>
-            </div>
-        </Loader>
-    </Card>
-
-    <Card Class="col-span-12">
-        <BlockList/>
-    </Card>
-
-    <div class="p-1"></div>
-</div>
-
-@code
-{
-    private Dictionary<int, Dictionary<DateOnly, int>>? DailyStats { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        DailyStats = await Api.GetPartyDailyVoteCounts();
-        await base.OnInitializedAsync();
-    }
-}
+<ContentCard Class="w-auto container">
+    <PieChart/>
+</ContentCard>

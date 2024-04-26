@@ -1,0 +1,20 @@
+﻿@using System.Diagnostics.CodeAnalysis
+
+<section @attributes="@AdditionalAttributes"
+         class="@Class w-full h-full flex flex-col text-center align-middle items-center justify-center">
+    @ChildContent
+</section>
+
+@code
+{
+    [Parameter]
+    [StringSyntax("css")]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = [];
+}

@@ -1,0 +1,40 @@
+﻿@if (Link)
+{
+    <a href="@Href" class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
+        @ChildContent
+    </a>
+}
+else
+{
+    <button class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
+        @ChildContent
+    </button>
+}
+
+@code
+{
+    private const string DefaultClass = "p-3 backdrop-blur-[3.5px] text-center rounded-md border";
+
+    [Parameter]
+    public bool Link { get; set; }
+
+    [Parameter]
+    public string Href { get; set; } = default!;
+    
+    [Parameter]
+    public string Class { get; set; } = string.Empty;
+
+    [Parameter, EditorRequired]
+    public RenderFragment ChildContent { get; set; } = default!;
+
+    [Parameter(CaptureUnmatchedValues = true)]
+    public Dictionary<string, object> AdditionalAttributes { get; set; } = [];
+
+    protected override void OnParametersSet()
+    {
+        if (Link && string.IsNullOrWhiteSpace(Href))
+            throw new ArgumentException("Href must be set when the button is a link", nameof(Href));
+
+        base.OnParametersSet();
+    }
+}

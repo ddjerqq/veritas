@@ -24,7 +24,6 @@ public class VoteService(VoterAccessor voterAccessor, IDateTimeProvider dateTime
         Console.WriteLine($"mining took: {stopwatch.Elapsed:c}");
 
         var command = new CastVoteCommand(hash, voter.PublicKey, voter.PrivateKey, partyId, ts, foundNonce);
-        Console.WriteLine($"sending vote: {command}");
         return command;
     }
 }
