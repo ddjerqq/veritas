@@ -1,13 +1,21 @@
-﻿@* TODO fix this https://tailwindui.com/components/marketing/feedback/404-pages *@
+﻿<div class="flex flex-col col-span-12 w-full h-full items-center justify-center gap-3 text-white">
+    <span class="text-4xl text-red-400">404</span>
 
-<div class="flex flex-col col-span-12 w-full h-full justify-center text-center gap-3 text-white">
-    404
+    <span class="text-6xl leading-8">გვერდი ვერ მოიძებნა</span>
 
-    page not found
+    <span class="text-2xl text-gray-400">
+        გვერდი ან რესურსი რომელიც მოითხოვეთ ვერ მოიძებნა,
+    </span>
 
-    Sorry, we couldn’t find the page you’re looking for.
+    <div class="flex text-2xl flex-row gap-3">
+        <Button Link Href="vote" Class="from-green-500 to-sky-500 focus:ring-green-800">
+            უკან დაბრუნება
+        </Button>
 
-    go home | contact support
+        <Button Link Href="stats">
+            სტატისტიკის ნახვა
+        </Button>
+    </div>
 
     @* <h1 class="text-4xl md:text-6xl font-extrabold"> *@
     @*     404 ვერ მოიძებნა *@

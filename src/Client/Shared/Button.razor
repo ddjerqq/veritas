@@ -1,28 +1,35 @@
 ﻿@if (Link)
 {
     <a href="@Href" class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
-        @ChildContent
+        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
+            @ChildContent
+        </span>
     </a>
 }
 else
 {
     <button class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
-        @ChildContent
+        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
+            @ChildContent
+        </span>
     </button>
 }
 
 @code
 {
-    private const string DefaultClass = "p-3 backdrop-blur-[3.5px] text-center rounded-md border";
+    private const string DefaultClass = "relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium rounded-lg group bg-gradient-to-br text-white focus:ring-4";
 
     [Parameter]
     public bool Link { get; set; }
 
     [Parameter]
     public string Href { get; set; } = default!;
-    
+
+    /// <summary>
+    ///     from-purple-500 to-pink-500 focus:ring-purple-800
+    /// </summary>
     [Parameter]
-    public string Class { get; set; } = string.Empty;
+    public string Class { get; set; } = "from-gray-500 to-gray-500 focus:ring-gray-600";
 
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
