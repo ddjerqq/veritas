@@ -19,7 +19,6 @@ internal sealed class GetLastNBlockDtosQueryHandler(IAppDbContext dbContext)
         // TODO automapper
         var blocks = await dbContext.Set<Block>()
             .AsNoTracking()
-            // TODO including these may even be verbose, but it may come in handy in a block list
             .Include(b => b.Votes)
             .ThenInclude(v => v.Voter)
             .OrderBy(x => x.Index)

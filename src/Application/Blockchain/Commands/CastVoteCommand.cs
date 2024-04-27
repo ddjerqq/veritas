@@ -93,7 +93,8 @@ internal sealed class CastVoteCommandHandler(
 {
     public async Task Handle(CastVoteCommand request, CancellationToken ct)
     {
-        // TODO move all this just to check if the user voted in the last 12 hours? to the validator
+        // TODO move all this just to check if the user voted in the last 12 hours?
+        // TODO to the validator
         // var voter = currentVoterAccessor.GetCurrentVoter();
         // var voterInfoQuery = new GetVoterByAddressQuery(voter.Address);
         // var voterInfo = await mediator.Send(voterInfoQuery, ct);

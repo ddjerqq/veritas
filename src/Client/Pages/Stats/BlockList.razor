@@ -28,8 +28,6 @@
 
     private List<BlockDto> Blocks { get; set; } = [];
 
-    // TODO fetch blocks from API, but continue adding realtime blocks with signalr
-
     public void AddBlock(BlockDto block)
     {
         Console.WriteLine($"adding block: {block.Index}");
