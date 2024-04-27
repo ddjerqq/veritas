@@ -8,7 +8,7 @@
 }
 else
 {
-    <button class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
+    <button class="@DefaultClass @Class" @onclick="@OnClick" @attributes="@AdditionalAttributes">
         <span class="@InnerClass relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
             @ChildContent
         </span>
@@ -24,6 +24,9 @@ else
 
     [Parameter]
     public string Href { get; set; } = default!;
+
+    [Parameter]
+    public EventCallback OnClick { get; set; }
 
     /// <summary>
     ///     from-purple-500 to-pink-500 focus:ring-purple-800
