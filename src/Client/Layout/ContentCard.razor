@@ -1,18 +1,14 @@
-﻿@using System.Diagnostics.CodeAnalysis
-
-<section @attributes="@AdditionalAttributes"
-         class="@Class rounded-md backdrop-blur-[3.5px] bg-gray-300 bg-opacity-5 border-2 border-dashed border-gray-500">
+﻿<section @attributes="@AdditionalAttributes"
+         class="@Class rounded-md backdrop-blur-[3.5px] bg-gray-300 bg-opacity-5 border-2 border-gray-500">
     @ChildContent
 </section>
 
 @code
 {
     [Parameter]
-    [StringSyntax("css")]
     public string Class { get; set; } = string.Empty;
 
-    [Parameter]
-    [EditorRequired]
+    [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
 
     [Parameter(CaptureUnmatchedValues = true)]

@@ -13,12 +13,12 @@
         <span class="@Party.GetTextClass()">@Party.Id</span>
     </div>
 
-    <div class="w-full flex flex-row gap-3 justify-stretch items-stretch content-stretch text-xl">
-        <Button OnClick="@Close" InnerClass="flex-1" Class="flex-1 from-gray-500 to-gray-500 focus:ring-gray-600">
+    <div class="w-full flex flex-row gap-3 text-xl">
+        <Button OnClick="@Close">
             არა
         </Button>
 
-        <Button OnClick="@Vote" InnerClass="flex-1" Class="flex-1 from-green-500 to-sky-500 focus:ring-green-800">
+        <Button OnClick="@Vote" Class="from-green-500 to-sky-500 focus:ring-green-800">
             კი
         </Button>
     </div>

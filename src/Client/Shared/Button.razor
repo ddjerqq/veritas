@@ -1,7 +1,7 @@
 ﻿@if (Link)
 {
     <a href="@Href" class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
-        <span class="@InnerClass relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
+        <span class="@InnerClass @DefaultInnerClass">
             @ChildContent
         </span>
     </a>
@@ -9,7 +9,7 @@
 else
 {
     <button class="@DefaultClass @Class" @onclick="@OnClick" @attributes="@AdditionalAttributes">
-        <span class="@InnerClass relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
+        <span class="@InnerClass @DefaultInnerClass">
             @ChildContent
         </span>
     </button>
@@ -17,7 +17,9 @@ else
 
 @code
 {
-    private const string DefaultClass = "relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium rounded-lg group bg-gradient-to-br text-white focus:ring-4";
+    private const string DefaultClass = "flex-1 relative inline-flex items-center justify-center p-0.5 overflow-hidden text-sm font-medium rounded-lg group bg-gradient-to-br text-white focus:ring-4";
+
+    private const string DefaultInnerClass = "flex-1 relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0";
 
     [Parameter]
     public bool Link { get; set; }

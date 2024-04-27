@@ -15,7 +15,7 @@ public class ErrorLoggerHttpClientHandler(HttpMessageHandler innerHandler, IToas
         catch (HttpRequestException ex)
         {
             Console.WriteLine(ex.Message);
-            toast.ShowError("დაფიქსირდა შეცდომა, გთხოვთ გადატვირთოთ გვერდი!");
+            toast.ShowError($"დაფიქსირდა შეცდომა, გთხოვთ გადატვირთოთ გვერდი! {ex.Message}");
             return null!;
         }
     }
