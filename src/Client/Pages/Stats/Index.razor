@@ -9,9 +9,9 @@
 <PageTitle>Stats</PageTitle>
 
 <Loader Model="@Votes" Loaded="@Loaded">
-    <ContentCard Class="col-span-12 container flex flex-col md:flex-row items-center md:justify-evenly p-5 px-10 gap-5">
-        <div class="max-w-[300px]">
-            <Chart Config="_config" Width="350" Height="350"/>
+    <ContentCard Class="col-span-12 container mx-auto max-w-screen-md flex flex-col md:flex-row items-center md:items-start md:justify-between p-5 px-10 gap-5">
+        <div class="max-w-[250px]">
+            <Chart Config="_config" Width="300" Height="300"/>
         </div>
 
         <ol class="text-xl flex-1 text-nowrap max-h-[300px] max-w-sm overflow-y-scroll scrollbar-none">
