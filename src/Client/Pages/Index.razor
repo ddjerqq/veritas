@@ -3,14 +3,15 @@
 <AppSection Class="col-span-12 md:col-start-4 md:col-span-6 text-white">
     <h1 class="mb-2">მიეცი.ჯი</h1>
 
-    <div class="w-full flex flex-row gap-4 justify-center text-xl">
-        <Button Link Href="about" Class="text-gray-400 border-gray-400">
+    <div class="space-x-2 text-2xl">
+        <Button Link Href="about">
             როგორ მუშაობს?
         </Button>
 
-        <Button Link Href="about" Class="inline-flex gap-1 justify-center items-center text-green-600 border-green-600">
+        <Button Link Href="vote" Class="from-green-500 to-sky-500 focus:ring-green-600"
+                InnerClass="flex flex-row justify-center items-center gap-1">
             მიეცი ხმა
-            <Heroicon Name="@HeroiconName.ArrowRight" class="w-6 h-6"/>
+            <Heroicon Name="@HeroiconName.ArrowRight" class="size-5"/>
         </Button>
     </div>
 </AppSection>

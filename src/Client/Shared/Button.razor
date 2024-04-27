@@ -1,7 +1,7 @@
 ﻿@if (Link)
 {
     <a href="@Href" class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
-        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
+        <span class="@InnerClass relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
             @ChildContent
         </span>
     </a>
@@ -9,7 +9,7 @@
 else
 {
     <button class="@DefaultClass @Class" @attributes="@AdditionalAttributes">
-        <span class="relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
+        <span class="@InnerClass relative px-5 py-2.5 transition-all ease-in duration-75 bg-background rounded-md group-hover:bg-opacity-0">
             @ChildContent
         </span>
     </button>
@@ -30,6 +30,9 @@ else
     /// </summary>
     [Parameter]
     public string Class { get; set; } = "from-gray-500 to-gray-500 focus:ring-gray-600";
+
+    [Parameter]
+    public string InnerClass { get; set; } = string.Empty;
 
     [Parameter, EditorRequired]
     public RenderFragment ChildContent { get; set; } = default!;
