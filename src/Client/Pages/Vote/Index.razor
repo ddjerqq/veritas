@@ -1,6 +1,6 @@
 @page "/vote"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>ხმის მიცემა</PageTitle>
 
 @foreach (var (partyId, party) in Parties)
 {
@@ -8,7 +8,7 @@
 }
 
 @* This is a hack, because i dont know how to give padding that is still effective after scrolling up *@
-<div class="p-4"></div>
+<div class="block md:hidden p-4"></div>
 
 @code
 {

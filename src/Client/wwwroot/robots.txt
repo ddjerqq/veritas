@@ -1,0 +1,4 @@
+﻿User-agent: *
+Disallow:
+Disallow: /api/
+Sitemap: https://mieci.ge/sitemap.xml
