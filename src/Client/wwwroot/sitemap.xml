@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+        <loc>https://mieci.ge/</loc>
+        <lastmod>2024-04-27</lastmod>
+    </url>
+
+    <url>
+        <loc>https://mieci.ge/about</loc>
+        <lastmod>2024-04-27</lastmod>
+    </url>
+
+    <url>
+        <loc>https://mieci.ge/vote</loc>
+        <lastmod>2024-04-27</lastmod>
+    </url>
+
+    <url>
+        <loc>https://mieci.ge/privacy</loc>
+        <lastmod>2024-04-27</lastmod>
+    </url>
+
+    <url>
+        <loc>https://mieci.ge/stats</loc>
+        <lastmod>2024-04-27</lastmod>
+    </url>
+
+    <url>
+        <loc>https://mieci.ge/blockchain</loc>
+        <lastmod>2024-04-27</lastmod>
+    </url>
+</urlset>
