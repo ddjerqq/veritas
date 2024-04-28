@@ -1,23 +1,21 @@
-﻿<div class="flex flex-col col-span-12 w-full h-full items-center justify-center gap-3 text-white">
-    <span class="text-4xl text-red-400">404</span>
+﻿@* TODO this is broken on mobile, swap the color of buttons *@
 
-    <span class="text-6xl leading-8">გვერდი ვერ მოიძებნა</span>
+<div class="flex flex-col col-span-12 h-full items-center text-center justify-center gap-3 text-white">
+    <span class="text-2xl md:text-4xl text-red-400">404</span>
 
-    <span class="text-2xl text-gray-400">
-        გვერდი ან რესურსი რომელიც მოითხოვეთ ვერ მოიძებნა,
+    <span class="text-4xl md:text-6xl leading-5 tracking-wide">გვერდი ვერ მოიძებნა</span>
+
+    <span class="text-xl md:text-2xl text-gray-400">
+        გვერდი ან რესურსი რომელიც მოითხოვეთ ვერ მოიძებნა
     </span>
 
-    <div class="text-2xl space-x-3">
-        <Button Link Href="vote" Class="from-green-500 to-sky-500 focus:ring-green-800">
+    <div class="max-w-lg flex flex-col md:flex-row items-stretch md:items-center w-full gap-3 text-lg md:text-2xl">
+        <Button Link Href="vote">
             უკან დაბრუნება
         </Button>
 
-        <Button Link Href="stats">
+        <Button Link Href="stats" Class="from-green-500 to-sky-500 focus:ring-green-800">
             სტატისტიკის ნახვა
         </Button>
     </div>
-
-    @* <h1 class="text-4xl md:text-6xl font-extrabold"> *@
-    @*     404 ვერ მოიძებნა *@
-    @* </h1> *@
 </div>
