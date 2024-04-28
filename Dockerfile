@@ -38,7 +38,7 @@ RUN dotnet publish -c ${BUILD_CONFIGURATION} -o /app/publish --no-restore "Prese
 FROM base AS final
 EXPOSE 8000
 
-HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl --silent --fail http://localhost:8000/api/v1/health || exit 1
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl --silent --fail http://127.0.0.1:8000/api/v1/health || exit 1
 
 WORKDIR /app
 COPY --from=build /app/publish .
