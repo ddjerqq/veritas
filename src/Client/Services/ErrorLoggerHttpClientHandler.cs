@@ -1,4 +1,5 @@
 ﻿using Blazored.Toast.Services;
+using Client.Common;
 
 namespace Client.Services;
 
@@ -15,7 +16,7 @@ public class ErrorLoggerHttpClientHandler(HttpMessageHandler innerHandler, IToas
         catch (HttpRequestException ex)
         {
             Console.WriteLine(ex.Message);
-            toast.ShowError($"დაფიქსირდა შეცდომა, გთხოვთ გადატვირთოთ გვერდი! {ex.Message}");
+            AppComponentBase.ShowToast(toast, ToastLevel.Error, $"დაფიქსირდა შეცდომა, გთხოვთ გადატვირთოთ გვერდი! {ex.Message}");
             return null!;
         }
     }

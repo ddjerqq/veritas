@@ -1,4 +1,3 @@
-@using Domain.ValueObjects
 @inject ApiService Api
 @inject VoteService VoteService
 @inject NavigationManager Nav
@@ -47,7 +46,7 @@
         {
             var command = await VoteService.CreateVoteCommand(Party.Id);
             await Api.CastVote(command);
-            Toast.ShowSuccess($"თქვენ წარმატებით მიეცით ხმა {Party.Name}-ს");
+            ShowSuccess($"თქვენ წარმატებით მიეცით ხმა {Party.Name}-ს");
         });
     }
 }

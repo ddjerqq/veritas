@@ -52,17 +52,20 @@
             .WithUrl(url)
             .Build();
 
-        _connection.On<VoteDto>("ReceiveVoteAddedEvent", vote => { Toast.ShowInfo($"received vote added event {vote.Hash} {vote.PartyId}"); });
+        _connection.On<VoteDto>("ReceiveVoteAddedEvent", vote =>
+        {
+            ShowInfo($"received vote added event {vote.Hash} {vote.PartyId}");
+        });
 
         _connection.On<BlockDto>("ReceiveVoteAddedEvent", block =>
         {
-            Toast.ShowInfo($"received block added event {block.Index} {block.Hash}");
             // TODO test
+            ShowInfo($"received block added event {block.Index} {block.Hash}");
             AddBlock(block);
             InvokeAsync(StateHasChanged);
         });
 
-        Blocks = (await Api.GetLastNBlocks(30))!.ToList();
+        Blocks = (await Api.GetLastNBlocks(30))?.ToList();
 
         await _connection.StartAsync(CancellationToken);
         await base.OnInitializedAsync();
