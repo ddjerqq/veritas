@@ -38,7 +38,7 @@ builder.Services.AddScoped(sp =>
 #if DEBUG
     const string baseAddress = "http://localhost/";
 #else
-    const string baseAddress = builder.HostEnvironment.BaseAddress;
+    var baseAddress = builder.HostEnvironment.BaseAddress;
 #endif
 
     return new HttpClient(errorLoggerHandler) { BaseAddress = new Uri(baseAddress) };
