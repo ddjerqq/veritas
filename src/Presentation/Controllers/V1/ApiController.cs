@@ -63,14 +63,6 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
         return Ok(result);
     }
 
-    [HttpGet("stats/daily")]
-    public async Task<ActionResult<Dictionary<int, Dictionary<DateOnly, int>>>> GetPartyDailyVoteCounts(CancellationToken ct)
-    {
-        var query = new GetDailyPartyVotes();
-        var result = await mediator.Send(query, ct);
-        return Ok(result);
-    }
-
     [HttpGet("voters/{address}")]
     public async Task<ActionResult<VoterDto>> GetVoterByAddress(string address, CancellationToken ct)
     {

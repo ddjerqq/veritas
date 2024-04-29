@@ -18,6 +18,10 @@ internal class VoterConfiguration : IEntityTypeConfiguration<Voter>
             .HasMaxLength(182)
             .HasColumnName("pkey");
 
+        builder.HasMany(x => x.Votes)
+            .WithOne(x => x.Voter)
+            .HasForeignKey(x => x.VoterAddress);
+
         builder.Ignore("Dsa");
         builder.Ignore(x => x.PrivateKey);
     }

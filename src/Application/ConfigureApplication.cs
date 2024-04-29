@@ -25,6 +25,8 @@ public class ConfigureApplication : IHostingStartup
 
             services.AddInMemoryProcessedVoteCacheSingleton();
 
+            services.AddAutoMapper(ApplicationAssembly.Assembly);
+
             services.AddMediatR(options =>
             {
                 options.RegisterServicesFromAssembly(ApplicationAssembly.Assembly);

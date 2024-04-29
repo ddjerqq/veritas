@@ -1,4 +1,4 @@
-using Application;
+﻿using Application;
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
@@ -23,8 +23,6 @@ public class ConfigureValidation : IHostingStartup
         {
             services.AddValidatorsFromAssembly(DomainAssembly.Assembly, includeInternalTypes: true);
             services.AddValidatorsFromAssembly(ApplicationAssembly.Assembly, includeInternalTypes: true);
-            services.AddValidatorsFromAssembly(InfrastructureAssembly.Assembly, includeInternalTypes: true);
-            services.AddValidatorsFromAssembly(PresentationAssembly.Assembly, includeInternalTypes: true);
 
             services.AddFluentValidationAutoValidation()
                 .AddFluentValidationClientsideAdapters();
