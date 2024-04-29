@@ -1,8 +1,10 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
+using Application.Common.Abstractions;
 using Application.Dto;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Presentation.Auth;
@@ -10,6 +12,7 @@ namespace Presentation.Auth;
 public class PublicKeyBearerSchemeOptions : AuthenticationSchemeOptions;
 
 public class PublicKeyBearerAuthHandler(
+    IAppDbContext dbContext,
     IOptionsMonitor<PublicKeyBearerSchemeOptions> options,
     ILoggerFactory logger,
     UrlEncoder encoder)
@@ -42,9 +45,7 @@ public class PublicKeyBearerAuthHandler(
         var claimsIdentity = new ClaimsIdentity(claims, SchemaName);
         Context.User = new ClaimsPrincipal(claimsIdentity);
 
-        return Task.FromResult(
-            AuthenticateResult.Success(
-                new AuthenticationTicket(Context.User, SchemaName)));
+        return Task.FromResult(AuthenticateResult.Success(new AuthenticationTicket(Context.User, SchemaName)));
     }
 
     private string? Extract(string key)

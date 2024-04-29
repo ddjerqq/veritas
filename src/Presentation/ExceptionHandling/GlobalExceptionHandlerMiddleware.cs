@@ -6,7 +6,6 @@ namespace Presentation.ExceptionHandling;
 
 public sealed class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHandlerMiddleware> logger) : IMiddleware
 {
-    // TODO no problem's details in production
     public async Task InvokeAsync(HttpContext httpContext, RequestDelegate next)
     {
         try
@@ -25,6 +24,8 @@ public sealed class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHand
 
     private async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception)
     {
+        var isDev = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
+
         logger.LogError(exception, "An unhandled exception occurred. {Message}", exception.Message);
 
         var currentVoterAccessor = httpContext.RequestServices.GetRequiredService<ICurrentVoterAccessor>();
@@ -35,7 +36,7 @@ public sealed class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHand
             Type = "https://httpstatuses.com/500",
             Title = "An error occurred",
             Status = StatusCodes.Status500InternalServerError,
-            Detail = exception.Message,
+            Detail = isDev ? exception.Message : "Please come back later, we are working on fixing the issues day and night!",
             Extensions =
             {
                 ["addr"] = voter?.Address,
@@ -52,6 +53,8 @@ public sealed class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHand
 
     private async ValueTask<bool> TryHandleAsync(HttpContext httpContext, ValidationException validationException)
     {
+        var isDev = httpContext.RequestServices.GetRequiredService<IWebHostEnvironment>().IsDevelopment();
+
         logger.LogError(validationException, "A validation exception occurred. {Message}", validationException.Message);
 
         var errors = validationException
@@ -74,7 +77,7 @@ public sealed class GlobalExceptionHandlerMiddleware(ILogger<GlobalExceptionHand
             },
         };
 
-        if (errors.Count != 0)
+        if (errors.Count != 0 && isDev)
             problemDetails.Extensions["errors"] = errors;
 
         httpContext.Response.StatusCode = StatusCodes.Status400BadRequest;

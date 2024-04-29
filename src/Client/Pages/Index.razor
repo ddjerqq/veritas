@@ -10,10 +10,21 @@
             როგორ მუშაობს?
         </Button>
 
-        <Button Link Href="vote" Class="from-green-500 to-sky-500 focus:ring-green-600"
-                InnerClass="flex flex-row justify-center items-center gap-1">
-            მიეცი ხმა
-            <Heroicon Name="@HeroiconName.ArrowRight" class="size-5"/>
-        </Button>
+        <AuthorizeView Policy="can_vote">
+            <Authorized>
+                <Button Link Href="vote" Class="from-green-500 to-sky-500 focus:ring-green-600"
+                        InnerClass="flex flex-row justify-center items-center gap-1">
+                    მიეცი ხმა
+                    <Heroicon Name="@HeroiconName.ArrowRight" class="size-6"/>
+                </Button>
+            </Authorized>
+            <NotAuthorized>
+                <Button Link Href="stats" Class="from-green-500 to-sky-500 focus:ring-green-600"
+                        InnerClass="flex flex-row justify-center items-center gap-1">
+                    სტატისტიკის ნახვა
+                    <Heroicon Name="@HeroiconName.ChartPie" class="size-6"/>
+                </Button>
+            </NotAuthorized>
+        </AuthorizeView>
     </div>
 </AppSection>

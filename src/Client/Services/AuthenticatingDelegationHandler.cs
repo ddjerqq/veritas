@@ -6,7 +6,7 @@ public class AuthenticatingDelegationHandler(HttpMessageHandler innerHandler, Co
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        var voter = await cookies.GetVoter();
+        var voter = await cookies.GetVoterAsync();
 
         if (voter is not null)
         {

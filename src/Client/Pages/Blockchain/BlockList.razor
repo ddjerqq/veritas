@@ -59,13 +59,12 @@
 
         _connection.On<BlockDto>("ReceiveVoteAddedEvent", block =>
         {
-            // TODO test
             ShowInfo($"received block added event {block.Index} {block.Hash}");
             AddBlock(block);
             InvokeAsync(StateHasChanged);
         });
 
-        Blocks = (await Api.GetLastNBlocks(30))?.ToList();
+        Blocks = (await Api.GetLastNBlocks(30))?.ToList()!;
 
         await _connection.StartAsync(CancellationToken);
         await base.OnInitializedAsync();

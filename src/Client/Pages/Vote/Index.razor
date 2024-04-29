@@ -1,4 +1,5 @@
 @page "/vote"
+@attribute [Authorize(Policy = "can_vote")]
 
 <PageTitle>ხმის მიცემა</PageTitle>
 
@@ -14,9 +15,6 @@
 {
     [CascadingParameter]
     public IModalService Modal { get; set; } = default!;
-
-    // TODO on initialized, if the cookies have last vote time in them, and it is not 12 hours behind,
-    // then we should redirect the user to /stats
 
     private void VoteFor(Party party)
     {

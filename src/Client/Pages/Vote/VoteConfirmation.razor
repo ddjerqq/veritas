@@ -1,6 +1,9 @@
 @inject ApiService Api
 @inject VoteService VoteService
 @inject NavigationManager Nav
+@inject VoterAccessor VoterAccessor
+@inject CookieUtil Cookies
+@inject PublicKeyAuthStateProvider Auth
 
 <div class="flex flex-col p-4 sm:min-w-[32rem] bg-background rounded-md text-white font-archyedt border-2 @Party.GetBorderClass()">
     <p class="text-2xl">
@@ -40,6 +43,13 @@
 
     private async Task Vote()
     {
+        var voter = await VoterAccessor.GetVoterAsync();
+        voter.LastVoteTime = DateTime.UtcNow;
+        await Cookies.SetVoterAsync(voter);
+
+        Auth.RefreshAuthState();
+        await InvokeAsync(StateHasChanged);
+
         Nav.NavigateTo("stats");
 
         await InvokeAsync(async () =>
