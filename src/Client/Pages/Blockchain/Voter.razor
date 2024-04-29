@@ -28,18 +28,18 @@
                     ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ.<br/>
                 </span>
 
-                @if (Model.FavoriteParty is { } favoriteParty)
-                {
-                    <span>
-                        მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/>
-                    </span>
-                }
-                else
-                {
-                    <span>
-                        მას არ ჰყავს ფავორიტი პარტია.<br/>
-                    </span>
-                }
+                @* @if (Model.FavoriteParty is { } favoriteParty) *@
+                @* { *@
+                @*     <span> *@
+                @*         მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/> *@
+                @*     </span> *@
+                @* } *@
+                @* else *@
+                @* { *@
+                @*     <span> *@
+                @*         მას არ ჰყავს ფავორიტი პარტია.<br/> *@
+                @*     </span> *@
+                @* } *@
 
                 @if (Model.LastVoteTime is { } lastVoteTime)
                 {

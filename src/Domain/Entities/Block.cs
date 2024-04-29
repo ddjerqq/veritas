@@ -12,6 +12,8 @@ public sealed class Block
 {
     public const int Difficulty = 6;
 
+    public static readonly DateTime GenesisDate = new(2024, 3, 1, 0, 0, 0, DateTimeKind.Utc);
+
     private readonly List<Vote> _votes = [];
 
     public long Index { get; init; }
@@ -81,7 +83,8 @@ public sealed class Block
         Nonce = Miner.Mine(this.GetHashPayload(), Difficulty);
         stopwatch.Stop();
 
-        Log.Information("Block mined in {@Elapsed:s}", stopwatch.Elapsed);
+        Debug.WriteLine("Block mined in {0}", stopwatch);
+        Log.Information("Block mined in {@Elapsed}", stopwatch);
     }
 
     [Pure]

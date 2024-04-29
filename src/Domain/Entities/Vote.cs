@@ -56,6 +56,7 @@ public sealed class Vote
         {
             Hash = hash,
             Voter = voter,
+            VoterAddress = voter.Address,
             PartyId = partyId,
             Timestamp = timestamp,
             Signature = signature,

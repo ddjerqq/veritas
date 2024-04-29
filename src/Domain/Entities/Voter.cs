@@ -22,6 +22,8 @@ public sealed class Voter : IDisposable
     [SJsonIgnore]
     public string? PrivateKey { get; init; }
 
+    public ICollection<Vote> Votes { get; set; } = [];
+
     public static Voter NewVoter()
     {
         var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
