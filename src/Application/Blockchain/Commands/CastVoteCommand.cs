@@ -1,3 +1,4 @@
+using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
 using Domain.Common;
 using Domain.Entities;
@@ -36,7 +37,7 @@ public sealed record CastVoteCommand(string Hash, string PublicKey, string Priva
 // ReSharper disable once UnusedType.Global
 public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
 {
-    public CastVoteCommandValidator(ICurrentVoterAccessor currentVoterAccessor, IDateTimeProvider dateTimeProvider)
+    public CastVoteCommandValidator(IAppDbContext dbContext, ICurrentVoterAccessor currentVoterAccessor, IDateTimeProvider dateTimeProvider)
     {
         RuleFor(x => x.Hash)
             .NotEmpty()
@@ -81,31 +82,46 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
                 return voteIsValid && currentVoterIsTheVotesVoter;
             })
             .WithMessage("Invalid vote");
+
+        // this cant be validated with ASP.NET core's validation pipeline, so we must put it in a ruleset
+        // because MediatR RequestValidationBehavior validates all rulesets, as configured.
+        RuleSet("async", () =>
+        {
+            RuleFor(x => x)
+                .MustAsync(async (_, ct) =>
+                {
+                    var currentVoter = currentVoterAccessor.GetCurrentVoter();
+                    var lastVoteTime = await dbContext.Set<Vote>()
+                        .AsNoTracking()
+                        .Where(v => v.VoterAddress == currentVoter.Address)
+                        .Select(v => v.Timestamp)
+                        .Order()
+                        .LastOrDefaultAsync(ct);
+
+                    // the user has not voted yet
+                    if (lastVoteTime == DateTime.MinValue)
+                        return true;
+
+                    var diff = lastVoteTime - dateTimeProvider.UtcNow;
+                    return diff < Vote.VotePer;
+                })
+                .WithMessage("User tried voting more than once in the allowed time window");
+        });
     }
 }
 
 // ReSharper disable once UnusedType.Global
-internal sealed class CastVoteCommandHandler(
-    IAppDbContext dbContext,
-    ISender mediator,
-    ICurrentVoterAccessor currentVoterAccessor,
-    IDateTimeProvider dateTimeProvider) : IRequestHandler<CastVoteCommand>
+internal sealed class CastVoteCommandHandler(IAppDbContext dbContext, IDateTimeProvider dateTimeProvider) : IRequestHandler<CastVoteCommand>
 {
     public async Task Handle(CastVoteCommand request, CancellationToken ct)
     {
-        // TODO move all this just to check if the user voted in the last 12 hours?
-        // TODO to the validator
-        // var voter = currentVoterAccessor.GetCurrentVoter();
-        // var voterInfoQuery = new GetVoterByAddressQuery(voter.Address);
-        // var voterInfo = await mediator.Send(voterInfoQuery, ct);
-        // var lastVote = voterInfo?.Votes.LastOrDefault();
-        // if (lastVote is not null && dateTimeProvider.UtcNow - lastVote.Timestamp < TimeSpan.FromHours(12))
-        //     throw new ValidationException("User tried voting more than once in a 12 hour window.");
-
         var vote = request.GetVote();
 
         // if voter exists in database already, do not touch it
-        var voterCount = await dbContext.Set<Voter>().CountAsync(v => v.Address == vote.VoterAddress, ct);
+        var voterCount = await dbContext.Set<Voter>()
+            .Where(v => v.Address == vote.VoterAddress)
+            .CountAsync(ct);
+
         if (voterCount == 1)
             dbContext.Set<Voter>().Entry(vote.Voter).State = EntityState.Unchanged;
 

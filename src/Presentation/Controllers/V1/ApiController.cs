@@ -23,7 +23,7 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
             return Unauthorized();
 
         var voter = Voter.NewVoter();
-        var dto = new FullVoterDto(voter.Address, voter.PublicKey, voter.PrivateKey!, voter.SignAddress());
+        var dto = new FullVoterDto(voter.Address, voter.PublicKey, voter.PrivateKey!, voter.SignAddress(), DateTime.MinValue);
 
         Response.Cookies.Append(nameof(FullVoterDto.Address), dto.Address);
         Response.Cookies.Append(nameof(FullVoterDto.PublicKey), dto.PublicKey);

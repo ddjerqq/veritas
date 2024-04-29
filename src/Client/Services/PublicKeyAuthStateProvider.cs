@@ -12,11 +12,13 @@ public class PublicKeyAuthStateProvider(VoterAccessor voterAccessor) : Authentic
         try
         {
             var voter = await voterAccessor.GetVoterAsync();
+
             List<Claim> claims =
             [
                 new Claim("addr", voter.Address),
                 new Claim("pkey", voter.PublicKey),
-                new Claim("skey", voter.PrivateKey!),
+                new Claim("skey", voter.PrivateKey),
+                new Claim("last_vote_time", voter.LastVoteTime.ToString("u")),
             ];
 
             var claimsIdentity = new ClaimsIdentity(claims, "public_key");
@@ -28,5 +30,10 @@ public class PublicKeyAuthStateProvider(VoterAccessor voterAccessor) : Authentic
             Console.Error.WriteLine(ex);
             return new AuthenticationState(EmptyPrincipal);
         }
+    }
+
+    public void RefreshAuthState()
+    {
+        NotifyAuthenticationStateChanged(GetAuthenticationStateAsync());
     }
 }

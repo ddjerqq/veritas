@@ -9,6 +9,8 @@ public sealed class Vote
 {
     public const int Difficulty = 4;
 
+    public static readonly TimeSpan VotePer = TimeSpan.FromHours(6);
+
     // ReSharper disable once AutoPropertyCanBeMadeGetOnly.Local for EF Core
     public required string Hash { get; set; }
 

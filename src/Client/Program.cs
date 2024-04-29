@@ -1,3 +1,4 @@
+using System.Globalization;
 using Application.Common.Abstractions;
 using Application.Services;
 using Blazored.LocalStorage;
@@ -7,6 +8,8 @@ using Blazored.Toast.Services;
 using Client;
 using Client.Common;
 using Client.Services;
+using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -21,7 +24,30 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped<IDateTimeProvider, UtcDateTimeProvider>();
 
-builder.Services.AddAuthorizationCore();
+builder.Services.AddAuthorizationCore(options =>
+{
+    options.AddPolicy("can_vote", policyBuilder =>
+    {
+        policyBuilder
+            .RequireAuthenticatedUser()
+            .RequireAssertion(ctx =>
+            {
+                Console.WriteLine("claims: {0}", string.Join(", ", ctx.User.Claims.Select(c => $"{c.Type}:{c.Value}")));
+
+                var time = ctx.User.Claims.FirstOrDefault(v => v.Type == "last_vote_time")?.Value;
+                // user has not voted yet.
+                if (time is null)
+                    return true;
+
+                var lastVoteTime = DateTime.TryParse(time, out var date) ? date : DateTime.MinValue;
+
+                // check if the last vote time is less than 12 hrs in the past
+                var diff = lastVoteTime - DateTime.UtcNow;
+                return diff < Vote.VotePer;
+            });
+    });
+});
+
 
 builder.Services.AddScoped<CookieUtil>();
 builder.Services.AddScoped<VoterAccessor>();
@@ -44,6 +70,8 @@ builder.Services.AddScoped(sp =>
 });
 builder.Services.AddSingleton(builder.HostEnvironment);
 builder.Services.AddScoped<AuthenticationStateProvider, PublicKeyAuthStateProvider>();
+builder.Services.AddScoped<PublicKeyAuthStateProvider>(sp =>
+    (PublicKeyAuthStateProvider)sp.GetRequiredService<AuthenticationStateProvider>());
 
 builder.Services.AddBlazoredToast();
 builder.Services.AddBlazoredModal();
