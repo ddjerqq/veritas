@@ -1,4 +1,3 @@
-using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
 using Domain.Common;
 using Domain.Entities;

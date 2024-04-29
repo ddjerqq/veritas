@@ -1,4 +1,3 @@
-using System.Globalization;
 using Application.Dto;
 using Microsoft.JSInterop;
 
@@ -35,10 +34,7 @@ public class CookieUtil(IJSRuntime jsRuntime) : IAsyncDisposable
         if (address is null || publicKey is null || privateKey is null || signature is null)
             return null;
 
-        Console.WriteLine($"time is {time}");
-
         var lastVote = DateTime.TryParse(time, out var date) ? date : DateTime.MinValue;
-        Console.WriteLine($"last vote time is {lastVote}");
 
         return new FullVoterDto(address, publicKey, privateKey, signature, lastVote);
     }

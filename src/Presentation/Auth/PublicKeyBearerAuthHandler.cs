@@ -4,7 +4,6 @@ using Application.Common.Abstractions;
 using Application.Dto;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
 namespace Presentation.Auth;

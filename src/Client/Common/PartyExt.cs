@@ -17,8 +17,8 @@ public static class PartyExt
             0 => "no_party",
             5 => "#ce2121",
             9 => "#d4a700",
-            36 => "#317e38",
             42 => "#0b6abe",
+            45 => "#317e38",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
 
@@ -38,7 +38,7 @@ public static class PartyExt
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 36 or 42 => $"text-{party.ShortName}",
+            5 or 9 or 42 or 45 => $"text-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }
@@ -50,7 +50,7 @@ public static class PartyExt
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 36 or 42 => $"border-{party.ShortName}",
+            5 or 9 or 42 or 45 => $"border-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }
@@ -62,7 +62,7 @@ public static class PartyExt
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 36 or 42 => $"hover:bg-{party.ShortName}",
+            5 or 9 or 42 or 45 => $"hover:bg-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }
@@ -74,7 +74,7 @@ public static class PartyExt
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 36 or 42 => $"hover:shadow-{party.ShortName}",
+            5 or 9 or 42 or 45 => $"hover:shadow-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }

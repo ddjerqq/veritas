@@ -1,4 +1,3 @@
-using System.Globalization;
 using Application.Common.Abstractions;
 using Application.Services;
 using Blazored.LocalStorage;
@@ -9,7 +8,6 @@ using Client;
 using Client.Common;
 using Client.Services;
 using Domain.Entities;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -32,8 +30,6 @@ builder.Services.AddAuthorizationCore(options =>
             .RequireAuthenticatedUser()
             .RequireAssertion(ctx =>
             {
-                Console.WriteLine("claims: {0}", string.Join(", ", ctx.User.Claims.Select(c => $"{c.Type}:{c.Value}")));
-
                 var time = ctx.User.Claims.FirstOrDefault(v => v.Type == "last_vote_time")?.Value;
                 // user has not voted yet.
                 if (time is null)

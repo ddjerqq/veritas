@@ -1,4 +1,3 @@
-using System.Diagnostics.Contracts;
 using Domain.Entities;
 
 namespace Application.Common.Abstractions;

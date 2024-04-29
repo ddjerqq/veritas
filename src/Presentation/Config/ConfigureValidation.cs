@@ -2,7 +2,6 @@
 using Domain;
 using FluentValidation;
 using FluentValidation.AspNetCore;
-using Infrastructure;
 using Presentation.Config;
 using ZymLabs.NSwag.FluentValidation;
 
