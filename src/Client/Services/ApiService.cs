@@ -22,9 +22,6 @@ public class ApiService(HttpClient http)
     public async Task<Dictionary<int, int>?> GetPartyVoteCounts(CancellationToken ct = default) =>
         await http.GetFromJsonAsync<Dictionary<int, int>>("api/v1/stats/counts", ct);
 
-    public async Task<Dictionary<int, Dictionary<DateOnly, int>>?> GetPartyDailyVoteCounts(CancellationToken ct = default) =>
-        await http.GetFromJsonAsync<Dictionary<int, Dictionary<DateOnly, int>>>("api/v1/stats/daily", ct);
-
     public async Task<VoterDto?> GetVoterByAddress(string address, CancellationToken ct = default) =>
         await http.GetFromJsonAsync<VoterDto>($"api/v1/voters/{address}", Json.SerializerOptions, ct);
 
