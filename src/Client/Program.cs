@@ -56,6 +56,7 @@ builder.Services.AddScoped(sp =>
     var authHandler = new AuthenticatingDelegationHandler(baseHandler, sp.GetRequiredService<CookieUtil>());
     var errorLoggerHandler = new ErrorLoggerHttpClientHandler(authHandler, sp.GetRequiredService<IToastService>());
 
+// TODO use appsettings and not this smelly thing
 #if DEBUG
     const string baseAddress = "http://localhost/";
 #else
