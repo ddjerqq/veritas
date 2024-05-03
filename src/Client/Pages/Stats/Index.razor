@@ -16,7 +16,7 @@
         <ol class="text-xl flex-1 text-nowrap max-h-[300px] max-w-sm overflow-y-scroll scrollbar-none">
             @foreach ((Party party, int voteCount) in Votes!)
             {
-                <li  class="flex flex-row justify-between gap-10">
+                <li class="flex flex-row justify-between gap-10">
                     <span class="@party.GetTextClass() truncate">
                         @party.Name
                     </span>
@@ -61,7 +61,8 @@
 
         foreach (Party party in Votes.Keys)
         {
-            _config.Data.Labels.Add($" {party.Name}");
+            var percentage = Votes[party] / (double)Votes.Values.Sum();
+            _config.Data.Labels.Add($" {party.ShortName} {percentage:P}");
         }
 
         var dataset = new PieDataset<int>(Votes.Values)

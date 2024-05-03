@@ -17,7 +17,7 @@ export default {
       "party-card-name": "#303030",
       "party-card": "#505050",
 
-      "strategy-agmashenebeli": "#ff0000",
+      "agmashenebeli": "#ff0000",
       "euro-georgia": "#0477cc",
       "unm": "#ce2121",
       "euro-democrats": "#6a3be1",

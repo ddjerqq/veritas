@@ -6,7 +6,7 @@ public readonly record struct Party(int Id, string Name, string ShortName, strin
 
     public static readonly IEnumerable<Party> All = new List<Party>
     {
-        new(1, "გიორგი ვაშაძე - სტრატეგია აღმაშენებელი", "strategy-agmashenebeli", "გიორგი ვაშაძე", "#ff0000", "https://ka.wikipedia.org/wiki/სტრატეგია_აღმაშენებელი"),
+        new(1, "გიორგი ვაშაძე - სტრატეგია აღმაშენებელი", "agmashenebeli", "გიორგი ვაშაძე", "#ff0000", "https://ka.wikipedia.org/wiki/სტრატეგია_აღმაშენებელი"),
         new(2, "ევროპული საქართველო - მოძრაობა თავისუფლებისთვის", "euro-georgia", "გიგა ბოკერია", "#013150", "https://ka.wikipedia.org/wiki/ევროპული_საქართველო"),
         new(5, "ერთიანი ნაციონალური მოძრაობა", "unm", "მიხეილ სააკაშვილი", "#ce2121", "https://ka.wikipedia.org/wiki/ერთიანი_ნაციონალური_მოძრაობა"),
         new(6, "ევროპელი დემოკრატები", "euro-democrats", "პაატა დავითაია", "#2a0e72", "https://ka.wikipedia.org/wiki/ევროპელი_დემოკრატები"),
