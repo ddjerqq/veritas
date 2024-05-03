@@ -10,21 +10,27 @@ export default {
   darkMode: "class",
   theme: {
     colors: {
-      background: "#252525",
-      sidebar: "#202020",
+      "background": "#252525",
+      "sidebar": "#202020",
 
       // TODO remove these
       "party-card-name": "#303030",
       "party-card": "#505050",
 
-      unm: "#ce2121",
-      lelo: "#d4a700",
-      girchi: "#317e38",
-      gd: "#0b6abe",
+      "strategy-agmashenebeli": "#ff0000",
+      "euro-georgia": "#0477cc",
+      "unm": "#ce2121",
+      "euro-democrats": "#6a3be1",
+      "citizens": "#8bc43f",
+      "law-and-order": "#4040dc",
+      "lelo": "#d4a700",
+      "girchi-iago": "#317e38",
+      "gd": "#0b6abe",
+      "girchi-zurab": "#317e38",
 
       ...colors,
 
-      gray: colors.neutral,
+      "gray": colors.neutral,
     },
     fontFamily: {
       archyedt: "archyedt",

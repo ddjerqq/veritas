@@ -23,11 +23,12 @@ public static class PartyExt
     public static string GetTextClass(this Party party)
     {
         // for tailwind class discovery
-        _ = "text-unm text-lelo text-girchi text-gd";
+        _ = "text-strategy-agmashenebeli text-euro-georgia text-unm text-euro-democrats text-citizens " +
+            "text-law-and-order text-lelo text-girchi-iago text-gd text-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 42 or 45 => $"text-{party.ShortName}",
+            var id when Party.Allowed.Contains(id) => $"text-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }
@@ -35,11 +36,12 @@ public static class PartyExt
     public static string GetBorderClass(this Party party)
     {
         // for tailwind class discovery
-        _ = "border-unm border-lelo border-girchi border-gd";
+        _ = "border-strategy-agmashenebeli border-euro-georgia border-unm border-euro-democrats border-citizens " +
+            "border-law-and-order border-lelo border-girchi-iago border-gd border-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 42 or 45 => $"border-{party.ShortName}",
+            var id when Party.Allowed.Contains(id) => $"border-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }
@@ -47,11 +49,12 @@ public static class PartyExt
     public static string GetHoverBgClass(this Party party)
     {
         // for tailwind class discovery
-        _ = "hover:bg-unm hover:bg-lelo hover:bg-girchi hover:bg-gd";
+        _ = "hover:bg-strategy-agmashenebeli hover:bg-euro-georgia hover:bg-unm hover:bg-euro-democrats " +
+            "hover:bg-citizens hover:bg-law-and-order hover:bg-lelo hover:bg-girchi-iago hover:bg-gd hover:bg-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 42 or 45 => $"hover:bg-{party.ShortName}",
+            var id when Party.Allowed.Contains(id) => $"hover:bg-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }
@@ -59,11 +62,13 @@ public static class PartyExt
     public static string GetHoverShadowClass(this Party party)
     {
         // for tailwind class discovery
-        _ = "hover:shadow-unm hover:shadow-lelo hover:shadow-girchi hover:shadow-gd";
+        _ = "hover:shadow-strategy-agmashenebeli hover:shadow-euro-georgia hover:shadow-unm " +
+            "hover:shadow-euro-democrats hover:shadow-citizens hover:shadow-law-and-order hover:shadow-lelo " +
+            "hover:shadow-girchi-iago hover:shadow-gd hover:shadow-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
-            5 or 9 or 42 or 45 => $"hover:shadow-{party.ShortName}",
+            var id when Party.Allowed.Contains(id) => $"hover:shadow-{party.ShortName}",
             _ => throw new ArgumentOutOfRangeException(nameof(party)),
         };
     }

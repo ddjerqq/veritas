@@ -1,9 +1,9 @@
-@* sm:max-w-[250px] *@
+@* TODO add links to parties *@
 
 <div @onclick="@Clicked"
      class="group flex flex-col flex-grow-0 col-start-2 col-span-10 sm:col-span-6 md:col-span-4 lg:col-span-3
             rounded-md select-none bg-gray-600 @Party.GetHoverBgClass()
-            border-2 border-gray-600 hover:border-white
+            border-2 border-gray-600 hover:border-white hover:z-50
             transition-[colors,transform] duration-300 ease-sweet
             hover:scale-105 shadow-gray-500 @Party.GetHoverShadowClass()
             shadow-party-card hover:shadow-party-card-hover">
