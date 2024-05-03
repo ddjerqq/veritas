@@ -3,9 +3,9 @@
 
 <PageTitle>ხმის მიცემა</PageTitle>
 
-@foreach (var (partyId, party) in Parties)
+@foreach (var party in Party.All)
 {
-    <PartyCard @key="partyId" Party="@party" Clicked="@(() => VoteFor(party))"/>
+    <PartyCard @key="@party.Id" Party="@party" Clicked="@(() => VoteFor(party))"/>
 }
 
 @* This is a hack, because i dont know how to give padding that is still effective after scrolling up *@
@@ -23,9 +23,4 @@
 
         Modal.Show<VoteConfirmation>(parameters);
     }
-
-    private static readonly Dictionary<int, Party> Parties = Party.Allowed
-        .Where(p => p != 0)
-        .Select(p => (p, (Party)p))
-        .ToDictionary();
 }

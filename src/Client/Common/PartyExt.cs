@@ -11,20 +11,9 @@ public static class PartyExt
 
     public static string GetLeaderGoldenPortraitPath(this Party party) => $"/assets/{party.ShortName}-leader-gold.webp";
 
-    public static string GetColor(this Party party) =>
-        party.Id switch
-        {
-            0 => "no_party",
-            5 => "#ce2121",
-            9 => "#d4a700",
-            42 => "#0b6abe",
-            45 => "#317e38",
-            _ => throw new ArgumentOutOfRangeException(nameof(party)),
-        };
-
     public static (byte r, byte g, byte b) GetColorRgb(this Party party)
     {
-        var color = party.GetColor();
+        var color = party.Color;
         var r = byte.Parse(color.Substring(1, 2), NumberStyles.HexNumber);
         var g = byte.Parse(color.Substring(3, 2), NumberStyles.HexNumber);
         var b = byte.Parse(color.Substring(5, 2), NumberStyles.HexNumber);
