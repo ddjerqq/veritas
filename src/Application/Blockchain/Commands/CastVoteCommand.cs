@@ -62,9 +62,9 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
                 // TODO investigate the issue with voting here.
                 var date = dateTimeProvider.UtcNow;
                 var offset = date - ts.ToUtcDateTime();
-                return offset is { Ticks: > 0, TotalMinutes: < 5 };
+                return offset is { Ticks: > 0, TotalHours: < 12 };
             })
-            .WithMessage("The timestamp must be no more than five minutes old");
+            .WithMessage("The timestamp must be no more than 12 hours old");
 
         RuleFor(x => x.Nonce)
             .GreaterThan(0);
