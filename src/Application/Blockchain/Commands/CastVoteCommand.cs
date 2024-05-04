@@ -6,7 +6,6 @@ using Domain.ValueObjects;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using Serilog;
 
 namespace Application.Blockchain.Commands;
 
