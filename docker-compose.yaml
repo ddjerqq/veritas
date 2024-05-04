@@ -8,6 +8,7 @@ services:
     ports:
       - "80:80"
       - "443:443"
+    shm_size: 256mb
     volumes:
       - ./.logs:/var/log/nginx
       - ./nginx/conf.d/:/etc/nginx/conf.d/:ro
@@ -20,6 +21,7 @@ services:
     container_name: api
     ports:
       - "8000:8000"
+    shm_size: 256mb
     env_file:
       - .env
     volumes:
@@ -29,12 +31,25 @@ services:
       - ./.temp-keys:/root/.aspnet/DataProtection-Keys
     restart: unless-stopped
 
+  db:
+    image: postgres:latest
+    container_name: db
+    ports:
+      - "5432:5432"
+    shm_size: 256mb
+    env_file:
+      - .env
+    volumes:
+      - ./.data/pg/:/var/lib/postgresql/data
+    restart: unless-stopped
+
   seq:
     image: datalust/seq:latest
     container_name: seq
     ports:
       - "1232:80"
       - "5341:5341"
+    shm_size: 128mb
     environment:
       - ACCEPT_EULA=Y
       - SEQ_FIRSTRUN_ADMINPASSWORDHASH=QOHvhYX/JFA3kaXaBBNh8vEzon9ahl7sJGfbt00cXwTCzSdv2NUprUM/yHee7VDZnD3iR0hKtcUfhd6xfJESWF3HZL81moV02gdanBwLlvWZ

@@ -14,6 +14,23 @@ public class ConfigurePersistence : IHostingStartup
 {
     private static bool _configured;
 
+    private static string ConnectionString
+    {
+        get
+        {
+            var env = Environment.GetEnvironmentVariables();
+
+            var host = env["POSTGRES__HOST"] ?? "postgres";
+            var port = env["POSTGRES__PORT"] as int? ?? 5432;
+            var user = env["POSTGRES__USER"] ?? "postgres";
+            var db = env["POSTGRES__DB"] ?? "postgres";
+            var pass = env["POSTGRES__PASS"] ??
+                       throw new ArgumentNullException(nameof(db), "POSTGRES__PASS is not set in the environment.");
+
+            return $"Host={host};Database={db};Port={port};Username={user};Password={pass};Include Error Detail=true";
+        }
+    }
+
     public void Configure(IWebHostBuilder builder)
     {
         if (_configured) return;
@@ -31,10 +48,10 @@ public class ConfigurePersistence : IHostingStartup
                     options.EnableSensitiveDataLogging();
                 }
 
-                var dbPath = Environment.GetEnvironmentVariable("DB__PATH")
-                             ?? throw new Exception("DB__PATH is not set");
+                // var dbPath = Environment.GetEnvironmentVariable("DB__PATH") ?? throw new Exception("DB__PATH is not set");
+                // options.UseSqlite($"Data Source={dbPath}");
 
-                options.UseSqlite($"Data Source={dbPath}");
+                options.UseNpgsql(ConnectionString);
             });
 
             services.AddDatabaseDeveloperPageExceptionFilter();
