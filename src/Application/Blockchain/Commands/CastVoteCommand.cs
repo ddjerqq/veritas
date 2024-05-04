@@ -59,7 +59,6 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
         RuleFor(x => x.Timestamp)
             .Must(ts =>
             {
-                // TODO investigate the issue with voting here.
                 var date = dateTimeProvider.UtcNow;
                 var offset = date - ts.ToUtcDateTime();
                 return offset is { Ticks: > 0, TotalHours: < 12 };
