@@ -53,7 +53,7 @@ public static class WebAppExtensions
             .Enrich.WithAssemblyName()
             .WriteTo.Debug()
             .WriteTo.Console(outputTemplate: OutputFormat)
-            .WriteTo.Seq("http://localhost:5341", apiKey: seqApiKey)
+            .WriteTo.Seq("http://seq:5341", apiKey: seqApiKey)
             .WriteTo.File(logPath,
                 outputTemplate: OutputFormat,
                 flushToDiskInterval: TimeSpan.FromSeconds(10),
