@@ -28,3 +28,16 @@ services:
       - ./nginx/ssl/:/root/.aspnet/https/:ro
       - ./.temp-keys:/root/.aspnet/DataProtection-Keys
     restart: unless-stopped
+
+  seq:
+    image: datalust/seq:latest
+    container_name: seq
+    ports:
+      - "1232:80"
+      - "5341:5341"
+    environment:
+      - ACCEPT_EULA=Y
+      - SEQ_FIRSTRUN_ADMINPASSWORDHASH=QOHvhYX/JFA3kaXaBBNh8vEzon9ahl7sJGfbt00cXwTCzSdv2NUprUM/yHee7VDZnD3iR0hKtcUfhd6xfJESWF3HZL81moV02gdanBwLlvWZ
+    volumes:
+      - ./.logs/seq/:/data
+    restart: unless-stopped

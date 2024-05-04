@@ -39,6 +39,9 @@ public static class WebAppExtensions
         var logPath = Environment.GetEnvironmentVariable("LOG__PATH")
             ?? throw new Exception("LOG__PATH is not set");
 
+        var seqApiKey = Environment.GetEnvironmentVariable("SEQ__API_KEY")
+            ?? throw new Exception("SEQ__API_KEY is not set");
+
         return config
             .MinimumLevel.Information()
             .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
@@ -50,6 +53,7 @@ public static class WebAppExtensions
             .Enrich.WithAssemblyName()
             .WriteTo.Debug()
             .WriteTo.Console(outputTemplate: OutputFormat)
+            .WriteTo.Seq("http://localhost:5341", apiKey: seqApiKey)
             .WriteTo.File(logPath,
                 outputTemplate: OutputFormat,
                 flushToDiskInterval: TimeSpan.FromSeconds(10),
