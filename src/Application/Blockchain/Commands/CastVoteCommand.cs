@@ -58,12 +58,11 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
         RuleFor(x => x.Timestamp)
             .Must(ts =>
             {
-                // this was a weird bug, which was causing us to not be able to vote after 12PM Z UTC+4
                 var date = dateTimeProvider.UtcNow;
                 var offset = date - ts.ToUtcDateTime();
-                return offset is { Ticks: > 0, TotalDays: <= 1 };
+                return offset is { Ticks: > 0, TotalMinutes: <= 1 };
             })
-            .WithMessage("The timestamp must be no more than a day old");
+            .WithMessage("The timestamp must be no more than a minute old");
 
         RuleFor(x => x.Nonce)
             .GreaterThan(0);
