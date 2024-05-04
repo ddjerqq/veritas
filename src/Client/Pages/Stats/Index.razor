@@ -17,7 +17,7 @@
             @foreach ((Party party, int voteCount) in Votes!)
             {
                 <li class="flex flex-row justify-between gap-10">
-                    <span class="@party.GetTextClass() truncate">
+                    <span class="@party.GetTextClass() max-w-64 truncate">
                         @party.Name
                     </span>
 
