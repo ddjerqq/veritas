@@ -1,15 +1,13 @@
-@using Microsoft.AspNetCore.SignalR.Client
 @inject ApiService Api
-@implements IAsyncDisposable
 
-<div class="relative flex w-full text-white overflow-hidden justify-end">
-    <div class="absolute border-b-2 border-gray-500 w-full top-9 -z-50"></div>
+<ContentCard class="relative flex w-full text-white overflow-hidden justify-end ">
+    <div class="absolute border-b-2 border-white w-full top-[40px] z-30"></div>
 
     @foreach (var block in Blocks)
     {
         <a href="blocks/@block.Index"
            class="flex flex-col flex-shrink-0 p-2 text-sm text-nowrap truncate
-                  transition-transform animate-[slideLeft_0.5s_ease_forwards]">
+                  transition-transform animate-[slideLeft_0.5s_ease_forwards] z-50">
             <span class="flex justify-center align-middle p-4 rounded-md"
                   style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(block.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
                 <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
@@ -20,15 +18,20 @@
             </span>
         </a>
     }
-</div>
+</ContentCard>
 
 @code
 {
-    private HubConnection? _connection;
+    // private HubConnection? _connection;
 
-    private List<BlockDto> Blocks { get; set; } = [];
+    private List<BlockDto> Blocks { get; set; } = [
+        BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(),
+        BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(),
+        BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(),
+        BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(), BlockDto.RandomBlockDto(),
+    ];
 
-    private void AddBlock(BlockDto block)
+    public void AddBlock(BlockDto block)
     {
         Console.WriteLine($"adding block: {block.Index}");
 
@@ -40,39 +43,39 @@
         StateHasChanged();
     }
 
-    protected override async Task OnInitializedAsync()
-    {
-#if DEBUG
-        var url = "http://localhost/ws";
-#else
-        var url = NavigationManager.ToAbsoluteUri("/ws");
-#endif
-
-        _connection = new HubConnectionBuilder()
-            .WithUrl(url)
-            .Build();
-
-        _connection.On<VoteDto>("ReceiveVoteAddedEvent", vote =>
-        {
-            ShowInfo($"received vote added event {vote.Hash} {vote.PartyId}");
-        });
-
-        _connection.On<BlockDto>("ReceiveVoteAddedEvent", block =>
-        {
-            ShowInfo($"received block added event {block.Index} {block.Hash}");
-            AddBlock(block);
-            InvokeAsync(StateHasChanged);
-        });
-
-        var lastBlocks = await Api.GetLastNBlocks(30);
-        Blocks = lastBlocks?.ToList()!;
-
-        await _connection.StartAsync(CancellationToken);
-        await base.OnInitializedAsync();
-    }
-
-    public async ValueTask DisposeAsync()
-    {
-        if (_connection is not null) await _connection.DisposeAsync();
-    }
+//     protected override async Task OnInitializedAsync()
+//     {
+// #if DEBUG
+//         var url = "http://localhost/ws";
+// #else
+//         var url = NavigationManager.ToAbsoluteUri("/ws");
+// #endif
+//
+//         _connection = new HubConnectionBuilder()
+//             .WithUrl(url)
+//             .Build();
+//
+//         _connection.On<VoteDto>("ReceiveVoteAddedEvent", vote =>
+//         {
+//             ShowInfo($"received vote added event {vote.Hash} {vote.PartyId}");
+//         });
+//
+//         _connection.On<BlockDto>("ReceiveVoteAddedEvent", block =>
+//         {
+//             ShowInfo($"received block added event {block.Index} {block.Hash}");
+//             AddBlock(block);
+//             InvokeAsync(StateHasChanged);
+//         });
+//
+//         var lastBlocks = await Api.GetLastNBlocks(30);
+//         Blocks = lastBlocks?.ToList()!;
+//
+//         await _connection.StartAsync(CancellationToken);
+//         await base.OnInitializedAsync();
+//     }
+//
+//     public async ValueTask DisposeAsync()
+//     {
+//         if (_connection is not null) await _connection.DisposeAsync();
+//     }
 }
