@@ -5,10 +5,12 @@
 @inject CookieUtil Cookies
 @inject PublicKeyAuthStateProvider Auth
 
-@* // TODO make darker *@
-<div class="flex flex-col p-4 sm:min-w-[32rem] bg-gray-300 bg-opacity-50 backdrop-blur-md rounded-md text-white font-archyedt border-2 @Party.GetBorderClass()">
+<div class="flex flex-col p-4 sm:min-w-[32rem] bg-gray-600 bg-opacity-50 backdrop-blur-md rounded-md text-white font-archyedt border-2 @Party.GetBorderClass()">
     <p class="text-2xl">
-        გსურთ მიცეთ ხმა <a href="@Party.Link" target="_blank" class="@Party.GetTextClass()">@Party.Name</a>'ს ?
+        გსურთ მიცეთ ხმა
+        <a href="@Party.Link" target="_blank" class="underline @Party.GetTextClass()">
+            @Party.Name
+        </a>'ს ?
     </p>
 
     <div class="text-2xl mb-2">
