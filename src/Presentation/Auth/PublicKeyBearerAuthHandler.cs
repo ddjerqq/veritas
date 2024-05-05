@@ -10,11 +10,7 @@ namespace Presentation.Auth;
 
 public class PublicKeyBearerSchemeOptions : AuthenticationSchemeOptions;
 
-public class PublicKeyBearerAuthHandler(
-    IAppDbContext dbContext,
-    IOptionsMonitor<PublicKeyBearerSchemeOptions> options,
-    ILoggerFactory logger,
-    UrlEncoder encoder)
+public class PublicKeyBearerAuthHandler(IOptionsMonitor<PublicKeyBearerSchemeOptions> options, ILoggerFactory logger, UrlEncoder encoder)
     : AuthenticationHandler<PublicKeyBearerSchemeOptions>(options, logger, encoder)
 {
     public const string SchemaName = "public_key";

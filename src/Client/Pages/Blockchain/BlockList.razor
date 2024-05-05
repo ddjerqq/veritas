@@ -7,7 +7,7 @@
 
     @foreach (var block in Blocks)
     {
-        <a @key="@block.Index" href="blocks/@block.Index"
+        <a href="blocks/@block.Index"
            class="flex flex-col flex-shrink-0 p-2 text-sm text-nowrap truncate
                   transition-transform animate-[slideLeft_0.5s_ease_forwards]">
             <span class="flex justify-center align-middle p-4 rounded-md"
@@ -15,7 +15,7 @@
                 <Heroicon Name="@HeroiconName.Link" class="w-8 h-8"/>
             </span>
 
-            <span class="mt-1 leading-3">
+            <span class="mt-1 text-center text-gray-400 leading-3">
                 @(block.Index.ToString("N0"))
             </span>
         </a>
@@ -28,7 +28,7 @@
 
     private List<BlockDto> Blocks { get; set; } = [];
 
-    public void AddBlock(BlockDto block)
+    private void AddBlock(BlockDto block)
     {
         Console.WriteLine($"adding block: {block.Index}");
 
@@ -64,7 +64,8 @@
             InvokeAsync(StateHasChanged);
         });
 
-        Blocks = (await Api.GetLastNBlocks(30))?.ToList()!;
+        var lastBlocks = await Api.GetLastNBlocks(30);
+        Blocks = lastBlocks?.ToList()!;
 
         await _connection.StartAsync(CancellationToken);
         await base.OnInitializedAsync();

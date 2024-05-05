@@ -10,9 +10,6 @@ public class ApiService(HttpClient http)
     public async Task<FullVoterDto?> NewIdentity(CancellationToken ct = default) =>
         await http.GetFromJsonAsync<FullVoterDto>("api/v1/new_identity", Json.SerializerOptions, ct);
 
-    public async Task<Dictionary<string, string>?> GetClaims(CancellationToken ct = default) =>
-        await http.GetFromJsonAsync<Dictionary<string, string>>("api/v1/claims", ct);
-
     public async Task<VoteDto?> CastVote(CastVoteCommand command, CancellationToken ct = default)
     {
         var resp = await http.PostAsJsonAsync("api/v1/cast_vote", command, Json.SerializerOptions, ct);
