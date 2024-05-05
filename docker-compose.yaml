@@ -31,18 +31,6 @@ services:
       - ./.temp-keys:/root/.aspnet/DataProtection-Keys
     restart: unless-stopped
 
-  db:
-    image: postgres:latest
-    container_name: db
-    ports:
-      - "5432:5432"
-    shm_size: 256mb
-    env_file:
-      - .env
-    volumes:
-      - ./.data/pg/:/var/lib/postgresql/data
-    restart: unless-stopped
-
   seq:
     image: datalust/seq:latest
     container_name: seq
