@@ -1,100 +1,89 @@
-﻿@page "/blockchain/blocks/{Hash}"
-@page "/blockchain/blocks/{Index:long}"
+﻿@page "/blockchain/blocks/{Index:long}"
 @inject ApiService Api
 
 <Loader Loaded="Loaded" Model="Model">
-    <ContentCard Class="flex flex-col md:flex-row items-start p-5 gap-3">
-        <div class="w-full md:w-auto flex flex-col gap-3">
-            <div class="flex flex-col gap-1">
-                <div class="flex flex-row w-full gap-3 text-nowrap">
-                    <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
-                         style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
-                        <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
-                    </div>
-
-                    <div class="items-start h-full">
-                        <h2 class="text-6xl text-white">ბლოკი</h2>
-                    </div>
+    <ContentCard Class="col-span-12 md:col-span-6 md:col-start-4 flex flex-col justify-between p-5 gap-3">
+        <div class="flex flex-col gap-1">
+            <div class="flex flex-row w-full gap-3 text-nowrap">
+                <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
+                     style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.Index)deg,#c8956b,#c8ab6b,#d1ce91);">
+                    <Heroicon Name="@HeroiconName.Link" class="block w-8 h-8"/>
                 </div>
 
-                <div class="flex text-xl flex-row max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
-                    <Heroicon Name="@HeroiconName.Hashtag" class="size-4"/>
-                    @Model.Index.ToString("N0")
-                </div>
-
-                <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-gray-400">
-                    @Model.Hash
+                <div class="items-start h-full">
+                    <h2 class="text-6xl text-white">@Model.Index.ToString("N0")</h2>
                 </div>
             </div>
 
-            <hr class="border-s border-gray-500 w-full"/>
-
-            <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md [&_b]:text-white">
-                <span>
-                    ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
-                </span>
-
-                @if (Model.TopParty is { } topParty)
-                {
-                    <span>
-                        პირველ ადგილას არის:<br/>
-                        <span class="@topParty.GetTextClass()">
-                            @topParty.Name.
-                        </span>
-                    </span>
-                }
-            </section>
-
-            <hr class="border-s border-gray-500 w-full"/>
-
-            <section class="flex w-full flex-shrink-0 leading-6 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
-                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                    <property>ნონსი</property>
-                    <value class="font-mono">@Model.Nonce.ToString("N0")</value>
-                </div>
-
-                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                    <property>ხმების რაოდენობა</property>
-                    <value class="font-mono">@Model.Votes.Count.ToString("N0")</value>
-                </div>
-
-                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                    <property>ტევადობა</property>
-                    <value class="font-mono">@(((float)Model.Votes.Count / 128 * 100).ToString("F2"))%</value>
-                </div>
-
-                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                    <property>მაინინგ დრო</property>
-                    <TimeTracker For="@Model.Mined" class="text-white"/>
-                </div>
-
-                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                    <property>ფესვი</property>
-                    <value class="font-mono">@Model.ShortMerkleRoot</value>
-                </div>
-
-                <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
-                    <property>წინა ბლოკის ჰეში</property>
-                    <value class="font-mono">@Model.ShortPreviousHash</value>
-                </div>
-            </section>
-
-            <hr class="block md:hidden border-s border-gray-500 w-full"/>
+            <div class="flex text-wrap break-all leading-4 font-mono text-start text-gray-400 uppercase">
+                @Model.Hash
+            </div>
         </div>
 
+        <hr class="border-s border-gray-500 w-full"/>
 
-        @if (Model.Votes.Count > 0)
-        {
-            <vr class="hidden md:block border-s border-gray-500 h-full"/>
+        <section class="w-full flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 [&_b]:text-white">
+            <span>
+                ამ ბლოკში სულ არის <b>@Model.Votes.Count</b> ხმა.<br/>
+            </span>
 
-            <div class="h-full overflow-y-scroll scrollbar-none">
-                <h2 class="text-2xl text-white text-start">ხმები</h2>
+            @if (Model.TopParty is { } topParty)
+            {
+                <span>
+                    პირველ ადგილას არის:
+                    <span class="@topParty.GetTextClass()">
+                        @topParty.Name.
+                    </span>
+                </span>
+            }
+        </section>
 
-                <VoteList Votes="@Model.Votes" Max="100"/>
+        <hr class="border-s border-gray-500 w-full"/>
+
+        <section class="flex w-full flex-shrink-0 leading-6 flex-col text-start text-lg text-nowrap truncate">
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ნონსი</property>
+                <value class="font-mono">@Model.Nonce.ToString("N0")</value>
             </div>
-        }
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ხმების რაოდენობა</property>
+                <value class="font-mono">@Model.Votes.Count.ToString("N0")</value>
+            </div>
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ტევადობა</property>
+                <value class="font-mono">@(((float)Model.Votes.Count / 128 * 100).ToString("F2"))%</value>
+            </div>
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>მაინინგ დრო</property>
+                <TimeTracker For="@Model.Mined" class="text-white"/>
+            </div>
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>ფესვი</property>
+                <value class="font-mono">@Model.ShortMerkleRoot</value>
+            </div>
+
+            <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
+                <property>წინა ბლოკის ჰეში</property>
+                <value class="font-mono">@Model.ShortPreviousHash</value>
+            </div>
+        </section>
+
+        <hr class="border-s border-gray-500 h-full"/>
+
+        <div class="h-full overflow-y-scroll scrollbar-none">
+            <h2 class="text-2xl text-white text-start">ხმები</h2>
+
+            <VoteList Votes="@Model.Votes" Max="100"/>
+        </div>
     </ContentCard>
 </Loader>
+
+@* This is a hack, because i dont know how to give padding that is still effective after scrolling up *@
+<div class="col-span-12 p-3"></div>
 
 @code
 {

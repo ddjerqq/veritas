@@ -4,6 +4,7 @@
     @if (Difference.Days > 0)
     {
         @(Difference.Days)
+
         @: დღის წინ
     }
     else
@@ -17,10 +18,10 @@
         @if (Difference.Minutes > 0)
         {
             @(Difference.Minutes)
-            @: წუთი,
+            @: წუთის,
         }
 
-        @(Difference.Seconds) @:წამის წინ
+        @(Difference.Seconds)@: წამის წინ
     }
 
 </span>
@@ -34,7 +35,7 @@
     [Parameter(CaptureUnmatchedValues = true)]
     public Dictionary<string, object> AdditionalAttributes { get; set; } = [];
 
-    private TimeSpan Difference => DateTime.Now - For;
+    private TimeSpan Difference => DateTime.UtcNow - For;
 
     private Timer Timer { get; set; } = default!;
 
