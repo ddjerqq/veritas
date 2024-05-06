@@ -2,7 +2,7 @@
 @inject ApiService Api
 
 <Loader Loaded="Loaded" Model="Model">
-    <ContentCard Class="flex flex-col text-white p-5 gap-3">
+    <ContentCard Class="col-span-12 md:col-span-6 md:col-start-4 text-white flex flex-col justify-between p-5 gap-3">
         <div class="flex flex-row w-full gap-3 text-nowrap">
             <div class="flex justify-center flex-shrink-0 items-center w-14 h-14 rounded-md"
                  style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.Hash)deg,#6bcc82,#83dfc8);">
@@ -14,13 +14,13 @@
             </div>
         </div>
 
-        <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+        <div class="flex text-wrap break-all leading-4 font-mono text-start text-white">
             @Model.Hash
         </div>
 
         <hr class="border-s border-gray-400 w-full"/>
 
-        <section class="flex w-full flex-shrink-0 flex-col text-start text-lg max-w-md text-nowrap truncate -space-y-1">
+        <section class="flex w-full flex-shrink-0 leading-6 flex-col text-start text-lg text-nowrap truncate">
             <div class="flex flex-row justify-between [&>property]:text-white">
                 <property>პარტია</property>
                 <value class="@Model.Party.GetTextClass()">@Model.Party.Name</value>
@@ -39,7 +39,7 @@
             <div class="flex flex-row justify-between [&>property]:text-white [&>value]:text-gray-400">
                 <property>ამომრჩეველი</property>
                 <value>
-                    <a href="voters/@Model.VoterAddress" class="font-mono truncate hover:underline">
+                    <a href="voters/@Model.VoterAddress" class="font-mono truncate underline">
                         @Model.ShortVoterAddress
                     </a>
                 </value>
@@ -50,14 +50,14 @@
                 {
                     <property>ბლოკის ID</property>
                     <value>
-                        <a href="blocks/@idx" class="truncate hover:underline">
+                        <a href="blocks/@idx" class="truncate underline">
                             @idx.ToString("N0")
                         </a>
                     </value>
                 }
                 else
                 {
-                    <property>ხმა ჯერ არ არის დავერიფაიებული</property>
+                    <property>ხმა ჯერ არ არის დამინთული</property>
                 }
             </div>
         </section>

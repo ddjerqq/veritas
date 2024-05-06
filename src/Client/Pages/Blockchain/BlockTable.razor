@@ -7,20 +7,20 @@
                ItemsProvider="ItemProvider"
                ItemKey="@(x => x.Index)"
                ItemSize="52"
-               Class="w-full [&_thead]:border-b-2 text-nowrap [&_thead]:border-gray-600"
+               Class="w-full [&_thead]:font-normal [&_thead]:border-b-2 text-nowrap [&_thead]:border-gray-600"
                Pagination="PaginationState">
 
         <PropertyColumn TGridItem="BlockDto"
                         TProp="long"
                         Align="Align.Left"
-                        Title="Index"
+                        Title="ინდექსი"
                         Format="N0"
                         Class="my-3"
                         Property="@(x => x.Index)"
                         Sortable="false"/>
 
         <TemplateColumn Align="Align.Center"
-                        Title="Hash"
+                        Title="ჰეში"
                         Class="text-center"
                         Sortable="false">
             <ChildContent>
@@ -33,16 +33,16 @@
         <PropertyColumn TGridItem="BlockDto"
                         TProp="float"
                         Align="Align.Start"
-                        Title="Fill"
+                        Title="ტევადობა"
                         Format="P"
-                        Class="my-3 text-start  hidden sm:table-cell"
+                        Class="my-3 text-start hidden sm:table-cell"
                         Property="@(x => x.Votes.Count / 128f)"
                         Sortable="false"/>
 
         <PropertyColumn TGridItem="BlockDto"
                         TProp="int"
                         Align="Align.Left"
-                        Title="Tx Count"
+                        Title="ხმები"
                         Class="my-3 hidden sm:table-cell"
                         Property="@(x => x.Votes.Count)"
                         Sortable="false"/>
@@ -50,14 +50,14 @@
         <PropertyColumn TGridItem="BlockDto"
                         TProp="long"
                         Align="Align.Left"
-                        Title="Nonce"
+                        Title="ნონსი"
                         Format="N0"
                         Class="my-3 hidden md:table-cell"
                         Property="@(x => x.Nonce)"
                         Sortable="false"/>
 
         <TemplateColumn Align="Align.Left"
-                        Title="Top Party"
+                        Title="ტოპ პარტია"
                         Class="my-3 hidden md:table-cell max-w-[200px] truncate"
                         Sortable="false">
             <ChildContent>
@@ -71,7 +71,7 @@
         </TemplateColumn>
 
         <TemplateColumn Align="Align.End"
-                        Title="Mined"
+                        Title="მაინინგის დრო"
                         Class="my-3 hidden md:table-cell text-end"
                         Sortable="false">
             <ChildContent>

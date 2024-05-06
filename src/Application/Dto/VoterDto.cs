@@ -21,15 +21,5 @@ public sealed record VoterDto()
 
     public string ShortAddress => Address[..16];
 
-    // public Party? FavoriteParty => Votes?
-    //     .GroupBy(vote => vote.PartyId)
-    //     .Select(group => new
-    //     {
-    //         Party = group.Key,
-    //         Count = group.Count(),
-    //     })?
-    //     .MaxBy(partyCounts => partyCounts.Count)?
-    //     .Party;
-
     public DateTime? LastVoteTime => Votes?.MaxBy(vote => vote.Timestamp)?.Timestamp;
 }
