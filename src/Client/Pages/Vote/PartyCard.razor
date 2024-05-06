@@ -1,11 +1,9 @@
-@* TODO add links to parties *@
-
 <div @onclick="@Clicked"
      class="group flex flex-col flex-grow-0 col-start-2 col-span-10 sm:col-span-6 md:col-span-4 lg:col-span-3
             rounded-md select-none bg-gray-600 @Party.GetHoverBgClass()
             border-2 border-gray-600 hover:border-white hover:z-50
             transition-[colors,transform] duration-300 ease-sweet
-            hover:scale-105 shadow-gray-500 @Party.GetHoverShadowClass()
+            hover:scale-105 shadow-gray-700 @Party.GetHoverShadowClass()
             shadow-party-card hover:shadow-party-card-hover">
 
     <div class="relative overflow-hidden">
@@ -26,7 +24,7 @@
              src="@Party.GetLeaderGoldenPortraitPath()" alt="@Party.LeaderName"/>
     </div>
 
-    <div class="p-3 bg-party-card-name text-gray-400 group-hover:text-white rounded-b-md text-center
+    <div class="p-3 bg-gray-800 text-gray-400 group-hover:text-white rounded-b-md text-center
                 border-t-2 border-gray-600 group-hover:border-white
                 text-2xl sm:text-xl md:text-lg lg:text-base text-nowrap truncate
                 transition duration-200 ease-sweet">

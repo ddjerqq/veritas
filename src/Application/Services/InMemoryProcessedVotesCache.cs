@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.Services;
 
-// TODO replace with REDIS implementation, so its distributed
+// TODO REDIS replace with REDIS implementation, so its distributed
 public sealed class InMemoryProcessedVotesCache(HashSet<string> hashes) : IProcessedVotesCache
 {
     public bool Contains(string hash)

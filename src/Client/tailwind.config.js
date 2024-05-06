@@ -10,13 +10,6 @@ export default {
   darkMode: "class",
   theme: {
     colors: {
-      "background": "#252525",
-      "sidebar": "#202020",
-
-      // TODO remove these
-      "party-card-name": "#303030",
-      "party-card": "#505050",
-
       "agmashenebeli": "#ff0000",
       "euro-georgia": "#0477cc",
       "unm": "#ce2121",
@@ -63,7 +56,7 @@ export default {
         "jumpy": "cubic-bezier(0.68, -0.6, 0.32, 1.6)",
       },
       boxShadow: {
-        "party-card": "0 0 20px 0",
+        "party-card": "0 5px 10px 0",
         "party-card-hover": "0 0 50px 5px",
       },
     },
