@@ -17,7 +17,7 @@
             @foreach ((Party party, int voteCount) in Votes!)
             {
                 <li class="flex flex-row justify-between gap-10">
-                    <span class="@party.GetTextClass() max-w-64 truncate">
+                    <span class="@party.GetTextClass() max-w-64 sm:max-w-[500px] truncate">
                         @party.Name
                     </span>
 
@@ -30,6 +30,8 @@
     </ContentCard>
 </Loader>
 
+@* This is a hack, because i dont know how to give padding that is still effective after scrolling up *@
+<div class="col-span-12 p-3"></div>
 
 @code
 {

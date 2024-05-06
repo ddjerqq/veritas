@@ -5,22 +5,26 @@
 <AppSection Class="col-span-12 md:col-start-4 md:col-span-6 text-white">
     <h1 class="mb-2">მიეცი.ჯი</h1>
 
-    <div class="max-w-lg flex flex-col md:flex-row items-stretch md:items-center w-full gap-3 text-lg md:text-xl">
+    <div class="flex flex-col md:flex-row items-stretch md:items-center w-full gap-3 text-lg md:text-xl">
         <Button Link Href="about">
             როგორ მუშაობს?
+        </Button>
+
+        <Button Link Href="blockchain">
+            ბლოკჩეინი
         </Button>
 
         <AuthorizeView Policy="can_vote">
             <Authorized>
                 <Button Link Href="vote" Class="from-green-500 to-sky-500 focus:ring-green-600"
-                        InnerClass="flex flex-row justify-center items-center gap-1">
+                        InnerClass="text-nobreak flex flex-row justify-center items-center gap-1">
                     მიეცი ხმა
                     <Heroicon Name="@HeroiconName.ArrowRight" class="size-6"/>
                 </Button>
             </Authorized>
             <NotAuthorized>
                 <Button Link Href="stats" Class="from-green-500 to-sky-500 focus:ring-green-600"
-                        InnerClass="flex flex-row justify-center items-center gap-1">
+                        InnerClass="text-nobreak flex flex-row justify-center items-center gap-1">
                     სტატისტიკის ნახვა
                     <Heroicon Name="@HeroiconName.ChartPie" class="size-6"/>
                 </Button>

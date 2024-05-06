@@ -1,7 +1,7 @@
-﻿@using Microsoft.AspNetCore.Components.QuickGrid
+﻿ @using Microsoft.AspNetCore.Components.QuickGrid
 @inject ApiService Api
 
-<ContentCard class="w-full text-start mb-3 overflow-scroll">
+<ContentCard class="w-full text-start mb-3 overflow-scroll scrollbar-none">
     <QuickGrid @ref="Grid"
                TGridItem="BlockDto"
                ItemsProvider="ItemProvider"
