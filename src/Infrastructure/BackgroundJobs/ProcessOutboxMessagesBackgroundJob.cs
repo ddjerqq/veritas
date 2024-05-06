@@ -42,6 +42,7 @@ public sealed class ProcessOutboxMessagesBackgroundJob(
 
             try
             {
+                logger.LogInformation("publishing {@DomainEvent}", domainEvent);
                 await publisher.Publish(domainEvent, context.CancellationToken);
             }
             catch (Exception ex)

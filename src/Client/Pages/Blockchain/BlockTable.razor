@@ -1,0 +1,122 @@
+﻿@using Microsoft.AspNetCore.Components.QuickGrid
+@inject ApiService Api
+
+<ContentCard class="w-full text-start mb-3 overflow-scroll">
+    <QuickGrid @ref="Grid"
+               TGridItem="BlockDto"
+               ItemsProvider="ItemProvider"
+               ItemKey="@(x => x.Index)"
+               ItemSize="52"
+               Class="w-full [&_thead]:border-b-2 text-nowrap [&_thead]:border-gray-600"
+               Pagination="PaginationState">
+
+        <PropertyColumn TGridItem="BlockDto"
+                        TProp="long"
+                        Align="Align.Left"
+                        Title="Index"
+                        Format="N0"
+                        Class="my-3"
+                        Property="@(x => x.Index)"
+                        Sortable="false"/>
+
+        <TemplateColumn Align="Align.Center"
+                        Title="Hash"
+                        Class="text-center"
+                        Sortable="false">
+            <ChildContent>
+                <a href="/blockchain/blocks/@context.Index" class="underline text-orange-500" style="font-family: monospace;">
+                    @context.ShortHash
+                </a>
+            </ChildContent>
+        </TemplateColumn>
+
+        <PropertyColumn TGridItem="BlockDto"
+                        TProp="float"
+                        Align="Align.Start"
+                        Title="Fill"
+                        Format="P"
+                        Class="my-3 text-start  hidden sm:table-cell"
+                        Property="@(x => x.Votes.Count / 128f)"
+                        Sortable="false"/>
+
+        <PropertyColumn TGridItem="BlockDto"
+                        TProp="int"
+                        Align="Align.Left"
+                        Title="Tx Count"
+                        Class="my-3 hidden sm:table-cell"
+                        Property="@(x => x.Votes.Count)"
+                        Sortable="false"/>
+
+        <PropertyColumn TGridItem="BlockDto"
+                        TProp="long"
+                        Align="Align.Left"
+                        Title="Nonce"
+                        Format="N0"
+                        Class="my-3 hidden md:table-cell"
+                        Property="@(x => x.Nonce)"
+                        Sortable="false"/>
+
+        <TemplateColumn Align="Align.Left"
+                        Title="Top Party"
+                        Class="my-3 hidden md:table-cell max-w-[200px] truncate"
+                        Sortable="false">
+            <ChildContent>
+                @if (context.TopParty is { } topParty)
+                {
+                    <span class="@topParty.GetTextClass()">
+                        @topParty.Name
+                    </span>
+                }
+            </ChildContent>
+        </TemplateColumn>
+
+        <TemplateColumn Align="Align.End"
+                        Title="Mined"
+                        Class="my-3 hidden md:table-cell text-end"
+                        Sortable="false">
+            <ChildContent>
+                @if (DateTime.UtcNow - context.Mined is var mined)
+                {
+                    <span>
+                        @if (mined.Days > 0)
+                        {
+                            @(mined.Days)@:D
+                        }
+
+                        @if (mined.Hours > 0)
+                        {
+                            @(mined.Hours)@:H
+                        }
+
+                        @if (mined.Days == 0)
+                        {
+                            @(mined.Minutes)@:M
+                            @(mined.Seconds)@:S
+                        }
+                    </span>
+                }
+            </ChildContent>
+        </TemplateColumn>
+    </QuickGrid>
+</ContentCard>
+
+<Pagination @bind-Value="PaginationState"/>
+
+@code
+{
+    private QuickGrid<BlockDto> Grid { get; set; } = null!;
+
+    private PaginationState PaginationState { get; set; } = new() { ItemsPerPage = 20 };
+
+    private async ValueTask<GridItemsProviderResult<BlockDto>> ItemProvider(GridItemsProviderRequest<BlockDto> request)
+    {
+        var resp = await Api.GetAllBlocks(PaginationState.CurrentPageIndex, request.CancellationToken);
+        var blocks = resp?.ToList() ?? [];
+
+        return new GridItemsProviderResult<BlockDto>
+        {
+            Items = blocks,
+            TotalItemCount = blocks.Count,
+        };
+    }
+}

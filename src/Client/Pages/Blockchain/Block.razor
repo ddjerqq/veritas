@@ -1,5 +1,5 @@
-﻿@page "/blocks/{Hash}"
-@page "/blocks/{Index:long}"
+﻿@page "/blockchain/blocks/{Hash}"
+@page "/blockchain/blocks/{Index:long}"
 @inject ApiService Api
 
 <Loader Loaded="Loaded" Model="Model">
@@ -99,10 +99,7 @@
 @code
 {
     [Parameter]
-    public string? Hash { get; set; }
-
-    [Parameter]
-    public long? Index { get; set; }
+    public long Index { get; set; }
 
     private bool Loaded { get; set; }
 
@@ -110,16 +107,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        if (!string.IsNullOrWhiteSpace(Hash))
-        {
-            Model = await Api.GetBlockByHash(Hash, CancellationToken);
-        }
-        else
-        {
-            var idx = Index ?? 0;
-            Model = await Api.GetBlockByIndex(idx, CancellationToken);
-        }
-
+        Model = await Api.GetBlockByIndex(Index, CancellationToken);
         Loaded = true;
     }
 }

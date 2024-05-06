@@ -1,6 +1,7 @@
 using Application.Blockchain.Queries;
 using Application.Common.Abstractions;
 using Domain.Entities;
+using Domain.Events;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,7 +12,8 @@ namespace Infrastructure.BackgroundJobs;
 [DisallowConcurrentExecution]
 public sealed class MineCurrentBlockBackgroundJob(
     IAppDbContext dbContext,
-    IMediator mediator,
+    ISender mediator,
+    IDateTimeProvider dateTimeProvider,
     ILogger<MineCurrentBlockBackgroundJob> logger) : IJob
 {
     public static readonly JobKey Key = new("mine_current_block");
@@ -37,12 +39,14 @@ public sealed class MineCurrentBlockBackgroundJob(
 
         block.AddVotes(votes);
 
-        // mine the block.
+        // mine asynchronously on a separate thread
         await Task.Run(() => block.Mine());
 
-        // insert it into the database.
-        // TODO REDIS also insert in cache
         dbContext.Set<Block>().Add(block);
+
+        var blockMinedEvent = new BlockMinedEvent(block.Index);
+        dbContext.AddDomainEvent(blockMinedEvent, dateTimeProvider);
+
         await dbContext.SaveChangesAsync(context.CancellationToken);
     }
 }

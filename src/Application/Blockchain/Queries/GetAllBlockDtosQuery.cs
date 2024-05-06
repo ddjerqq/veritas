@@ -8,20 +8,24 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Blockchain.Queries;
 
-public sealed record GetLastNBlockDtosQuery(int Amount) : IRequest<IEnumerable<BlockDto>>;
+public sealed record GetAllBlockDtosQuery(int Page) : IRequest<IEnumerable<BlockDto>>
+{
+    public const int PerPage = 20;
+}
 
 // TODO REDIS - implement cache eventually.
 
 // ReSharper disable once UnusedType.Global
-internal sealed class GetLastNBlockDtosQueryHandler(IMapper mapper, IAppDbContext dbContext)
-    : IRequestHandler<GetLastNBlockDtosQuery, IEnumerable<BlockDto>>
+internal sealed class GetAllBlockDtosQueryHandler(IMapper mapper, IAppDbContext dbContext)
+    : IRequestHandler<GetAllBlockDtosQuery, IEnumerable<BlockDto>>
 {
-    public async Task<IEnumerable<BlockDto>> Handle(GetLastNBlockDtosQuery request, CancellationToken ct)
+    public async Task<IEnumerable<BlockDto>> Handle(GetAllBlockDtosQuery request, CancellationToken ct)
     {
         var blocks = await dbContext.Set<Block>()
             .AsNoTracking()
             .OrderBy(x => x.Index).Reverse()
-            .Take(request.Amount).Reverse()
+            .Skip(request.Page * GetAllBlockDtosQuery.PerPage)
+            .Take(GetAllBlockDtosQuery.PerPage)
             .ProjectTo<BlockDto>(mapper.ConfigurationProvider)
             .ToListAsync(ct);
 

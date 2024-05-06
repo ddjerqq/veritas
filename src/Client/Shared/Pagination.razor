@@ -1,0 +1,46 @@
+﻿@using Microsoft.AspNetCore.Components.QuickGrid
+
+<div class="max-w-lg flex flex-col md:flex-row items-stretch md:items-center w-full gap-3 text-xl">
+    <Button OnClick="Back" InnerClass="flex flex-row justify-center items-center gap-1">
+        <Heroicon Name="@HeroiconName.ArrowLeft" class="size-5"/>
+        Previous
+    </Button>
+
+    <Button OnClick="Forward" InnerClass="flex flex-row justify-center items-center gap-1">
+        Next
+        <Heroicon Name="@HeroiconName.ArrowRight" class="size-5"/>
+    </Button>
+</div>
+
+
+@code
+{
+    /// <summary>
+    /// This must be used with @bind-Value
+    /// </summary>
+    [Parameter, EditorRequired]
+    public PaginationState Value { get; set; } = null!;
+
+    [Parameter]
+    public EventCallback<PaginationState> ValueChanged { get; set; }
+
+    private async Task Back()
+    {
+        if (Value.CurrentPageIndex < 1)
+            return;
+
+        var pageIndex = Value.CurrentPageIndex - 1;
+        await Value.SetCurrentPageIndexAsync(pageIndex);
+        await ValueChanged.InvokeAsync(Value);
+    }
+
+    private async Task Forward()
+    {
+        // if (Value.CurrentPageIndex >= Value.LastPageIndex)
+        //     return;
+
+        var pageIndex = Value.CurrentPageIndex + 1;
+        await Value.SetCurrentPageIndexAsync(pageIndex);
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

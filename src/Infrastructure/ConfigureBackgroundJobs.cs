@@ -33,7 +33,7 @@ public class ConfigureBackgroundJobs : IHostingStartup
                     .AddTrigger(trigger => trigger
                         .ForJob(MineCurrentBlockBackgroundJob.Key)
                         .WithSimpleSchedule(schedule => schedule
-                            .WithInterval(TimeSpan.FromMinutes(10))
+                            .WithInterval(TimeSpan.FromMinutes(1))
                             .RepeatForever()));
 
                 config.UseInMemoryStore();

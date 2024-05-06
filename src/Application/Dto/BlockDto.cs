@@ -18,25 +18,23 @@ public record BlockDto()
         Votes = votes.ToList();
     }
 
-    public long Index { get; }
+    public long Index { get; init; }
 
-    public long Nonce { get; }
+    public long Nonce { get; init; }
 
-    public string Hash { get; } = default!;
+    public string Hash { get; init; } = default!;
 
-    public string MerkleRoot { get; } = default!;
+    public string MerkleRoot { get; init; } = default!;
 
-    public string PreviousHash { get; } = default!;
+    public string PreviousHash { get; init; } = default!;
 
-    public List<VoteDto> Votes { get; } = [];
+    public List<VoteDto> Votes { get; init; } = [];
 
-    public string ShortHash => $"{Hash[..8]}-{Hash[^8..]}";
+    public string ShortHash => $"{Hash?[..8]}-{Hash?[^8..]}";
 
-    public string ShortPreviousHash => $"{PreviousHash[..4]}-{PreviousHash[^4..]}";
+    public string ShortPreviousHash => $"{PreviousHash?[..4]}-{PreviousHash?[^4..]}";
 
-    public string ShortMerkleRoot => $"{MerkleRoot[..4]}-{MerkleRoot[^4..]}";
-
-    public int SizeBytes => 128 + Votes.Count * 208;
+    public string ShortMerkleRoot => $"{MerkleRoot?[..4]}-{MerkleRoot?[^4..]}";
 
     public DateTime Mined => Votes?
         .MaxBy(v => v.Timestamp)?
