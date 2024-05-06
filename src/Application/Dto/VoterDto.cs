@@ -19,7 +19,7 @@ public sealed record VoterDto()
 
     public List<VoteDto> Votes { get; init; } = default!;
 
-    public string ShortAddress => Address[..8];
+    public string ShortAddress => Address[..16];
 
     // public Party? FavoriteParty => Votes?
     //     .GroupBy(vote => vote.PartyId)

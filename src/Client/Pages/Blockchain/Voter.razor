@@ -2,67 +2,49 @@
 @inject ApiService Api
 
 <Loader Loaded="Loaded" Model="Model">
-    <ContentCard Class="flex flex-col md:flex-row items-start p-5 gap-3">
+    <ContentCard Class="col-span-12 md:col-span-6 md:col-start-4 flex flex-col justify-between p-5 gap-3">
         <div class="w-full md:w-auto flex flex-col gap-3">
-            <div class="flex flex-col w-full">
+            <div class="flex flex-col gap-1">
                 <div class="flex flex-row w-full gap-3 text-nowrap">
                     <div class="flex justify-center text-white flex-shrink-0 items-center w-14 h-14 rounded-md"
                          style="background-image: linear-gradient(@WebUtil.GetGradientDegrees(Model!.ShortAddress)deg,#cc6bc0,#91a0d1);">
                         <Heroicon Name="@HeroiconName.Wallet" class="block w-8 h-8"/>
                     </div>
 
-                    <div class="items-start justify-center h-full text-lg max-w-sm">
-                        <h2 class="text-6xl text-white">ამომრჩეველი</h2>
+                    <div class="flex items-center">
+                        <h2 class="text-2xl md:text-6xl text-white">ამომრჩეველი</h2>
                     </div>
                 </div>
 
-                <div class="flex max-w-sm text-wrap break-all leading-4 font-mono text-start text-white">
+                <div class="flex text-wrap break-all leading-4 font-mono text-start text-gray-400 uppercase">
                     @Model.Address
                 </div>
             </div>
 
             <hr class="border-s border-gray-400 w-full"/>
 
-            <section class="flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 max-w-md">
+            <section class="w-full flex flex-col gap-2 text-start text-lg leading-5 text-gray-400 [&_b]:text-white">
                 <span>
                     ამ ამომრჩეველს ხმა მიცემული აქვს <b class="text-white">@Model.Votes.Count</b> ჯერ.<br/>
                 </span>
 
-                @* @if (Model.FavoriteParty is { } favoriteParty) *@
-                @* { *@
-                @*     <span> *@
-                @*         მისი ფავორიტი პარტია არის <b class="@favoriteParty.GetTextClass()">@favoriteParty.Name.</b><br/> *@
-                @*     </span> *@
-                @* } *@
-                @* else *@
-                @* { *@
-                @*     <span> *@
-                @*         მას არ ჰყავს ფავორიტი პარტია.<br/> *@
-                @*     </span> *@
-                @* } *@
-
                 @if (Model.LastVoteTime is { } lastVoteTime)
                 {
                     <span class="[&>b]:text-white">
-                        ბოლოს ხმა მიცემული აქვს:<br/>
+                        ბოლოს ხმა მიცემული აქვს:
                         <b>@lastVoteTime.ToString("d")</b>-ში
-                        <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე,<br/>
+                        <b>@lastVoteTime.ToString("HH:mm:ss")</b>-ზე,
                         <TimeTracker For="@lastVoteTime" class="text-white"/>-ის წინ
                     </span>
                 }
             </section>
-
-            <hr class="border-s border-gray-400 w-full"/>
         </div>
 
-        @if (Model.Votes.Count > 0)
-        {
-            <vr class="hidden md:block border-s border-gray-500 h-full"/>
+        <hr class="border-s border-gray-500 h-full"/>
 
-            <div class="h-full overflow-y-scroll scrollbar-none">
-                <VoteList @ref="VoteList" Votes="@Model.Votes" Max="100"/>
-            </div>
-        }
+        <div class="h-full overflow-y-scroll scrollbar-none">
+            <VoteList @ref="VoteList" Votes="@Model.Votes" Max="100"/>
+        </div>
     </ContentCard>
 </Loader>
 

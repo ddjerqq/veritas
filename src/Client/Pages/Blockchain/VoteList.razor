@@ -2,7 +2,7 @@
     @foreach (var vote in Votes)
     {
         <a @key="@vote.Hash"
-           href="votes/@vote.Hash"
+           href="blockchain/votes/@vote.Hash"
            class="group flex flex-row justify-between items-center h-12 gap-3 p-4 rounded-md
                   bg-gray-700 hover:bg-gray-600 opacity-5
                   font-mono text-nowrap border-2 @vote.Party.GetBorderClass()
