@@ -60,7 +60,7 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
             {
                 var date = dateTimeProvider.UtcNow;
                 var offset = date - ts.ToUtcDateTime();
-                return offset is { Ticks: > 0, TotalMinutes: <= 5 };
+                return offset is { TotalMinutes: > -1 and <= 5 };
             })
             .WithMessage(command =>
             {
