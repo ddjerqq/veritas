@@ -62,7 +62,13 @@ public sealed class CastVoteCommandValidator : RequestValidator<CastVoteCommand>
                 var offset = date - ts.ToUtcDateTime();
                 return offset is { Ticks: > 0, TotalMinutes: <= 5 };
             })
-            .WithMessage("The timestamp must be no more than five minutes old");
+            .WithMessage(command =>
+            {
+                var date = dateTimeProvider.UtcNow;
+                var commandTime = command.Timestamp.ToUtcDateTime();
+                var offset = date - commandTime;
+                return $"The timestamp must be no more than five minutes old, was {commandTime}, {offset} ago";
+            });
 
         RuleFor(x => x.Nonce)
             .GreaterThan(0);
