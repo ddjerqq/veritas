@@ -28,7 +28,7 @@ internal sealed class GetPartyVotesQueryHandler(IMemoryCache cache, IAppDbContex
 
         data = dbData.ToDictionary(kv => kv.Party, kv => kv.Count);
 
-        cache.Set("party_vote_counts", data, TimeSpan.FromMinutes(10));
+        cache.Set("party_vote_counts", data, TimeSpan.FromMinutes(1));
 
         return data;
     }
