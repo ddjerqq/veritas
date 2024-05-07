@@ -7,8 +7,6 @@ namespace Application.Blockchain.Queries;
 
 public sealed record GetLastBlockQuery : IRequest<Block>;
 
-// TODO REDIS - implement cache eventually.
-
 // ReSharper disable once UnusedType.Global
 internal sealed class GetLastBlockQueryHandler(IAppDbContext dbContext) : IRequestHandler<GetLastBlockQuery, Block>
 {

@@ -33,7 +33,4 @@ public class ApiService(HttpClient http)
 
     public async Task<IEnumerable<BlockDto>?> GetAllBlocks(int page, CancellationToken ct = default) =>
         await http.GetFromJsonAsync<IEnumerable<BlockDto>>($"api/v1/blocks/all?page={page}", Json.SerializerOptions, ct);
-
-    public async Task<BlockDto?> GetBlockByHash(string hash, CancellationToken ct = default) =>
-        await http.GetFromJsonAsync<BlockDto>($"api/v1/blocks/{hash}", Json.SerializerOptions, ct);
 }

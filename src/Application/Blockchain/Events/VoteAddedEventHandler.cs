@@ -7,23 +7,27 @@ using Domain.Events;
 using FluentValidation;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace Application.Blockchain.Events;
 
 // ReSharper disable once UnusedType.Global
-internal sealed class VoteAddedEventHandler(IBlockchainEventBroadcast broadcast, IMapper mapper, IAppDbContext db) : INotificationHandler<VoteAddedEvent>
+internal sealed class VoteAddedEventHandler(IBlockchainEventBroadcast broadcast, IMapper mapper, IMemoryCache cache, IAppDbContext db)
+    : INotificationHandler<VoteAddedEvent>
 {
     public async Task Handle(VoteAddedEvent notification, CancellationToken ct)
     {
-        var vote = await db.Set<Vote>()
-            .AsNoTracking()
-            .Where(v => v.Hash == notification.Hash)
-            .ProjectTo<VoteDto>(mapper.ConfigurationProvider)
-            .FirstOrDefaultAsync(ct);
+        if (!cache.TryGetValue($"vote_{notification.Hash}", out VoteDto? vote) || vote is not null)
+        {
+            vote = await db.Set<Vote>()
+                .AsNoTracking()
+                .Where(v => v.Hash == notification.Hash)
+                .ProjectTo<VoteDto>(mapper.ConfigurationProvider)
+                .FirstOrDefaultAsync(ct);
 
-        if (vote is null)
-            throw new ValidationException($"Vote with hash: {notification.Hash} not found");
+            cache.Set($"vote_{notification.Hash}", vote, TimeSpan.FromMinutes(10));
+        }
 
-        await broadcast.BroadcastVoteAddedEvent(vote);
+        await broadcast.BroadcastVoteAddedEvent(vote!);
     }
 }

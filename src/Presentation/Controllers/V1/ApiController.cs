@@ -111,15 +111,4 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
         var blocks = await mediator.Send(query, ct);
         return Ok(blocks);
     }
-
-    [HttpGet("blocks/{hash}")]
-    public async Task<ActionResult<BlockDto>> GetBlockByHash(string hash, CancellationToken ct)
-    {
-        var query = new GetBlockByHashQuery(hash);
-        var block = await mediator.Send(query, ct);
-
-        return block is not null
-            ? Ok(block)
-            : NotFound();
-    }
 }
