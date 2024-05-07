@@ -1,6 +1,6 @@
-@using Microsoft.AspNetCore.SignalR.Client
+@* @using Microsoft.AspNetCore.SignalR.Client *@
 @inject ApiService Api
-@implements IAsyncDisposable
+@* @implements IAsyncDisposable *@
 
 <ContentCard class="relative flex w-full text-white overflow-hidden justify-end ">
     <div class="absolute border-b-2 border-white w-full top-[40px] z-30"></div>
@@ -24,7 +24,7 @@
 
 @code
 {
-    private HubConnection? _connection;
+    // private HubConnection? _connection;
 
     private List<BlockDto> Blocks { get; set; } = [];
 
@@ -48,32 +48,32 @@
         var url = NavigationManager.ToAbsoluteUri("/ws");
 #endif
 
-        _connection = new HubConnectionBuilder()
-            .WithUrl(url)
-            .Build();
-
-        // _connection.On<VoteDto>("ReceiveVoteAddedEvent", vote =>
+        // _connection = new HubConnectionBuilder()
+        //     .WithUrl(url)
+        //     .Build();
+        //
+        // // _connection.On<VoteDto>("ReceiveVoteAddedEvent", vote =>
+        // // {
+        // //     Console.WriteLine($"received vote added event {vote.Hash} {vote.PartyId}");
+        // //     ShowInfo($"received vote added event {vote.Hash} {vote.PartyId}");
+        // // });
+        //
+        // _connection.On<BlockDto>("ReceiveBlockAddedEvent", block =>
         // {
-        //     Console.WriteLine($"received vote added event {vote.Hash} {vote.PartyId}");
-        //     ShowInfo($"received vote added event {vote.Hash} {vote.PartyId}");
+        //     Console.WriteLine($"received block added event {block}");
+        //     AddBlock(block);
+        //     InvokeAsync(StateHasChanged);
         // });
-
-        _connection.On<BlockDto>("ReceiveBlockAddedEvent", block =>
-        {
-            Console.WriteLine($"received block added event {block}");
-            AddBlock(block);
-            InvokeAsync(StateHasChanged);
-        });
 
         var lastBlocks = await Api.GetLastNBlocks(20);
         Blocks = lastBlocks?.ToList()!;
 
-        await _connection.StartAsync(CancellationToken);
+        // await _connection.StartAsync(CancellationToken);
         await base.OnInitializedAsync();
     }
 
-    public async ValueTask DisposeAsync()
-    {
-        if (_connection is not null) await _connection.DisposeAsync();
-    }
+    // public async ValueTask DisposeAsync()
+    // {
+    //     if (_connection is not null) await _connection.DisposeAsync();
+    // }
 }
