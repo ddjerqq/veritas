@@ -24,6 +24,12 @@ internal class TestVoter
         },
     };
 
+    [OneTimeSetUp]
+    public void OneTimeSetUp()
+    {
+        Environment.SetEnvironmentVariable("KEY_DERIVATION__SALT", "d7397fac-9506-4d7e-8ae5-bb64f659a49a");
+    }
+
     [OneTimeTearDown]
     public void OneTimeTeardown()
     {
@@ -155,7 +161,6 @@ internal class TestVoter
 
         using var ecdsa = ECDsa.Create();
 
-        ecdsa.KeySize = 256;
         ecdsa.ImportParameters(new ECParameters
         {
             Curve = ECCurve.NamedCurves.nistP256,
@@ -173,5 +178,14 @@ internal class TestVoter
             Assert.That(sKey, Is.EqualTo(expectedSKey));
             Assert.That(pKey, Is.EqualTo(expectedPKey));
         });
+    }
+
+    [Test]
+    [Parallelizable]
+    public void TestFromSeed()
+    {
+        var voter = Voter.FromSeed("pangea seven human ball ray golem generate");
+        Console.WriteLine(voter.PrivateKey);
+        Console.WriteLine(voter.PublicKey);
     }
 }

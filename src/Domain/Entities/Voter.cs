@@ -1,4 +1,5 @@
 using System.Security.Cryptography;
+using System.Text;
 using Domain.Common;
 using SJsonIgnore = System.Text.Json.Serialization.JsonIgnoreAttribute;
 using NJsonIgnore = Newtonsoft.Json.JsonIgnoreAttribute;
@@ -7,6 +8,13 @@ namespace Domain.Entities;
 
 public sealed class Voter : IDisposable
 {
+    private const int KeyDerivationIterations = 10000;
+
+    private static byte[] KeyDerivationSalt =>
+        Encoding.UTF8.GetBytes(
+            Environment.GetEnvironmentVariable("KEY_DERIVATION__SALT")
+            ?? throw new InvalidOperationException("KEY_DERIVATION__SALT is not set"));
+
     private ECDsa Dsa { get; init; } = ECDsa.Create(ECCurve.NamedCurves.nistP256);
 
     public string Address
@@ -27,6 +35,33 @@ public sealed class Voter : IDisposable
     public static Voter NewVoter()
     {
         var dsa = ECDsa.Create(ECCurve.NamedCurves.nistP256);
+
+        var parameters = dsa.ExportParameters(includePrivateParameters: true);
+
+        var publicKey = new byte[64];
+        parameters.Q.X!.CopyTo(publicKey, 0);
+        parameters.Q.Y!.CopyTo(publicKey, 32);
+
+        return new Voter
+        {
+            Dsa = dsa,
+            PublicKey = publicKey.ToHexString(),
+            PrivateKey = parameters.D!.ToHexString(),
+        };
+    }
+
+    public static Voter FromSeed(string seed)
+    {
+        using var pbkdf2 = new Rfc2898DeriveBytes(seed, KeyDerivationSalt, KeyDerivationIterations, HashAlgorithmName.SHA256);
+        var derivedKey = pbkdf2.GetBytes(32);
+
+        using var dsa = ECDsa.Create();
+
+        dsa.ImportParameters(new ECParameters
+        {
+            Curve = ECCurve.NamedCurves.nistP256,
+            D = derivedKey,
+        });
 
         var parameters = dsa.ExportParameters(includePrivateParameters: true);
 

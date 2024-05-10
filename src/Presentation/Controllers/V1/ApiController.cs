@@ -6,6 +6,7 @@ using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Presentation.Filters;
 
 namespace Presentation.Controllers.V1;
 
@@ -22,7 +23,11 @@ public class ApiController(ISender mediator, ILogger<ApiController> logger, IPro
         if (HttpContext.User.Identity?.IsAuthenticated ?? false)
             return Unauthorized();
 
-        var voter = Voter.NewVoter();
+        var ip = HttpContext.Items[SetClientIpAddressFilter.ClientIpItemName] as string;
+        var userAgent = Request.Headers.UserAgent.ToString();
+
+        var voter = Voter.FromSeed($"{ip}{userAgent}");
+
         var dto = new FullVoterDto(voter.Address, voter.PublicKey, voter.PrivateKey!, voter.SignAddress(), DateTime.MinValue);
 
         Response.Cookies.Append(nameof(FullVoterDto.Address), dto.Address);

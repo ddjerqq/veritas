@@ -5,13 +5,6 @@ namespace Domain.Common;
 
 public static class StringExt
 {
-    private static readonly char[] Chars = "abcdef0123456789".ToArray();
-
-    public static string RandomHexString(int length)
-    {
-        return new string(Random.Shared.GetItems(Chars, length));
-    }
-
     private static int GetHexVal(char hex)
     {
         return hex - (hex < 58 ? 48 : hex < 97 ? 55 : 87);
