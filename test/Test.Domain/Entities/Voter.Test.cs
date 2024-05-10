@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using Domain.Common;
 using Domain.Entities;
 using Newtonsoft.Json;
@@ -133,5 +134,44 @@ internal class TestVoter
         // test the inverse
         var importedSignature = importedVoter.Sign(payload);
         Assert.That(voter.Verify(payload, importedSignature), Is.True);
+    }
+
+    [Test]
+    [Parallelizable]
+    public void TestKeyDerivation()
+    {
+        const string passphrase = "moon ball archer hell salt room floor leaf can file plan hex";
+        const string expectedSKey = "005d8938f02b57b180334909e7e6fe68088ee54ab5435d1170dc7f3dc446ce32";
+        const string expectedPKey =
+            "ac293b8e19913cf0ad43af21455146cc2d708699f050646ec78e184a1a94c40a825eb23e0c531b2a8008821fd6cda91caf597138d7530e2395994b6f03d35b1e";
+        const int iterations = 10000;
+        const int derivedKeyLength = 32;
+        const string salt = "salt";
+
+        var saltBytes = salt.Select(c => (byte)c).ToArray();
+
+        using var pbkdf2 = new Rfc2898DeriveBytes(passphrase, saltBytes, iterations, HashAlgorithmName.SHA256);
+        var derivedKey = pbkdf2.GetBytes(derivedKeyLength);
+
+        using var ecdsa = ECDsa.Create();
+
+        ecdsa.KeySize = 256;
+        ecdsa.ImportParameters(new ECParameters
+        {
+            Curve = ECCurve.NamedCurves.nistP256,
+            D = derivedKey,
+        });
+
+        var sKey = ecdsa.ExportParameters(true).D!.ToHexString();
+        var pKey = $"{ecdsa.ExportParameters(false).Q.X!.ToHexString()}{ecdsa.ExportParameters(true).Q.Y!.ToHexString()}";
+
+        Console.WriteLine($"S key: {sKey}");
+        Console.WriteLine($"P key: {pKey}");
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(sKey, Is.EqualTo(expectedSKey));
+            Assert.That(pKey, Is.EqualTo(expectedPKey));
+        });
     }
 }

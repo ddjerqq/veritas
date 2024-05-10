@@ -1,6 +1,5 @@
 using System.Security.Claims;
 using System.Text.Encodings.Web;
-using Application.Common.Abstractions;
 using Application.Dto;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authentication;
