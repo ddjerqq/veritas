@@ -63,7 +63,7 @@ public sealed class Voter : IDisposable
             D = derivedKey,
         });
 
-        var parameters = dsa.ExportParameters(includePrivateParameters: true);
+        var parameters = dsa.ExportParameters(true);
 
         var publicKey = new byte[64];
         parameters.Q.X!.CopyTo(publicKey, 0);
@@ -71,7 +71,7 @@ public sealed class Voter : IDisposable
 
         return new Voter
         {
-            Dsa = dsa,
+            Dsa = ECDsa.Create(parameters),
             PublicKey = publicKey.ToHexString(),
             PrivateKey = parameters.D!.ToHexString(),
         };

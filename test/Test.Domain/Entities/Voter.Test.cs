@@ -185,7 +185,11 @@ internal class TestVoter
     public void TestFromSeed()
     {
         var voter = Voter.FromSeed("pangea seven human ball ray golem generate");
+
         Console.WriteLine(voter.PrivateKey);
         Console.WriteLine(voter.PublicKey);
+
+        var signature = voter.Sign("someting"u8.ToArray());
+        Console.WriteLine(signature.ToHexString());
     }
 }
