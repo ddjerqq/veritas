@@ -7,6 +7,9 @@ namespace Client.Services;
 
 public class ApiService(HttpClient http)
 {
+    public async Task<string> GetIp(CancellationToken ct = default) =>
+        await http.GetStringAsync("https://api.ipify.io", ct);
+
     public async Task<FullVoterDto?> NewIdentity(CancellationToken ct = default) =>
         await http.GetFromJsonAsync<FullVoterDto>("api/v1/new_identity", Json.SerializerOptions, ct);
 
