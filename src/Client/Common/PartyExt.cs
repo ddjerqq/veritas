@@ -24,7 +24,7 @@ public static class PartyExt
     {
         // for tailwind class discovery
         _ = "text-agmashenebeli text-euro-georgia text-unm text-euro-democrats text-citizens " +
-            "text-law-and-order text-lelo text-girchi-iago text-gd text-girchi-zurab";
+            "text-law-and-order text-patriot text-lelo text-girchi-iago text-gd text-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
@@ -37,7 +37,7 @@ public static class PartyExt
     {
         // for tailwind class discovery
         _ = "border-agmashenebeli border-euro-georgia border-unm border-euro-democrats border-citizens " +
-            "border-law-and-order border-lelo border-girchi-iago border-gd border-girchi-zurab";
+            "border-law-and-order border-patriot border-lelo border-girchi-iago border-gd border-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
@@ -50,7 +50,7 @@ public static class PartyExt
     {
         // for tailwind class discovery
         _ = "hover:bg-agmashenebeli hover:bg-euro-georgia hover:bg-unm hover:bg-euro-democrats " +
-            "hover:bg-citizens hover:bg-law-and-order hover:bg-lelo hover:bg-girchi-iago hover:bg-gd hover:bg-girchi-zurab";
+            "hover:bg-citizens hover:bg-law-and-order hover:bg-patriot hover:bg-lelo hover:bg-girchi-iago hover:bg-gd hover:bg-girchi-zurab";
         return party.Id switch
         {
             0 => "no_party",
@@ -63,7 +63,7 @@ public static class PartyExt
     {
         // for tailwind class discovery
         _ = "hover:shadow-agmashenebeli hover:shadow-euro-georgia hover:shadow-unm " +
-            "hover:shadow-euro-democrats hover:shadow-citizens hover:shadow-law-and-order hover:shadow-lelo " +
+            "hover:shadow-euro-democrats hover:shadow-citizens hover:shadow-law-and-order hover:shadow-patriot hover:shadow-lelo " +
             "hover:shadow-girchi-iago hover:shadow-gd hover:shadow-girchi-zurab";
         return party.Id switch
         {
